@@ -1,0 +1,17 @@
+x,z,mean_rt.x,overall.x,correct_per.x,mean_rt.y,overall.y,correct_per.y,mean_rt,overall,correct_per
+0,315,7.87135,4,0.5,3.88404,5,0.4,2.5061428571428572,7,0.43
+0,45,10.1501,8,1,4.876633333333333,3,0.67,1.484,2,0
+135,225,7.86125,10,0.9,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/
+135,315,15.25975,2,1,2.3672,1,1,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/
+135,45,27.7719,1,1,8.774899999999999,2,0,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/
+225,135,12.874283333333333,6,0.83,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/
+225,315,13.3686,2,0.5,5.37015,2,1,2.539,3,0
+225,45,19.90915,2,1,8.1877,1,0,3.3973333333333335,3,0.67
+315,0,6.3771,1,1,5.2354,7,0.29,1.9265,2,0
+315,135,18.5638,2,1,7.5789333333333335,3,0.67,17.295,4,0.75
+315,225,8.9316,2,1,6.6575500000000005,2,0,2.285,1,1
+45,0,21.855066666666666,3,1,2.5503,1,1,1.9072,5,0.8
+45,135,10.449675000000001,4,1,5.6079,2,0,1.91425,4,0.75
+45,225,15.2818,1,1,6.523933333333334,3,0.33,1.501,1,1
+135,135,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,5.594425,8,0.5,2.3008571428571427,7,0.43
+225,225,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,/Users/elenary/Dropbox/Datanal/CogLoad/,5.0906125,8,0.62,2.069111111111111,9,0.67
