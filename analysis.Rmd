@@ -1,0 +1,744 @@
+---
+title: "NASA-TLX Approbation"
+author: "Anton Angelgardt"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+# Libraries
+
+```{r}
+library(tidyverse)
+theme_set(theme_bw()) # set black and white theme
+library(lavaan)
+```
+
+# Preprocess
+
+## Creating custom function for preprocess.
+
+
+### Mental rotation
+
+```{r}
+mr_preproc <- function(d) {
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    correctAns,
+    base_pic,
+    rotated_pic,
+    resp_MR_easy.keys,
+    resp_MR_easy.corr,
+    resp_MR_easy.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "MR",
+           # add task name (mental rotation)
+           level = "easy",
+           # add difficulty level
+           trial = 1:16) %>% # number trials
+    rename(
+      "id" = "Индивидуальный_код",
+      # rename columns for handy usage
+      "key" = resp_MR_easy.keys,
+      "is_correct" = resp_MR_easy.corr,
+      "rt" = resp_MR_easy.rt
+    ) -> MR_easy # ready to use
+  
+  
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    correctAns,
+    base_pic,
+    rotated_pic,
+    resp_MR_medium.keys,
+    resp_MR_medium.corr,
+    resp_MR_medium.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "MR",
+           # add task name (mental rotation)
+           level = "medium",
+           # add difficulty level
+           trial = 1:16) %>%  # number trials
+    rename(
+      # rename columns for handy usage
+      "id" = "Индивидуальный_код",
+      "key" = resp_MR_medium.keys,
+      "is_correct" = resp_MR_medium.corr,
+      "rt" = resp_MR_medium.rt
+    ) -> MR_medium # ready to use
+  
+  
+  
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    correctAns,
+    base_pic,
+    rotated_pic,
+    resp_MR_hard.keys,
+    resp_MR_hard.corr,
+    resp_MR_hard.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "MR",
+           # add task name (mental rotation)
+           level = "hard",
+           # add difficulty level
+           trial = 1:16) %>% # number trials
+    rename(
+      # rename columns for handy usage
+      "id" = "Индивидуальный_код",
+      "key" = resp_MR_hard.keys,
+      "is_correct" = resp_MR_hard.corr,
+      "rt" = resp_MR_hard.rt
+    ) -> MR_hard # ready to use
+  
+  # bind all conditions of mental rotation task to one tibble
+  
+  bind_rows(MR_easy, MR_medium, MR_hard) ->> MR
+  
+}
+
+```
+
+
+
+
+### Sternberg task
+
+```{r}
+st_preproc <- function(d) {
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    target_present,
+    key_resp_SE.keys,
+    key_resp_SE.corr,
+    key_resp_SE.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+            # add task name (Sternberg task)
+           level = "easy",
+           # add difficulty level
+           trial = 1:16) %>% # number trials
+    rename(
+      # rename columns for handy usage
+      "id" = "Индивидуальный_код",
+      "key" = key_resp_SE.keys,
+      "is_correct" = key_resp_SE.corr,
+      "rt" = key_resp_SE.rt
+    ) -> ST_easy # ready to use
+  
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    target_present,
+    key_resp_SM.keys,
+    key_resp_SM.corr,
+    key_resp_SM.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+           # add task name (Sternberg task)
+           level = "medium",
+           # add difficulty level
+           trial = 1:16) %>% # number trials
+    rename(
+      # rename columns for handy usage
+      "id" = "Индивидуальный_код",
+      "key" = key_resp_SM.keys,
+      "is_correct" = key_resp_SM.corr,
+      "rt" = key_resp_SM.rt
+    ) -> ST_medium # ready to use
+  
+  
+  d %>% select(
+    # select columns we need
+    "Индивидуальный_код",
+    target_present,
+    resp_S_H_trials.keys,
+    resp_S_H_trials.corr,
+    resp_S_H_trials.rt
+  ) %>%
+    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+           # add task name (Sternberg task)
+           level = "hard",
+           # add difficulty level
+           trial = 1:16) %>% # number trials
+    rename(
+      # rename columns for handy usage
+      "id" = "Индивидуальный_код",
+      "key" = resp_S_H_trials.keys,
+      "is_correct" = resp_S_H_trials.corr,
+      "rt" = resp_S_H_trials.rt
+    ) -> ST_hard # ready to use
+  
+  # bind all conditions of sternberg task to one tibble
+  bind_rows(ST_easy, ST_hard, ST_medium) ->> ST
+  
+}
+```
+
+
+
+### Mental span
+
+Since we our participants could fill the fields in any order, here is a function which allows us to count correct inputs our subjects made.
+
+```{r}
+n_count <- function(df) {
+  df %>% select(matches("^noun")) %>% as.matrix() -> s
+  df %>% select(matches("^resp")) %>% as.matrix() -> r
+  a <- vector(mode = "numeric", length = 16L)
+  for (i in 1:16) {
+    a[i] <- sum(r[i, ] %in% s[i, ])
+  }
+  return(a)
+}
+```
+
+This here is preprocess function.
+
+```{r}
+ms_preproc <- function(d) {
+  if ("mouse_MSe.time" %in% colnames(d)) {
+    d %>% select(
+      "Индивидуальный_код",
+      matches("^noun"),
+      matches("resp\\d\\.text$"),
+      "mouse_MSe.time"
+    ) %>%
+      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) %>%
+      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) %>%
+      mutate(task = "MS",
+             level = "easy") %>%
+      rename(
+        "resp1" = resp1.text,
+        "resp2" = resp2.text,
+        "resp3" = resp3.text,
+        "id" = "Индивидуальный_код",
+        "rt" = "mouse_MSe.time"
+      ) %>%
+      select(-c(paste0("noun", 4:7))) -> MS_easy
+    
+    d %>% select(
+      "Индивидуальный_код",
+      matches("^noun"),
+      matches("MSm.text$"),
+      "mouse_MSm.time"
+    ) %>%
+      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) %>%
+      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) %>%
+      mutate(task = "MS",
+             level = "medium") %>%
+      rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
+             "id" = "Индивидуальный_код",
+             "rt" = "mouse_MSm.time") %>%
+      select(-noun6, -noun7) -> MS_medium
+    
+    
+    d %>% select(
+      "Индивидуальный_код",
+      matches("^noun"),
+      matches("MSh.text$"),
+      "mouse_MSh.time"
+    ) %>%
+      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) %>%
+      mutate(task = "MS",
+             level = "hard") %>%
+      rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
+             "id" = "Индивидуальный_код",
+             "rt" = "mouse_MSh.time") -> MS_hard
+    
+  } else {
+    
+    d %>% select("Индивидуальный_код",
+                 matches("^noun"),
+                 matches("resp\\d\\.text$")) %>%
+      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) %>%
+      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) %>%
+      mutate(task = "MS",
+             level = "easy",
+             rt = NA) %>%
+      rename(
+        "resp1" = resp1.text,
+        "resp2" = resp2.text,
+        "resp3" = resp3.text,
+        "id" = "Индивидуальный_код"
+      ) %>%
+      select(-c(paste0("noun", 4:7))) -> MS_easy
+    
+    d %>% select("Индивидуальный_код",
+                 matches("^noun"),
+                 matches("MSm.text$")) %>%
+      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) %>%
+      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) %>%
+      mutate(task = "MS",
+             level = "medium",
+             rt = NA) %>%
+      rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
+             "id" = "Индивидуальный_код") %>%
+      select(-noun6, -noun7) -> MS_medium
+    
+    
+    d %>% select("Индивидуальный_код",
+                 matches("^noun"),
+                 matches("MSh.text$")) %>%
+      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) %>%
+      mutate(task = "MS",
+             level = "hard",
+             rt = NA) %>%
+      rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
+             "id" = "Индивидуальный_код") -> MS_hard
+  }
+  
+  tibble(
+    id = MS_easy$id[1],
+    trials = 1:16,
+    MS_easy_n = n_count(MS_easy),
+    MS_easy_rt = MS_easy$rt,
+    MS_medium_n = n_count(MS_medium),
+    MS_medium_rt = MS_medium$rt,
+    MS_hard_n = n_count(MS_hard),
+    MS_hard_rt = MS_hard$rt
+  ) %>%
+    pivot_longer(cols = -c("id", "trials"), values_to = "value") %>%
+    separate(name, c("task", "level", "name")) %>%
+    pivot_wider(values_from = value, names_from = name) %>%
+    mutate(acc = ifelse(level == "easy", n / 3,
+                        ifelse(
+                          level == "medium", n / 5,
+                          ifelse(level == "hard", n / 7, NA)
+                        ))) ->> MS
+  
+}
+
+```
+
+NASA-TLX
+
+```{r}
+nasa_tlx_preproc <- function(d) {
+  d %>% select("Индивидуальный_код",
+               slider.response,
+               head,
+               task_type,
+               task_level) %>%
+    filter_at(vars(head, task_type, task_level), all_vars(!is.na(.))) %>%
+    rename("id" = "Индивидуальный_код",
+           "score" = slider.response) %>%
+    mutate(
+      scale = recode(
+        head,
+        "Умственная нагрузка" = "ME",
+        "Физическая нагрузка" = "PH",
+        "Давление времени" = "TI",
+        "Успешность выполнения" = "PE",
+        "Усилия" = "EF",
+        "Уровень фрустрации" = "FR"
+      ),
+      task = recode(
+        task_type,
+        "mental_rotation" = "MR",
+        "sternberg" = "ST",
+        "mental_span" = "MS"
+      ),
+      level = recode(
+        task_level,
+        "1" = "easy",
+        "2" = "medium",
+        "3" = "hard"
+      )
+    ) %>%
+    select(id, scale, score, task, level) ->> NASA_TLX
+  
+}
+```
+
+Sequence.
+
+```{r}
+sequence_preproc <- function(d) {
+  d %>% select(
+    E_rotation,
+    M_rotation,
+    H_rotation,
+    E_Sternberg,
+    M_Sternberg,
+    H_Sternberg,
+    E_span,
+    M_span,
+    H_span
+  ) %>%
+    na.omit() %>%
+    sapply(function(x)
+      which(x == 1)) %>%
+    unlist() %>%
+    tibble(name = names(.),
+           order = .,
+           id = d[["Индивидуальный_код"]][1]) %>%
+    arrange(order) %>%
+    separate(name, c("level", "task"), "_") %>%
+    mutate(
+      task = recode(
+        task,
+        "rotation" = "MR",
+        "Sternberg" = "ST",
+        "span" = "MS"
+      ),
+      level = recode(
+        level,
+        "E" = "easy",
+        "M" = "medium",
+        "H" = "hard"
+      )
+    ) ->> SEQUENCE
+}
+
+```
+
+
+
+## Reading and prepropcessing files
+
+> Broken files
+> 043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv
+
+```{r}
+
+files <- dir("data")
+
+MR_data <- tibble()
+ST_data <- tibble()
+MS_data <- tibble()
+NASA_TLX_data <- tibble()
+SEQUENCE_data <- tibble()
+
+for (j in 1:length(files)) {
+  d <- read_csv(paste0("data/", files[j]))
+  mr_preproc(d)
+  st_preproc(d)
+  ms_preproc(d)
+  nasa_tlx_preproc(d)
+  sequence_preproc(d)
+  
+  MR_data %>% 
+    bind_rows(MR) -> MR_data
+  ST_data %>% 
+    bind_rows(ST) -> ST_data
+  MS_data %>% 
+    bind_rows(MS) -> MS_data
+  NASA_TLX_data %>% 
+    bind_rows(NASA_TLX) -> NASA_TLX_data
+  SEQUENCE_data %>% 
+    bind_rows(SEQUENCE) -> SEQUENCE_data
+}
+
+MR_data %>% write_csv("mentral_rotation_data.csv")
+ST_data %>% write_csv("sternberg_data.csv")
+MS_data %>% write_csv("mental_span_data.csv")
+NASA_TLX_data %>% write_csv("nasa_tlx_data.csv")
+SEQUENCE_data %>% write_csv("sequence_data.csv")
+```
+
+
+
+
+# Analysis
+
+## Reading data
+
+```{r}
+rm(list = ls()) # clear environment
+```
+
+```{r}
+
+MR <- read_csv("mentral_rotation_data.csv")
+ST <- read_csv("sternberg_data.csv")
+MS <- read_csv("mental_span_data.csv")
+NASA_TLX <- read_csv("nasa_tlx_data.csv")
+SEQ <- read_csv("sequence_data.csv")
+
+```
+
+## NASA-TLX
+
+Firstly, we need proprocess data a bit to fix factor variable `level` and create a new variable `item` for fulure CFA.
+
+```{r}
+NASA_TLX %>%
+  # fix factor
+  mutate(
+    level = factor(
+      level,
+      levels = c("easy", "medium", "hard"),
+      ordered = TRUE
+    ),
+    # modify vars to match with previously created encoding
+    scl = str_to_lower(scale),
+    tsk = str_to_lower(task),
+    lvl = str_sub(level, start = 1, end = 1) %>% str_to_upper()
+  ) %>%
+  # create a new var for CFA
+  unite(item, scl, tsk, lvl) -> NASA_TLX
+```
+
+```{r, include=FALSE}
+NASA_TLX %>% 
+  group_by(task, level, scale) %>% 
+  summarise(n = n())
+unique(NASA_TLX$item)
+```
+
+Secondly, create an exploratory visualization.
+
+```{r}
+level_colors <- c("#4bd752", "#d7984b", "#d7524b")
+task_colors <- c("red4", "green4", "blue4")
+back_histogram_color <- "gray60"
+```
+
+```{r}
+NASA_TLX %>%
+  ggplot(aes(scale, score, fill = level)) +
+  geom_boxplot() +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level") +
+  scale_fill_manual(values = level_colors)
+```
+
+```{r}
+pd <- position_dodge(0.3)
+NASA_TLX %>%
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level") +
+  scale_color_manual(values = level_colors)
+```
+
+
+```{r}
+NASA_TLX %>% 
+  select(-item) %>% 
+  pivot_wider(values_from = score, names_from = scale) %>% 
+  drop_na() -> nasa_tlx_wide
+NASA_TLX %>% group_by(task, level) %>% summarise(n=n())
+nasa_tlx_wide %>% group_by(task, level) %>% summarise(n=n())
+# ez::ezANOVA(data=nasa_tlx_wide, dv = ME, within = .(task, level), wid = id)
+```
+```{r}
+library(lme4)
+library(lmerTest)
+```
+```{r}
+mix_ME <- lmer(ME ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_ME)
+anova(mix_ME)
+```
+```{r}
+mix_PH <- lmer(PH ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_PH)
+anova(mix_PH)
+```
+```{r}
+mix_TI <- lmer(TI ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_TI)
+anova(mix_TI)
+```
+```{r}
+mix_PE <- lmer(PE ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_PE)
+anova(mix_PE)
+```
+```{r}
+mix_EF <- lmer(EF ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_EF)
+anova(mix_EF)
+```
+```{r}
+mix_FR <- lmer(FR ~ task * level + (1|id), nasa_tlx_wide)
+summary(mix_FR)
+anova(mix_FR)
+```
+
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "PE") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "PE") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Performance (PE)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "ME") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "ME") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Mental Demand (ME)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "PH") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "PH") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Physical Demand (PH)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "EF") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "EF") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Effort (EF)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "TI") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "TI") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Time Pressure (TI)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+NASA_TLX %>% 
+  filter(scale == "FR") %>% 
+  ggplot() +
+  geom_histogram(data = NASA_TLX %>% 
+                   filter(scale == "FR") %>% 
+                   select(-task),
+                 aes(score), fill = back_histogram_color,
+                 binwidth = 1) +
+  geom_histogram(aes(score, fill = task),
+                 binwidth = 1) +
+  facet_grid(task ~ level) +
+  labs(title = "Frustration (FR)") +
+  scale_fill_manual(values = task_colors) +
+  theme(legend.position = "bottom")
+```
+
+
+
+### CFA
+
+```{r}
+NASA_TLX %>% 
+  pivot_wider(id_cols = id, names_from = item, values_from = score) -> NASA_TLX_w
+names(NASA_TLX_w)
+```
+
+```{r}
+model1 <- "PE =~ pe_st_E + pe_st_M + pe_st_H + pe_mr_E + pe_mr_M + pe_mr_H + pe_ms_E + pe_ms_M + pe_ms_H
+ME =~ me_st_E + me_st_M + me_st_H + me_mr_E + me_mr_M + me_mr_H + me_ms_E + me_ms_M + me_ms_H
+PH =~ ph_st_E + ph_st_M + ph_st_H + ph_mr_E + ph_mr_M + ph_mr_H + ph_ms_E + ph_ms_M + ph_ms_H
+EF =~ ef_st_E + ef_st_M + ef_st_H + ef_mr_E + ef_mr_M + ef_mr_H + ef_ms_E + ef_ms_M + ef_ms_H
+TI =~ ti_st_E + ti_st_M + ti_st_H + ti_mr_E + ti_mr_M + ti_mr_H + ti_ms_E + ti_ms_M + ti_ms_H
+FR =~ fr_st_E + fr_st_M + fr_st_H + fr_mr_E + fr_mr_M + fr_mr_H + fr_ms_E + fr_ms_M + fr_ms_H
+OW =~ PE + ME + PH + EF + TI + FR"
+```
+
+```{r}
+model0 <- "PE =~ pe_st_E + pe_st_M + pe_st_H + pe_mr_E + pe_mr_M + pe_mr_H + pe_ms_E + pe_ms_M + pe_ms_H
+ME =~ me_st_E + me_st_M + me_st_H + me_mr_E + me_mr_M + me_mr_H + me_ms_E + me_ms_M + me_ms_H
+EF =~ ef_st_E + ef_st_M + ef_st_H + ef_mr_E + ef_mr_M + ef_mr_H + ef_ms_E + ef_ms_M + ef_ms_H
+TI =~ ti_st_E + ti_st_M + ti_st_H + ti_mr_E + ti_mr_M + ti_mr_H + ti_ms_E + ti_ms_M + ti_ms_H
+FR =~ fr_st_E + fr_st_M + fr_st_H + fr_mr_E + fr_mr_M + fr_mr_H + fr_ms_E + fr_ms_M + fr_ms_H
+OW =~ PE + ME + EF + TI + FR"
+```
+
+```{r}
+cfa0 <- cfa(model0, NASA_TLX_w)
+summary(cfa0)
+```
+```{r}
+fitmeasures(cfa0, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
