@@ -25,7 +25,7 @@ library(lavaan)
 
 ```{r}
 mr_preproc <- function(d) {
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     correctAns,
@@ -34,13 +34,13 @@ mr_preproc <- function(d) {
     resp_MR_easy.keys,
     resp_MR_easy.corr,
     resp_MR_easy.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "MR",
            # add task name (mental rotation)
            level = "easy",
            # add difficulty level
-           trial = 1:16) %>% # number trials
+           trial = 1:16) |> # number trials
     rename(
       "id" = "Индивидуальный_код",
       # rename columns for handy usage
@@ -50,7 +50,7 @@ mr_preproc <- function(d) {
     ) -> MR_easy # ready to use
   
   
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     correctAns,
@@ -59,13 +59,13 @@ mr_preproc <- function(d) {
     resp_MR_medium.keys,
     resp_MR_medium.corr,
     resp_MR_medium.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "MR",
            # add task name (mental rotation)
            level = "medium",
            # add difficulty level
-           trial = 1:16) %>%  # number trials
+           trial = 1:16) |>  # number trials
     rename(
       # rename columns for handy usage
       "id" = "Индивидуальный_код",
@@ -76,7 +76,7 @@ mr_preproc <- function(d) {
   
   
   
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     correctAns,
@@ -85,13 +85,13 @@ mr_preproc <- function(d) {
     resp_MR_hard.keys,
     resp_MR_hard.corr,
     resp_MR_hard.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "MR",
            # add task name (mental rotation)
            level = "hard",
            # add difficulty level
-           trial = 1:16) %>% # number trials
+           trial = 1:16) |> # number trials
     rename(
       # rename columns for handy usage
       "id" = "Индивидуальный_код",
@@ -115,20 +115,20 @@ mr_preproc <- function(d) {
 
 ```{r}
 st_preproc <- function(d) {
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     target_present,
     key_resp_SE.keys,
     key_resp_SE.corr,
     key_resp_SE.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "ST",
             # add task name (Sternberg task)
            level = "easy",
            # add difficulty level
-           trial = 1:16) %>% # number trials
+           trial = 1:16) |> # number trials
     rename(
       # rename columns for handy usage
       "id" = "Индивидуальный_код",
@@ -137,20 +137,20 @@ st_preproc <- function(d) {
       "rt" = key_resp_SE.rt
     ) -> ST_easy # ready to use
   
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     target_present,
     key_resp_SM.keys,
     key_resp_SM.corr,
     key_resp_SM.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "ST",
            # add task name (Sternberg task)
            level = "medium",
            # add difficulty level
-           trial = 1:16) %>% # number trials
+           trial = 1:16) |> # number trials
     rename(
       # rename columns for handy usage
       "id" = "Индивидуальный_код",
@@ -160,20 +160,20 @@ st_preproc <- function(d) {
     ) -> ST_medium # ready to use
   
   
-  d %>% select(
+  d |> select(
     # select columns we need
     "Индивидуальный_код",
     target_present,
     resp_S_H_trials.keys,
     resp_S_H_trials.corr,
     resp_S_H_trials.rt
-  ) %>%
-    na.omit() %>% # remove technical NAs (recording artefacts, not missing data)
+  ) |>
+    na.omit() |> # remove technical NAs (recording artefacts, not missing data)
     mutate(task = "ST",
            # add task name (Sternberg task)
            level = "hard",
            # add difficulty level
-           trial = 1:16) %>% # number trials
+           trial = 1:16) |> # number trials
     rename(
       # rename columns for handy usage
       "id" = "Индивидуальный_код",
@@ -196,8 +196,8 @@ Since we our participants could fill the fields in any order, here is a function
 
 ```{r}
 n_count <- function(df) {
-  df %>% select(matches("^noun")) %>% as.matrix() -> s
-  df %>% select(matches("^resp")) %>% as.matrix() -> r
+  df |> select(matches("^noun")) |> as.matrix() -> s
+  df |> select(matches("^resp")) |> as.matrix() -> r
   a <- vector(mode = "numeric", length = 16L)
   for (i in 1:16) {
     a[i] <- sum(r[i, ] %in% s[i, ])
@@ -211,92 +211,92 @@ This here is preprocess function.
 ```{r}
 ms_preproc <- function(d) {
   if ("mouse_MSe.time" %in% colnames(d)) {
-    d %>% select(
+    d |> select(
       "Индивидуальный_код",
       matches("^noun"),
       matches("resp\\d\\.text$"),
       "mouse_MSe.time"
-    ) %>%
-      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) %>%
-      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) %>%
+    ) |>
+      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) |>
+      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
-             level = "easy") %>%
+             level = "easy") |>
       rename(
         "resp1" = resp1.text,
         "resp2" = resp2.text,
         "resp3" = resp3.text,
         "id" = "Индивидуальный_код",
         "rt" = "mouse_MSe.time"
-      ) %>%
+      ) |>
       select(-c(paste0("noun", 4:7))) -> MS_easy
     
-    d %>% select(
+    d |> select(
       "Индивидуальный_код",
       matches("^noun"),
       matches("MSm.text$"),
       "mouse_MSm.time"
-    ) %>%
-      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) %>%
-      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) %>%
+    ) |>
+      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) |>
+      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
-             level = "medium") %>%
+             level = "medium") |>
       rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
              "id" = "Индивидуальный_код",
-             "rt" = "mouse_MSm.time") %>%
+             "rt" = "mouse_MSm.time") |>
       select(-noun6, -noun7) -> MS_medium
     
     
-    d %>% select(
+    d |> select(
       "Индивидуальный_код",
       matches("^noun"),
       matches("MSh.text$"),
       "mouse_MSh.time"
-    ) %>%
-      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) %>%
+    ) |>
+      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) |>
       mutate(task = "MS",
-             level = "hard") %>%
+             level = "hard") |>
       rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
              "id" = "Индивидуальный_код",
              "rt" = "mouse_MSh.time") -> MS_hard
     
   } else {
     
-    d %>% select("Индивидуальный_код",
+    d |> select("Индивидуальный_код",
                  matches("^noun"),
-                 matches("resp\\d\\.text$")) %>%
-      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) %>%
-      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) %>%
+                 matches("resp\\d\\.text$")) |>
+      filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) |>
+      filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
              level = "easy",
-             rt = NA) %>%
+             rt = NA) |>
       rename(
         "resp1" = resp1.text,
         "resp2" = resp2.text,
         "resp3" = resp3.text,
         "id" = "Индивидуальный_код"
-      ) %>%
+      ) |>
       select(-c(paste0("noun", 4:7))) -> MS_easy
     
-    d %>% select("Индивидуальный_код",
+    d |> select("Индивидуальный_код",
                  matches("^noun"),
-                 matches("MSm.text$")) %>%
-      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) %>%
-      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) %>%
+                 matches("MSm.text$")) |>
+      filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) |>
+      filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
              level = "medium",
-             rt = NA) %>%
+             rt = NA) |>
       rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
-             "id" = "Индивидуальный_код") %>%
+             "id" = "Индивидуальный_код") |>
       select(-noun6, -noun7) -> MS_medium
     
     
-    d %>% select("Индивидуальный_код",
+    d |> select("Индивидуальный_код",
                  matches("^noun"),
-                 matches("MSh.text$")) %>%
-      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) %>%
+                 matches("MSh.text$")) |>
+      filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) |>
       mutate(task = "MS",
              level = "hard",
-             rt = NA) %>%
+             rt = NA) |>
       rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
              "id" = "Индивидуальный_код") -> MS_hard
   }
@@ -310,10 +310,10 @@ ms_preproc <- function(d) {
     MS_medium_rt = MS_medium$rt,
     MS_hard_n = n_count(MS_hard),
     MS_hard_rt = MS_hard$rt
-  ) %>%
-    pivot_longer(cols = -c("id", "trials"), values_to = "value") %>%
-    separate(name, c("task", "level", "name")) %>%
-    pivot_wider(values_from = value, names_from = name) %>%
+  ) |>
+    pivot_longer(cols = -c("id", "trials"), values_to = "value") |>
+    separate(name, c("task", "level", "name")) |>
+    pivot_wider(values_from = value, names_from = name) |>
     mutate(acc = ifelse(level == "easy", n / 3,
                         ifelse(
                           level == "medium", n / 5,
@@ -328,14 +328,14 @@ NASA-TLX
 
 ```{r}
 nasa_tlx_preproc <- function(d) {
-  d %>% select("Индивидуальный_код",
+  d |> select("Индивидуальный_код",
                slider.response,
                head,
                task_type,
-               task_level) %>%
-    filter_at(vars(head, task_type, task_level), all_vars(!is.na(.))) %>%
+               task_level) |>
+    filter_at(vars(head, task_type, task_level), all_vars(!is.na(.))) |>
     rename("id" = "Индивидуальный_код",
-           "score" = slider.response) %>%
+           "score" = slider.response) |>
     mutate(
       scale = recode(
         head,
@@ -358,7 +358,7 @@ nasa_tlx_preproc <- function(d) {
         "2" = "medium",
         "3" = "hard"
       )
-    ) %>%
+    ) |>
     select(id, scale, score, task, level) ->> NASA_TLX
   
 }
@@ -368,7 +368,7 @@ Sequence.
 
 ```{r}
 sequence_preproc <- function(d) {
-  d %>% select(
+  d |> select(
     E_rotation,
     M_rotation,
     H_rotation,
@@ -378,16 +378,16 @@ sequence_preproc <- function(d) {
     E_span,
     M_span,
     H_span
-  ) %>%
-    na.omit() %>%
+  ) |>
+    na.omit() |>
     sapply(function(x)
-      which(x == 1)) %>%
-    unlist() %>%
+      which(x == 1)) |>
+    unlist() |>
     tibble(name = names(.),
            order = .,
-           id = d[["Индивидуальный_код"]][1]) %>%
-    arrange(order) %>%
-    separate(name, c("level", "task"), "_") %>%
+           id = d[["Индивидуальный_код"]][1]) |>
+    arrange(order) |>
+    separate(name, c("level", "task"), "_") |>
     mutate(
       task = recode(
         task,
@@ -412,6 +412,14 @@ sequence_preproc <- function(d) {
 
 > Broken files
 > 043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv
+> 030SSPM_entire_exp_2022-08-17_21h31.18.058.csv
+
+```{r, warning=TRUE}
+broken_files <- c("043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv",
+                  "030SSPM_entire_exp_2022-08-17_21h31.18.058.csv",
+                  "069SSMV_entire_exp_2022-09-09_15h05.56.561.csv") # not really broken but results in two unique values in wide format
+broken_files |> map(function(x) file.remove(paste0("data/", x)))
+```
 
 ```{r}
 
@@ -424,6 +432,7 @@ NASA_TLX_data <- tibble()
 SEQUENCE_data <- tibble()
 
 for (j in 1:length(files)) {
+  print(files[j])
   d <- read_csv(paste0("data/", files[j]))
   mr_preproc(d)
   st_preproc(d)
@@ -431,23 +440,23 @@ for (j in 1:length(files)) {
   nasa_tlx_preproc(d)
   sequence_preproc(d)
   
-  MR_data %>% 
+  MR_data |> 
     bind_rows(MR) -> MR_data
-  ST_data %>% 
+  ST_data |> 
     bind_rows(ST) -> ST_data
-  MS_data %>% 
+  MS_data |> 
     bind_rows(MS) -> MS_data
-  NASA_TLX_data %>% 
+  NASA_TLX_data |> 
     bind_rows(NASA_TLX) -> NASA_TLX_data
-  SEQUENCE_data %>% 
+  SEQUENCE_data |> 
     bind_rows(SEQUENCE) -> SEQUENCE_data
 }
 
-MR_data %>% write_csv("mentral_rotation_data.csv")
-ST_data %>% write_csv("sternberg_data.csv")
-MS_data %>% write_csv("mental_span_data.csv")
-NASA_TLX_data %>% write_csv("nasa_tlx_data.csv")
-SEQUENCE_data %>% write_csv("sequence_data.csv")
+MR_data |> write_csv("mentral_rotation_data.csv")
+ST_data |> write_csv("sternberg_data.csv")
+MS_data |> write_csv("mental_span_data.csv")
+NASA_TLX_data |> write_csv("nasa_tlx_data.csv")
+SEQUENCE_data |> write_csv("sequence_data.csv")
 ```
 
 
@@ -473,10 +482,10 @@ SEQ <- read_csv("sequence_data.csv")
 
 ## NASA-TLX
 
-Firstly, we need proprocess data a bit to fix factor variable `level` and create a new variable `item` for fulure CFA.
+Firstly, we need preprocess data a bit to fix factor variable `level` and create a new variable `item` for future CFA.
 
 ```{r}
-NASA_TLX %>%
+NASA_TLX |>
   # fix factor
   mutate(
     level = factor(
@@ -487,15 +496,15 @@ NASA_TLX %>%
     # modify vars to match with previously created encoding
     scl = str_to_lower(scale),
     tsk = str_to_lower(task),
-    lvl = str_sub(level, start = 1, end = 1) %>% str_to_upper()
-  ) %>%
+    lvl = str_sub(level, start = 1, end = 1) |> str_to_upper()
+  ) |>
   # create a new var for CFA
   unite(item, scl, tsk, lvl) -> NASA_TLX
 ```
 
 ```{r, include=FALSE}
-NASA_TLX %>% 
-  group_by(task, level, scale) %>% 
+NASA_TLX |> 
+  group_by(task, level, scale) |> 
   summarise(n = n())
 unique(NASA_TLX$item)
 ```
@@ -509,7 +518,7 @@ back_histogram_color <- "gray60"
 ```
 
 ```{r}
-NASA_TLX %>%
+NASA_TLX |>
   ggplot(aes(scale, score, fill = level)) +
   geom_boxplot() +
   facet_grid(task ~ .) +
@@ -522,7 +531,7 @@ NASA_TLX %>%
 
 ```{r}
 pd <- position_dodge(0.3)
-NASA_TLX %>%
+NASA_TLX |>
   ggplot(aes(scale, score, color = level)) +
   stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
                position = pd, width = .3) +
@@ -538,12 +547,12 @@ NASA_TLX %>%
 
 
 ```{r}
-NASA_TLX %>% 
-  select(-item) %>% 
-  pivot_wider(values_from = score, names_from = scale) %>% 
+NASA_TLX |> 
+  select(-item) |> 
+  mutate(row_nubmer = row_number()) |> pivot_wider(values_from = score, names_from = scale) |> 
   drop_na() -> nasa_tlx_wide
-NASA_TLX %>% group_by(task, level) %>% summarise(n=n())
-nasa_tlx_wide %>% group_by(task, level) %>% summarise(n=n())
+NASA_TLX |> group_by(task, level) |> summarise(n=n())
+nasa_tlx_wide |> group_by(task, level) |> summarise(n=n())
 # ez::ezANOVA(data=nasa_tlx_wide, dv = ME, within = .(task, level), wid = id)
 ```
 ```{r}
@@ -583,11 +592,11 @@ anova(mix_FR)
 
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "PE") %>% 
+NASA_TLX |> 
+  filter(scale == "PE") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "PE") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "PE") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -601,11 +610,11 @@ NASA_TLX %>%
 
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "ME") %>% 
+NASA_TLX |> 
+  filter(scale == "ME") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "ME") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "ME") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -618,11 +627,11 @@ NASA_TLX %>%
 ```
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "PH") %>% 
+NASA_TLX |> 
+  filter(scale == "PH") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "PH") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "PH") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -635,11 +644,11 @@ NASA_TLX %>%
 ```
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "EF") %>% 
+NASA_TLX |> 
+  filter(scale == "EF") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "EF") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "EF") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -653,11 +662,11 @@ NASA_TLX %>%
 
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "TI") %>% 
+NASA_TLX |> 
+  filter(scale == "TI") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "TI") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "TI") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -670,11 +679,11 @@ NASA_TLX %>%
 ```
 
 ```{r}
-NASA_TLX %>% 
-  filter(scale == "FR") %>% 
+NASA_TLX |> 
+  filter(scale == "FR") |> 
   ggplot() +
-  geom_histogram(data = NASA_TLX %>% 
-                   filter(scale == "FR") %>% 
+  geom_histogram(data = NASA_TLX |> 
+                   filter(scale == "FR") |> 
                    select(-task),
                  aes(score), fill = back_histogram_color,
                  binwidth = 1) +
@@ -691,8 +700,18 @@ NASA_TLX %>%
 ### CFA
 
 ```{r}
-NASA_TLX %>% 
-  pivot_wider(id_cols = id, names_from = item, values_from = score) -> NASA_TLX_w
+NASA_TLX |> 
+  group_by(id, item) |> 
+  summarise(n = n()) |> 
+  filter(n>1)
+```
+
+```{r}
+NASA_TLX |> 
+  pivot_wider(id_cols = id, 
+              names_from = item, 
+              values_from = score,
+              values_fn = unlist) -> NASA_TLX_w
 names(NASA_TLX_w)
 ```
 
@@ -723,22 +742,13 @@ summary(cfa0)
 fitmeasures(cfa0, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
 ```
 
+Warning: lavaan WARNING: some estimated lv variances are negative
+
+Oooookay... Let's try duplicate data to check is it a problem with a number of observations or not...
+
 ```{r}
-
+NASA_TLX_w |> 
+  mutate(id = paste0(id, "_2")) |> 
+  bind_rows()
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
