@@ -240,7 +240,7 @@ ms_preproc <- function(d) {
       filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
              level = "medium") |>
-      rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
+      rename(set_names(names(.), str_replace_all("_MSm\\.text", "", names(.))),
              "id" = "Индивидуальный_код",
              "rt" = "mouse_MSm.time") |>
       select(-noun6, -noun7) -> MS_medium
@@ -255,7 +255,7 @@ ms_preproc <- function(d) {
       filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) |>
       mutate(task = "MS",
              level = "hard") |>
-      rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
+      rename(setNames(names(.), str_replace_all("_MSh\\.text", "", names(.))),
              "id" = "Индивидуальный_код",
              "rt" = "mouse_MSh.time") -> MS_hard
     
@@ -285,7 +285,7 @@ ms_preproc <- function(d) {
       mutate(task = "MS",
              level = "medium",
              rt = NA) |>
-      rename(setNames(names(.), gsub("_MSm\\.text", "", names(.))),
+      rename(setNames(names(.), str_replace_all("_MSm\\.text", "", names(.))),
              "id" = "Индивидуальный_код") |>
       select(-noun6, -noun7) -> MS_medium
     
@@ -297,7 +297,7 @@ ms_preproc <- function(d) {
       mutate(task = "MS",
              level = "hard",
              rt = NA) |>
-      rename(setNames(names(.), gsub("_MSh\\.text", "", names(.))),
+      rename(setNames(names(.), str_replace_all("_MSh\\.text", "", names(.))),
              "id" = "Индивидуальный_код") -> MS_hard
   }
   
