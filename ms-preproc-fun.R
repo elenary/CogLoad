@@ -1,5 +1,9 @@
 ms_preproc <- function(d) {
   
+  # Since we our participants could fill the fields in any order, 
+  # here is a function which allows us to count correct inputs 
+  # our subjects made.
+  
   n_count <- function(df) {
     df |> select(matches("^noun")) |> as.matrix() -> s
     df |> select(matches("^resp")) |> as.matrix() -> r
