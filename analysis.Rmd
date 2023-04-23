@@ -209,7 +209,8 @@ NASA_TLX |>
 ```{r}
 NASA_TLX |> 
   select(-item) |> 
-  mutate(row_nubmer = row_number()) |> pivot_wider(values_from = score, names_from = scale) |> 
+  # mutate(row_nubmer = row_number()) |> 
+  pivot_wider(values_from = score, names_from = scale) |> 
   drop_na() -> nasa_tlx_wide
 NASA_TLX |> group_by(task, level) |> summarise(n=n())
 nasa_tlx_wide |> group_by(task, level) |> summarise(n=n())
@@ -231,21 +232,25 @@ mix_PH <- lmer(PH ~ task * level + (1|id), nasa_tlx_wide)
 summary(mix_PH)
 anova(mix_PH)
 ```
+
 ```{r}
 mix_TI <- lmer(TI ~ task * level + (1|id), nasa_tlx_wide)
 summary(mix_TI)
 anova(mix_TI)
 ```
+
 ```{r}
 mix_PE <- lmer(PE ~ task * level + (1|id), nasa_tlx_wide)
 summary(mix_PE)
 anova(mix_PE)
 ```
+
 ```{r}
 mix_EF <- lmer(EF ~ task * level + (1|id), nasa_tlx_wide)
 summary(mix_EF)
 anova(mix_EF)
 ```
+
 ```{r}
 mix_FR <- lmer(FR ~ task * level + (1|id), nasa_tlx_wide)
 summary(mix_FR)
@@ -404,9 +409,14 @@ summary(cfa0)
 fitmeasures(cfa0, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
 ```
 
-Warning: lavaan WARNING: some estimated lv variances are negative
+```{r}
+cfa0st <- standardizedsolution(cfa0)
+```
 
-Oooookay... Let's try duplicate data to check is it a problem with a number of observations or not...
+```{r}
+cfa0st %>% filter(op == "=~")
+```
+
 
 ```{r}
 cfa1 <- cfa(model1, NASA_TLX_w)
@@ -418,10 +428,17 @@ fitmeasures(cfa1, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea
 ```
 
 ```{r}
-NASA_TLX_w |> 
-  mutate(id = paste0(id, "_2")) |> 
-  bind_rows()
+cfa1st <- standardizedsolution(cfa1)
 ```
+
+```{r}
+cfa1st %>% filter(op == "=~")
+```
+
+
+Warning: lavaan WARNING: some estimated lv variances are negative
+
+Oooookay... Let's try duplicate data to check is it a problem with a number of observations or not...
 
 ```{r}
 NASA_TLX_w |> select(-id) |> drop_na() |> cor() |> corrplot::corrplot(order = 'hclust')
