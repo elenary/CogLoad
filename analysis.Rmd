@@ -140,6 +140,11 @@ SEQ <- read_csv("sequence_data.csv")
 
 ```
 
+
+```{r}
+unique(NASA_TLX$id) %>% length()
+```
+
 ## NASA-TLX
 
 Firstly, we need preprocess data a bit to fix factor variable `level` and create a new variable `item` for future CFA.
