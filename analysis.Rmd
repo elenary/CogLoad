@@ -463,6 +463,57 @@ fitmeasures(cfa1d, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmse
 ```
 
 
+## NEW CFA
 
+```{r}
+nasa_tlx_wide |> 
+  group_by(id, level) |> 
+  summarise(ME_mean = mean(ME),
+            PH_mean = mean(PH),
+            TI_mean = mean(TI),
+            PE_mean = mean(PE),
+            EF_mean = mean(EF),
+            FR_mean = mean(FR)) |> 
+  pivot_longer(cols = -c('id', 'level'), names_to = "scale", values_to = "score") |> 
+  mutate(scale = str_remove(scale, "_mean"),
+         lvl = substr(level, 1, 1) |> toupper()) |> 
+  unite(item, c("scale", "lvl")) |> 
+  pivot_wider(names_from = item, values_from = score) -> nasa_tlx_newcfa
+```
 
+```{r}
+model_easy <- "OW =~ PE_E + ME_E + PH_E + EF_E + TI_E + FR_E"
+model_medium <- "OW =~ PE_M + ME_M + PH_M + EF_M + TI_M + FR_M"
+model_hard <- "OW =~ PE_H + ME_H + PH_H + EF_H + TI_H + FR_H"
+```
+
+```{r}
+fit_easy <- cfa(model_easy, nasa_tlx_newcfa)
+fit_medium <- cfa(model_medium, nasa_tlx_newcfa)
+fit_hard <- cfa(model_hard, nasa_tlx_newcfa)
+```
+
+```{r}
+fitmeasures(fit_easy, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
+```
+
+```{r}
+fitmeasures(fit_medium, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
+```
+
+```{r}
+fitmeasures(fit_hard, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
+```
+
+```{r}
+summary(fit_easy)
+```
+
+```{r}
+summary(fit_medium)
+```
+
+```{r}
+summary(fit_hard)
+```
 
