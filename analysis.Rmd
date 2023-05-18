@@ -210,6 +210,24 @@ NASA_TLX |>
   scale_color_manual(values = level_colors)
 ```
 
+```{r}
+pd <- position_dodge(0.3)
+NASA_TLX |>
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  labs(x = "Шкалы NASA-TLX",
+       y = "NASA-TLX (сырой балл)",
+       color = "Уровень сложности") +
+  scale_color_manual(values = c(easy = "black",
+                                medium = "gray40",
+                                hard = "gray60"))
+ggsave("anova_errorbars.png", dpi = 300)
+```
 
 ```{r}
 NASA_TLX |> 
