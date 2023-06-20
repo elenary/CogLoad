@@ -14,6 +14,7 @@ output:
 library(tidyverse)
 theme_set(theme_bw()) # set black and white theme
 library(lavaan)
+library(tidySEM)
 ```
 
 # Preprocess
@@ -541,7 +542,13 @@ fit_hard <- cfa(model_hard, nasa_tlx_newcfa)
 ```
 
 ```{r}
-
+graph_sem(model=fit_easy, fix_coord = TRUE)
+```
+```{r}
+graph_sem(model=fit_medium, fix_coord=TRUE)
+```
+```{r}
+graph_sem(model=fit_hard, fix_coord = TRUE)
 ```
 
 ```{r}
