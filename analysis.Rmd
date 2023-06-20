@@ -105,7 +105,7 @@ for (i in 1:length(files)) {
   
   print(files[i])
   
-  d <- read_csv(files[i])
+  d <- read_csv(files[i], show_col_types = FALSE)
   
   MR_data |> bind_rows(mr_preproc(d)) -> MR_data
   ST_data |> bind_rows(st_preproc(d)) -> ST_data
@@ -161,7 +161,8 @@ NASA_TLX |>
     # modify vars to match with previously created encoding
     scl = str_to_lower(scale),
     tsk = str_to_lower(task),
-    lvl = str_sub(level, start = 1, end = 1) |> str_to_upper()
+    lvl = str_sub(level, start = 1, end = 1) |> str_to_upper(),
+    score = score * 5
   ) |>
   # create a new var for CFA
   unite(item, scl, tsk, lvl) -> NASA_TLX
@@ -208,6 +209,26 @@ NASA_TLX |>
        y = "NASA-TLX Score (raw)",
        fill = "Difficulty Level") +
   scale_color_manual(values = level_colors)
+```
+
+```{r}
+pd <- position_dodge(0.3)
+NASA_TLX |>
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  labs(x = "Шкалы NASA-TLX",
+       y = "NASA-TLX (сырой балл)",
+       color = "Уровень сложности") +
+  scale_color_manual(values = level_colors, 
+                     labels = c(easy = "легкий", 
+                                medium = "средний", 
+                                hard = "сложный"))
+ggsave("anova_errorbars_color.png", dpi = 300)
 ```
 
 ```{r}
@@ -484,6 +505,14 @@ fitmeasures(cfa1d, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmse
 ## NEW CFA
 
 ```{r}
+NASA_TLX |> 
+  select(-item) |> 
+  # mutate(row_nubmer = row_number()) |> 
+  pivot_wider(values_from = score, names_from = scale) |> 
+  drop_na() -> nasa_tlx_wide
+```
+
+```{r}
 nasa_tlx_wide |> 
   group_by(id, level) |> 
   summarise(ME_mean = mean(ME),
@@ -509,6 +538,10 @@ model_hard <- "OW =~ PE_H + ME_H + PH_H + EF_H + TI_H + FR_H"
 fit_easy <- cfa(model_easy, nasa_tlx_newcfa)
 fit_medium <- cfa(model_medium, nasa_tlx_newcfa)
 fit_hard <- cfa(model_hard, nasa_tlx_newcfa)
+```
+
+```{r}
+
 ```
 
 ```{r}
