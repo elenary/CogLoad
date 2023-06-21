@@ -70,9 +70,89 @@ cfa1 <- cfa(model1, NASA_TLX_w)
 
 
 
+## RT
 
+MR %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Время реакции",
+       title = "Задача мысленного вращения") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("MR_rt.png", dpi = 300)
 
+MR %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  group_by(id, level) %>% 
+  mutate(acc = mean(is_correct)) %>% 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Точность",
+       title = "Задача мысленного вращения") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("MR_acc.png", dpi = 300)
 
+MS %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Время реакции",
+       title = "Задача Mental Span") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("MS_rt.png", dpi = 300)
 
+MS %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  # group_by(id, level) %>% 
+  # mutate(acc = mean(is_correct)) %>% 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Точность",
+       title = "Задача Mental Span") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("MS_acc.png", dpi = 300)
 
+ST %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Время реакции",
+       title = "Задача Стернберга") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("ST_rt.png", dpi = 300)
+
+ST %>% 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) %>% 
+  group_by(id, level) %>% 
+  mutate(acc = mean(is_correct)) %>% 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar") +
+  stat_summary(fun = mean, geom = "point") +
+  labs(x = "Уровень сложности",
+       y = "Точность",
+       title = "Задача Стернберга") +
+  scale_x_discrete(labels = c(easy = "легкий", medium = "средний", hard = "сложный"))
+ggsave("ST_acc.png", dpi = 300)
 
