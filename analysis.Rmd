@@ -132,15 +132,37 @@ rm(list = ls()) # clear environment
 ```
 
 ```{r}
-
 MR <- read_csv("mentral_rotation_data.csv")
 ST <- read_csv("sternberg_data.csv")
 MS <- read_csv("mental_span_data.csv")
 NASA_TLX <- read_csv("nasa_tlx_data.csv")
 SEQ <- read_csv("sequence_data.csv")
-
 ```
 
+```{r}
+MR$rt
+ST$rt
+MS$rt
+
+MR |> 
+  group_by(id) |> 
+  summarise(rt_mr = sum(rt)) |> 
+  full_join(
+    ST |> 
+      group_by(id) |> 
+      summarise(rt_st = sum(rt)),
+    by = join_by(id)
+  ) |> 
+  full_join(
+    MS |> 
+      group_by(id) |> 
+      summarise(rt_ms = sum(rt))
+  ) |> 
+  mutate(time = rt_mr + rt_st + rt_ms) |> 
+  summarize(max = max(time, na.rm = TRUE) / 60,
+            min = min(time, na.rm = TRUE) / 60,
+            sd = sd(time, na.rm = TRUE) / 60)
+```
 
 ```{r}
 unique(NASA_TLX$id) %>% length()
