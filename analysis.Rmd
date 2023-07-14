@@ -81,20 +81,29 @@ cat sequence-preproc-fun.R
 ## Reading and prepropcessing files
 
 > Broken files
-> 043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv
-> 030SSPM_entire_exp_2022-08-17_21h31.18.058.csv
+> 043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv ## empty file
+> 030SSPM_entire_exp_2022-08-17_21h31.18.058.csv 
 > 069SSMV_entire_exp_2022-09-09_15h05.56.561.csv
+> 028ARAA_entire_exp_2023-04-24_14h06.54.379.csv ## no correctAns column
 
 ```{r, warning=TRUE}
 broken_files <- c("043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv",
                   "030SSPM_entire_exp_2022-08-17_21h31.18.058.csv",
-                  "069SSMV_entire_exp_2022-09-09_15h05.56.561.csv") # not really broken but results in two unique values in wide format
-broken_files |> map(function(x) file.remove(paste0("data/", x)))
+                  "069SSMV_entire_exp_2022-09-09_15h05.56.561.csv",
+                  "028ARAA_entire_exp_2023-04-24_14h06.54.379.csv") 
+# not really broken but results in two unique values in wide format
+# broken_files |> map(function(x) file.remove(paste0("data2/", x)))
+file.remove("data2/028ARAA_entire_exp_2023-04-24_14h06.54.379.csv") ## no correctAns column
+file.remove("data2/028ARAA_entire_exp_2023-04-24_14h42.11.965.csv") ## no resp_MR_easy.keys column
+file.remove("data2/029SSDL_entire_exp_2022-07-16_07h45.19.402.csv") ## no key_resp_SE.keys
+file.remove("data2/043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv") ## empty file
+file.remove("data2/047SSAK_entire_exp_2022-08-20_23h05.43.884.csv") ## Caused by error: ! `trial` must be size 8 or 1, not 16.
+
 ```
 
-```{r}
+```{r preprocess}
 
-files <- paste0("data/", dir("data"))
+files <- paste0("data2/", dir("data2"))
 
 MR_data <- tibble()
 ST_data <- tibble()
@@ -139,6 +148,7 @@ NASA_TLX <- read_csv("nasa_tlx_data.csv")
 SEQ <- read_csv("sequence_data.csv")
 ```
 
+## Check the time in the exp
 ```{r}
 MR$rt
 ST$rt
@@ -164,9 +174,162 @@ MR |>
             sd = sd(time, na.rm = TRUE) / 60)
 ```
 
+### Overall time in the exp
+
 ```{r}
-unique(NASA_TLX$id) %>% length()
+files <- paste0("data2/", dir("data2"))
+
+exp_time <- tibble()
+
+for (j in 1:length(files)) {
+  print(j)
+  print(files[j])
+  d <- read_csv(files[j], show_col_types = FALSE)
+  tibble(
+    n_row = d |> nrow(),
+    time = d |> 
+      select(contains(".rt") | contains(".time")) |> 
+      ## select all vars contains rt-like info
+      sapply(FUN = sum, na.rm = TRUE) |> unlist() |> 
+      sum() / 60,
+    id = files[j]
+  ) |> 
+    bind_rows(exp_time) -> exp_time
+}
 ```
+
+Fixing ids:
+
+```{r}
+exp_time |> 
+  mutate(id = str_extract_all(id, "\\d{3}[:upper:]{4}") |> unlist()) -> exp_time
+```
+
+```{r}
+exp_time |> 
+  ggplot(aes(time)) +
+  geom_histogram(binwidth = 1, fill = "gray60") +
+  geom_vline(xintercept = 20) +
+  xlab("Time, min")
+```
+
+Suspicious first peak around 10 min. Suppose 10 min is very little time to perform all tasks.
+Let's take 20 min as a threshold for "ok" time vs "non-ok" time and study relationships with experimental vars.
+
+```{r}
+exp_time |> 
+  mutate(group = ifelse(time > 20, "ok", "non-ok")) -> exp_time
+```
+
+Graph acc × time and rt × time scatterplots:
+
+```{r}
+MR |> 
+  group_by(id, level) |> 
+  summarise(acc = mean(is_correct)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, acc,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "Accuracy",
+       title = "Mental Rotation (accuracy)")
+```
+
+```{r}
+MR |> 
+  group_by(id, level) |> 
+  summarise(rt = mean(rt)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, rt,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "RT, sec",
+       title = "Mental Rotation (reaction time)")
+```
+
+```{r}
+MS |> 
+  group_by(id, level) |> 
+  summarise(acc = mean(acc)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, acc,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "Accuracy",
+       title = "Mental Span (accuracy)")
+```
+
+```{r}
+MS |> 
+  group_by(id, level) |> 
+  summarise(rt = mean(rt)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, rt,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "RT, sec",
+       title = "Mental Span (reaction time)")
+```
+
+```{r}
+ST |> 
+  group_by(id, level) |> 
+  summarise(acc = mean(is_correct)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, acc,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "Accuracy",
+       title = "Sternberg (accuracy)")
+```
+
+```{r}
+ST |> 
+  group_by(id, level) |> 
+  summarise(rt = mean(rt)) |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, rt,
+             color = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ level, ncol = 1, scales = "free_y") +
+  labs(x = "Time, min", y = "RT, sec",
+       title = "Sternberg (reaction time)")
+```
+
+
+Plot NASA-TLX scales × time
+
+```{r}
+NASA_TLX |> 
+  left_join(exp_time) |> 
+  ggplot(aes(time, score, color = scale, shape = group, linetype = group)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(task ~ level)
+```
+
+
+```{r}
+NASA_TLX |> 
+  left_join(exp_time) |> 
+  ggplot(aes(scale, score, shape = group, group = group)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange",
+               position = position_dodge(0.5)) +
+  facet_grid(task ~ level)
+```
+
+
 
 ## NASA-TLX
 
