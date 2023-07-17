@@ -227,7 +227,14 @@ Graph acc × time and rt × time scatterplots:
 MR |> 
   group_by(id, level) |> 
   summarise(acc = mean(is_correct)) |> 
-  left_join(exp_time) |> 
+  left_join(exp_time) -> MR_exp_time
+
+MR_exp_time |> 
+  group_by(group, level) |> 
+  summarise(mean = mean(acc)) |> 
+  arrange(level)
+
+MR_exp_time |> 
   ggplot(aes(time, acc,
              color = group)) +
   geom_point() +
@@ -235,6 +242,10 @@ MR |>
   facet_wrap(~ level, ncol = 1, scales = "free_y") +
   labs(x = "Time, min", y = "Accuracy",
        title = "Mental Rotation (accuracy)")
+```
+
+```{r}
+aov(acc ~ group * level, MR_exp_time) |> summary()
 ```
 
 ```{r}
@@ -255,7 +266,14 @@ MR |>
 MS |> 
   group_by(id, level) |> 
   summarise(acc = mean(acc)) |> 
-  left_join(exp_time) |> 
+  left_join(exp_time) -> MS_exp_time
+
+MS_exp_time |> 
+  group_by(group, level) |> 
+  summarise(mean = mean(acc)) |> 
+  arrange(level)
+
+MS_exp_time |> 
   ggplot(aes(time, acc,
              color = group)) +
   geom_point() +
@@ -263,6 +281,11 @@ MS |>
   facet_wrap(~ level, ncol = 1, scales = "free_y") +
   labs(x = "Time, min", y = "Accuracy",
        title = "Mental Span (accuracy)")
+```
+
+```{r}
+aov(acc ~ group * level, MS_exp_time) |> summary()
+t.test(MS_exp_time$acc ~ MS_exp_time$group)
 ```
 
 ```{r}
@@ -280,10 +303,22 @@ MS |>
 ```
 
 ```{r}
+aov(acc ~ group * level, ST_exp_time) |> summary()
+```
+
+```{r}
 ST |> 
   group_by(id, level) |> 
   summarise(acc = mean(is_correct)) |> 
-  left_join(exp_time) |> 
+  left_join(exp_time) -> ST_exp_time
+
+ST_exp_time |> 
+  group_by(group, level) |> 
+  summarise(mean = mean(acc)) |> 
+  arrange(level)
+
+
+ST_exp_time |> 
   ggplot(aes(time, acc,
              color = group)) +
   geom_point() +
@@ -306,6 +341,49 @@ ST |>
   labs(x = "Time, min", y = "RT, sec",
        title = "Sternberg (reaction time)")
 ```
+
+```{r}
+exp_time_info <- tibble()
+
+for (i in 1:length(files)) {
+  tibble(id = str_extract_all(files[i], "\\d{3}[:upper:]{4}") |> 
+           unlist(),
+         start = files[i] |> 
+           str_extract("\\d{4}-\\d{2}-\\d{2}_\\d+h\\d+\\.\\d+") |> 
+           str_replace("h", ":") |> 
+           str_replace("\\.", ":") |> 
+           str_replace("_", " ") |> 
+           as_datetime(tz = "Etc/GMT-3"),
+         end = file.info(files[i])$mtime |> 
+           as_datetime(tz = "UTC")
+  ) |> 
+    bind_rows(exp_time_info) -> exp_time_info
+}
+
+exp_time_info |> 
+  mutate(dur = abs(start - end)) -> exp_time_info
+```
+
+```{r}
+exp_time_info |> 
+  filter(dur < 250) |> 
+  ggplot(aes(dur)) +
+  # geom_density() +
+  geom_histogram() +
+  geom_vline(xintercept = 70) +
+  geom_vline(xintercept = 75) +
+  geom_vline(xintercept = 100)
+
+exp_time_info |> 
+  filter(dur < 250) |> 
+  ggplot(aes(dur)) +
+  geom_boxplot() 
+  #geom_vline(xintercept = 93, linetype = "dashed")
+
+exp_time_info$dur |> min(na.rm = TRUE)
+quantile(exp_time_info$dur[exp_time_info$dur<250], .75, na.rm = TRUE) + 1.5 * IQR(exp_time_info$dur[exp_time_info$dur<250], na.rm = TRUE)
+```
+
 
 
 Plot NASA-TLX scales × time
