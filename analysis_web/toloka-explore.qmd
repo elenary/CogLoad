@@ -1,8 +1,18 @@
+# Yandex.Toloka Data Exploration
+
+## Packages
+
+```{r}
 library(tidyverse)
 theme_set(theme_bw())
+```
 
+```{r}
 rm(list=ls())
+```
 
+
+```{r toloka-preproc-fun}
 mr_preproc <- function(d) {
   
   require(tidyverse)
@@ -357,15 +367,35 @@ nasatlx_preproc <- function(d) {
 #   return(SEQUENCE)
 #   
 # }
+```
 
-files <- paste0("data-toloka/banch2/", dir("data-toloka/banch2"))
 
+
+## Load fistbanch data
+
+To compare
+
+```{r}
+read_csv("MR_firstbanch_data_agg.csv") -> MR_fb_agg
+read_csv("MS_firstbanch_data_agg.csv") -> MS_fb_agg
+read_csv("ST_firstbanch_data_agg.csv") -> ST_fb_agg
+```
+
+## Banch 1
+
+```{r toloka-banch1-files}
+files <- paste0("../data-toloka/banch1/", dir("../data-toloka/banch1"))
+```
+
+```{r toloka-empty-tibbles-1}
 MR_data <- tibble()
 ST_data <- tibble()
 MS_data <- tibble()
 NASATLX_data <- tibble()
 #SEQUENCE_data <- tibble()
+```
 
+```{r toloka-load-data-1}
 for (i in 1:length(files)) {
   
   print(files[i])
@@ -379,214 +409,280 @@ for (i in 1:length(files)) {
   #SEQUENCE_data |> bind_rows(sequence_preproc(d)) -> SEQUENCE_data
   
 }
+```
 
-MR_data |> View()
-ST_data |> View()
-MS_data |> View()
-
+```{r}
 # MR_data |> write_csv("mentral_rotation_data_toloka.csv")
 # ST_data |> write_csv("sternberg_data_toloka.csv")
 # MS_data |> write_csv("mental_span_data_toloka.csv")
 # NASATLX_data |> write_csv("nasa_tlx_data_toloka.csv")
 # SEQUENCE_data |> write_csv("sequence_data_toloka.csv")
+```
 
 
-
-MR_data |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  facet_wrap(~ file) +
-  labs(title = "MR")
-
+```{r}
 MR_data |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
   facet_wrap(~ file) +
   labs(title = "MR")
+```
 
+``` {r}
 MR_data |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct), fun = mean, geom = "point") +
   facet_wrap(~ file) +
   labs(title = "MR")
+```
 
-
-MS_data |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  facet_wrap(~ file) +
-  labs(title = "MS")
-
+```{r}
 MS_data |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MS_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
   facet_wrap(~ file) +
   labs(title = "MS")
+```
 
+```{r}
 MS_data |> 
   ggplot(aes(level, acc)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun = mean, geom = "point") +
   facet_wrap(~ file) +
   labs(title = "MS")
+```
 
-
-ST_data |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  facet_wrap(~ file) +
-  labs(title = "ST")
-
+```{r}
 ST_data |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
   facet_wrap(~ file) +
   labs(title = "ST")
+```
 
+```{r}
 ST_data |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct),
+               fun = mean, geom = "point") +
   facet_wrap(~ file) +
   labs(title = "ST")
-
-NASATLX_data |> 
-  ggplot(aes(scale, score, color = level)) +
-  geom_point(position = position_dodge(0.3)) +
-  facet_grid(file ~ task) +
-  labs(title = "NASA-TLX")
+```
 
 
 
+## Banch 2
 
-## МА1907
+```{r toloka-banch2-files}
+files <- paste0("../data-toloka/banch2/", dir("../data-toloka/banch2"))
+```
 
+```{r toloka-empty-tibbles}
+MR_data <- tibble()
+ST_data <- tibble()
+MS_data <- tibble()
+NASATLX_data <- tibble()
+#SEQUENCE_data <- tibble()
+```
+
+```{r toloka-load-data}
+for (i in 1:length(files)) {
+  
+  print(files[i])
+  
+  d <- read_csv(files[i], show_col_types = FALSE)
+  
+  MR_data |> bind_rows(mr_preproc(d) |> mutate(file = files[i])) -> MR_data
+  ST_data |> bind_rows(st_preproc(d) |> mutate(file = files[i])) -> ST_data
+  MS_data |> bind_rows(ms_preproc(d) |> mutate(file = files[i])) -> MS_data
+  NASATLX_data |> bind_rows(nasatlx_preproc(d) |> mutate(file = files[i])) -> NASATLX_data
+  #SEQUENCE_data |> bind_rows(sequence_preproc(d)) -> SEQUENCE_data
+  
+}
+```
+
+```{r}
+# MR_data |> write_csv("mentral_rotation_data_toloka.csv")
+# ST_data |> write_csv("sternberg_data_toloka.csv")
+# MS_data |> write_csv("mental_span_data_toloka.csv")
+# NASATLX_data |> write_csv("nasa_tlx_data_toloka.csv")
+# SEQUENCE_data |> write_csv("sequence_data_toloka.csv")
+```
+
+
+```{r}
 MR_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "MR", subtitle = "МА1907")
-
-MR_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MR", subtitle = "МА1907")
+  facet_wrap(~ file) +
+  labs(title = "MR")
+```
 
+``` {r}
 MR_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
-  labs(title = "MR", subtitle = "МА1907")
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct), fun = mean, geom = "point") +
+  facet_wrap(~ file) +
+  labs(title = "MR")
+```
 
-
+```{r}
 MS_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "MS", subtitle = "МА1907")
-
-MS_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MS_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MS", subtitle = "МА1907")
+  facet_wrap(~ file) +
+  labs(title = "MS")
+```
 
+```{r}
 MS_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
   ggplot(aes(level, acc)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun = mean, geom = "point") +
-  labs(title = "MS", subtitle = "МА1907")
+  facet_wrap(~ file) +
+  labs(title = "MS")
+```
 
-
+```{r}
 ST_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "ST", subtitle = "МА1907")
+  ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  facet_wrap(~ file) +
+  labs(title = "ST")
+```
 
+```{r}
 ST_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(level, rt)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "ST", subtitle = "МА1907")
-
-ST_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
-  labs(title = "ST", subtitle = "МА1907")
-
-NASATLX_data |> 
-  filter(file == "data-toloka/banch2/1907_toloka_2023-07-19_16h56.11.966.csv") |> 
-  ggplot(aes(scale, score, color = level)) +
-  geom_point(position = position_dodge(0.3)) +
-  facet_grid(. ~ task) +
-  labs(title = "NASA-TLX", subtitle = "МА1907")
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct),
+               fun = mean, geom = "point") +
+  facet_wrap(~ file) +
+  labs(title = "ST")
+```
 
 
+## Banch 1 & Banch 2 together
+
+```{r toloka-banch1&2-files}
+files <- c(
+  paste0("../data-toloka/banch1/", dir("../data-toloka/banch1")),
+  paste0("../data-toloka/banch2/", dir("../data-toloka/banch2"))
+)
+```
+
+```{r}
+MR_data <- tibble()
+ST_data <- tibble()
+MS_data <- tibble()
+NASATLX_data <- tibble()
+#SEQUENCE_data <- tibble()
+```
+
+```{r}
+for (i in 1:length(files)) {
+  
+  print(files[i])
+  
+  d <- read_csv(files[i], show_col_types = FALSE)
+  
+  MR_data |> bind_rows(mr_preproc(d) |> mutate(file = files[i])) -> MR_data
+  ST_data |> bind_rows(st_preproc(d) |> mutate(file = files[i])) -> ST_data
+  MS_data |> bind_rows(ms_preproc(d) |> mutate(file = files[i])) -> MS_data
+  NASATLX_data |> bind_rows(nasatlx_preproc(d) |> mutate(file = files[i])) -> NASATLX_data
+  #SEQUENCE_data |> bind_rows(sequence_preproc(d)) -> SEQUENCE_data
+  
+}
+```
+
+```{r}
+# MR_data |> write_csv("mentral_rotation_data_toloka.csv")
+# ST_data |> write_csv("sternberg_data_toloka.csv")
+# MS_data |> write_csv("mental_span_data_toloka.csv")
+# NASATLX_data |> write_csv("nasa_tlx_data_toloka.csv")
+# SEQUENCE_data |> write_csv("sequence_data_toloka.csv")
+```
 
 
-## толкачева
-
+```{r}
 MR_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "MR", subtitle = "толкачева")
-
-MR_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MR", subtitle = "толкачева")
+  labs(title = "MR")
+```
 
+``` {r}
 MR_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
-  labs(title = "MR", subtitle = "толкачева")
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct), fun = mean, geom = "point") +
+  labs(title = "MR")
+```
 
-
+```{r}
 MS_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "MS", subtitle = "толкачева")
-
-MS_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MS_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MS", subtitle = "толкачева")
+  labs(title = "MS")
+```
 
+```{r}
 MS_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
   ggplot(aes(level, acc)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun = mean, geom = "point") +
-  labs(title = "MS", subtitle = "толкачева")
+  labs(title = "MS")
+```
 
-
+```{r}
 ST_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(rt, fill = level)) +
-  geom_density(alpha = .5) +
-  labs(title = "ST", subtitle = "толкачева")
-
-ST_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
   ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
   stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "ST", subtitle = "толкачева")
+  labs(title = "ST")
+```
 
+```{r}
 ST_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(level, is_correct)) +
-  stat_summary(fun = mean, geom = "point") +
-  labs(title = "ST", subtitle = "толкачева")
-
-NASATLX_data |> 
-  filter(file == "data-toloka/banch2/toloka_2023-07-19_17h00.04.319.csv") |> 
-  ggplot(aes(scale, score, color = level)) +
-  geom_point(position = position_dodge(0.3)) +
-  facet_grid(. ~ task) +
-  labs(title = "NASA-TLX", subtitle = "толкачева")
-
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct),
+               fun = mean, geom = "point") +
+  labs(title = "ST")
+```
