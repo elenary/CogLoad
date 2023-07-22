@@ -22,6 +22,7 @@ library(pwr)
 rm(list = ls())
 ```
 
+
 ## Reading data
 
 ```{r reading-data}
@@ -501,6 +502,23 @@ NASATLX_data |>
               names_from = item, 
               values_from = score,
               values_fn = unlist) -> NASATLX_cfa
+```
+
+### Initial model 
+
+```{r}
+model1 <- "PE =~ pe_st_E + pe_st_M + pe_st_H + pe_mr_E + pe_mr_M + pe_mr_H + pe_ms_E + pe_ms_M + pe_ms_H
+ME =~ me_st_E + me_st_M + me_st_H + me_mr_E + me_mr_M + me_mr_H + me_ms_E + me_ms_M + me_ms_H
+PH =~ ph_st_E + ph_st_M + ph_st_H + ph_mr_E + ph_mr_M + ph_mr_H + ph_ms_E + ph_ms_M + ph_ms_H
+EF =~ ef_st_E + ef_st_M + ef_st_H + ef_mr_E + ef_mr_M + ef_mr_H + ef_ms_E + ef_ms_M + ef_ms_H
+TI =~ ti_st_E + ti_st_M + ti_st_H + ti_mr_E + ti_mr_M + ti_mr_H + ti_ms_E + ti_ms_M + ti_ms_H
+FR =~ fr_st_E + fr_st_M + fr_st_H + fr_mr_E + fr_mr_M + fr_mr_H + fr_ms_E + fr_ms_M + fr_ms_H
+OW =~ PE + ME + PH + EF + TI + FR"
+```
+
+```{r}
+cfa1 <- cfa(model1, NASATLX_cfa)
+summary(cfa1, fit.measures = TRUE)
 ```
 
 ```{r nasatlx-cfa-easy}

@@ -163,6 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#glmm-scales" id="toc-glmm-scales" class="nav-link" data-scroll-target="#glmm-scales">GLMM scales</a></li>
   <li><a href="#cfa-apriopri-power-analysis" id="toc-cfa-apriopri-power-analysis" class="nav-link" data-scroll-target="#cfa-apriopri-power-analysis">CFA apriopri power analysis</a></li>
   <li><a href="#cfa-analysis" id="toc-cfa-analysis" class="nav-link" data-scroll-target="#cfa-analysis">CFA analysis</a></li>
+  <li><a href="#initial-model" id="toc-initial-model" class="nav-link" data-scroll-target="#initial-model">Initial model</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1317,16 +1318,224 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb149-4"><a href="#cb149-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> score,</span>
 <span id="cb149-5"><a href="#cb149-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_fn =</span> unlist) <span class="ot">-&gt;</span> NASATLX_cfa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="initial-model" class="level3">
+<h3 class="anchored" data-anchor-id="initial-model">Initial model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>model_easy <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_E + pe_ms_E + pe_st_E</span></span>
-<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_E + ph_ms_E + ph_st_E</span></span>
-<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_E + me_ms_E + me_st_E</span></span>
-<span id="cb150-4"><a href="#cb150-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_E + ef_ms_E + ef_st_E</span></span>
-<span id="cb150-5"><a href="#cb150-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_E + ti_ms_E + ti_st_E</span></span>
-<span id="cb150-6"><a href="#cb150-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_E + fr_ms_E + fr_st_E</span></span>
-<span id="cb150-7"><a href="#cb150-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
-<span id="cb150-8"><a href="#cb150-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb150-9"><a href="#cb150-9" aria-hidden="true" tabindex="-1"></a>cfa_easy <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_easy, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_st_E + pe_st_M + pe_st_H + pe_mr_E + pe_mr_M + pe_mr_H + pe_ms_E + pe_ms_M + pe_ms_H</span></span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_st_E + me_st_M + me_st_H + me_mr_E + me_mr_M + me_mr_H + me_ms_E + me_ms_M + me_ms_H</span></span>
+<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_st_E + ph_st_M + ph_st_H + ph_mr_E + ph_mr_M + ph_mr_H + ph_ms_E + ph_ms_M + ph_ms_H</span></span>
+<span id="cb150-4"><a href="#cb150-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_st_E + ef_st_M + ef_st_H + ef_mr_E + ef_mr_M + ef_mr_H + ef_ms_E + ef_ms_M + ef_ms_H</span></span>
+<span id="cb150-5"><a href="#cb150-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_st_E + ti_st_M + ti_st_H + ti_mr_E + ti_mr_M + ti_mr_H + ti_ms_E + ti_ms_M + ti_ms_H</span></span>
+<span id="cb150-6"><a href="#cb150-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_st_E + fr_st_M + fr_st_H + fr_mr_E + fr_mr_M + fr_mr_H + fr_ms_E + fr_ms_M + fr_ms_H</span></span>
+<span id="cb150-7"><a href="#cb150-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>cfa1 <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model1, NASATLX_cfa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
+variances are negative</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa1, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6.15 ended normally after 457 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                       114
+
+                                                  Used       Total
+  Number of observations                            67          78
+
+Model Test User Model:
+                                                      
+  Test statistic                              3660.590
+  Degrees of freedom                              1371
+  P-value (Chi-square)                           0.000
+
+Model Test Baseline Model:
+
+  Test statistic                              5450.455
+  Degrees of freedom                              1431
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    0.430
+  Tucker-Lewis Index (TLI)                       0.405
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)             -15485.621
+  Loglikelihood unrestricted model (H1)     -13655.326
+                                                      
+  Akaike (AIC)                               31199.242
+  Bayesian (BIC)                             31450.577
+  Sample-size adjusted Bayesian (SABIC)      31091.632
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.158
+  90 Percent confidence interval - lower         0.152
+  90 Percent confidence interval - upper         0.164
+  P-value H_0: RMSEA &lt;= 0.050                    0.000
+  P-value H_0: RMSEA &gt;= 0.080                    1.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.152
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+  PE =~                                               
+    pe_st_E           1.000                           
+    pe_st_M           2.255    0.980    2.301    0.021
+    pe_st_H           0.883    0.658    1.342    0.180
+    pe_mr_E           3.979    1.469    2.709    0.007
+    pe_mr_M           4.586    1.672    2.743    0.006
+    pe_mr_H           4.053    1.464    2.769    0.006
+    pe_ms_E           1.025    0.537    1.910    0.056
+    pe_ms_M           1.643    0.922    1.781    0.075
+    pe_ms_H           1.434    0.776    1.848    0.065
+  ME =~                                               
+    me_st_E           1.000                           
+    me_st_M           1.013    0.263    3.850    0.000
+    me_st_H           0.958    0.292    3.280    0.001
+    me_mr_E           1.566    0.351    4.466    0.000
+    me_mr_M           1.330    0.303    4.391    0.000
+    me_mr_H           1.032    0.263    3.920    0.000
+    me_ms_E           0.991    0.257    3.856    0.000
+    me_ms_M           1.180    0.291    4.053    0.000
+    me_ms_H           0.877    0.218    4.023    0.000
+  PH =~                                               
+    ph_st_E           1.000                           
+    ph_st_M           1.992    0.249    8.007    0.000
+    ph_st_H           2.349    0.260    9.026    0.000
+    ph_mr_E           1.971    0.211    9.327    0.000
+    ph_mr_M           1.988    0.222    8.971    0.000
+    ph_mr_H           2.338    0.263    8.880    0.000
+    ph_ms_E           1.450    0.182    7.961    0.000
+    ph_ms_M           2.179    0.241    9.045    0.000
+    ph_ms_H           2.642    0.286    9.253    0.000
+  EF =~                                               
+    ef_st_E           1.000                           
+    ef_st_M           1.029    0.188    5.478    0.000
+    ef_st_H           0.877    0.199    4.410    0.000
+    ef_mr_E           1.177    0.216    5.445    0.000
+    ef_mr_M           1.173    0.217    5.411    0.000
+    ef_mr_H           0.841    0.180    4.660    0.000
+    ef_ms_E           1.157    0.197    5.859    0.000
+    ef_ms_M           1.158    0.194    5.975    0.000
+    ef_ms_H           0.712    0.151    4.719    0.000
+  TI =~                                               
+    ti_st_E           1.000                           
+    ti_st_M           0.882    0.419    2.105    0.035
+    ti_st_H           0.594    0.371    1.601    0.109
+    ti_mr_E           1.667    0.432    3.861    0.000
+    ti_mr_M           1.465    0.378    3.876    0.000
+    ti_mr_H           1.548    0.415    3.730    0.000
+    ti_ms_E           1.382    0.399    3.466    0.001
+    ti_ms_M           0.987    0.418    2.362    0.018
+    ti_ms_H           0.650    0.360    1.805    0.071
+  FR =~                                               
+    fr_st_E           1.000                           
+    fr_st_M           1.716    0.355    4.837    0.000
+    fr_st_H           1.463    0.343    4.265    0.000
+    fr_mr_E           1.547    0.349    4.436    0.000
+    fr_mr_M           1.840    0.393    4.685    0.000
+    fr_mr_H           1.672    0.356    4.695    0.000
+    fr_ms_E           1.234    0.307    4.027    0.000
+    fr_ms_M           1.651    0.341    4.838    0.000
+    fr_ms_H           1.555    0.338    4.607    0.000
+  OW =~                                               
+    PE                1.000                           
+    ME              129.227  926.720    0.139    0.889
+    PH               78.302  561.551    0.139    0.889
+    EF              187.539 1344.685    0.139    0.889
+    TI               59.971  430.389    0.139    0.889
+    FR               92.231  661.541    0.139    0.889
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+   .pe_st_E         124.592   22.092    5.640    0.000
+   .pe_st_M         361.286   65.373    5.527    0.000
+   .pe_st_H         354.263   61.638    5.747    0.000
+   .pe_mr_E         244.580   54.022    4.527    0.000
+   .pe_mr_M         244.481   59.972    4.077    0.000
+   .pe_mr_H         133.027   39.392    3.377    0.001
+   .pe_ms_E         168.410   29.687    5.673    0.000
+   .pe_ms_M         548.305   96.241    5.697    0.000
+   .pe_ms_H         369.742   65.034    5.685    0.000
+   .me_st_E         245.269   45.144    5.433    0.000
+   .me_st_M         287.396   52.463    5.478    0.000
+   .me_st_H         442.052   78.816    5.609    0.000
+   .me_mr_E         350.656   67.808    5.171    0.000
+   .me_mr_M         277.611   53.108    5.227    0.000
+   .me_mr_H         278.281   51.010    5.455    0.000
+   .me_ms_E         273.702   49.982    5.476    0.000
+   .me_ms_M         317.792   58.786    5.406    0.000
+   .me_ms_H         180.944   33.398    5.418    0.000
+   .ph_st_E          72.731   13.064    5.567    0.000
+   .ph_st_M         187.008   34.332    5.447    0.000
+   .ph_st_H         118.723   23.571    5.037    0.000
+   .ph_mr_E          60.179   12.690    4.742    0.000
+   .ph_mr_M          89.689   17.669    5.076    0.000
+   .ph_mr_H         134.863   26.271    5.133    0.000
+   .ph_ms_E         102.020   18.696    5.457    0.000
+   .ph_ms_M         100.315   19.972    5.023    0.000
+   .ph_ms_H         118.110   24.449    4.831    0.000
+   .ef_st_E         239.011   44.588    5.360    0.000
+   .ef_st_M         235.842   44.255    5.329    0.000
+   .ef_st_H         366.864   65.803    5.575    0.000
+   .ef_mr_E         316.818   59.323    5.341    0.000
+   .ef_mr_M         322.696   60.292    5.352    0.000
+   .ef_mr_H         283.996   51.311    5.535    0.000
+   .ef_ms_E         219.092   42.458    5.160    0.000
+   .ef_ms_M         198.369   38.958    5.092    0.000
+   .ef_ms_H         195.544   35.398    5.524    0.000
+   .ti_st_E         341.024   60.770    5.612    0.000
+   .ti_st_M         729.673  127.474    5.724    0.000
+   .ti_st_H         661.921  114.997    5.756    0.000
+   .ti_mr_E          93.536   24.026    3.893    0.000
+   .ti_mr_M          64.489   17.520    3.681    0.000
+   .ti_mr_H         149.496   31.182    4.794    0.000
+   .ti_ms_E         243.722   45.883    5.312    0.000
+   .ti_ms_M         656.813  115.250    5.699    0.000
+   .ti_ms_H         590.416  102.767    5.745    0.000
+   .fr_st_E         237.842   44.183    5.383    0.000
+   .fr_st_M         339.632   68.622    4.949    0.000
+   .fr_st_H         470.211   87.897    5.350    0.000
+   .fr_mr_E         441.208   83.804    5.265    0.000
+   .fr_mr_M         472.556   92.734    5.096    0.000
+   .fr_mr_H         385.335   75.746    5.087    0.000
+   .fr_ms_E         421.390   77.460    5.440    0.000
+   .fr_ms_M         313.895   63.432    4.948    0.000
+   .fr_ms_H         369.808   71.717    5.156    0.000
+   .PE               18.313   13.071    1.401    0.161
+   .ME               20.134   13.400    1.502    0.133
+   .PH               76.954   20.525    3.749    0.000
+   .EF               -7.898   17.618   -0.448    0.654
+   .TI               70.269   36.870    1.906    0.057
+   .FR               84.765   33.215    2.552    0.011
+    OW                0.007    0.095    0.070    0.944</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a>model_easy <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_E + pe_ms_E + pe_st_E</span></span>
+<span id="cb155-2"><a href="#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_E + ph_ms_E + ph_st_E</span></span>
+<span id="cb155-3"><a href="#cb155-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_E + me_ms_E + me_st_E</span></span>
+<span id="cb155-4"><a href="#cb155-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_E + ef_ms_E + ef_st_E</span></span>
+<span id="cb155-5"><a href="#cb155-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_E + ti_ms_E + ti_st_E</span></span>
+<span id="cb155-6"><a href="#cb155-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_E + fr_ms_E + fr_st_E</span></span>
+<span id="cb155-7"><a href="#cb155-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
+<span id="cb155-8"><a href="#cb155-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-9"><a href="#cb155-9" aria-hidden="true" tabindex="-1"></a>cfa_easy <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_easy, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in lavaan::lavaan(model = model_easy, data = NASATLX_cfa, model.type = "cfa", : lavaan WARNING:
     the optimizer (NLMINB) claimed the model converged, but not all
@@ -1334,7 +1543,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
     have found a local solution use check.gradient = FALSE to skip
     this check.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_easy, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_easy, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in lav_object_summary(object = object, header = header, fit.measures = fit.measures, : lavaan WARNING: fit measures not available if model did not converge</code></pre>
 </div>
@@ -1418,26 +1627,26 @@ Variances:
    .FR              142.155       NA                  
     OW               -0.000       NA                  </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_easy, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_easy, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in lav_fit_measures(object = object, fit.measures = fit.measures, : lavaan ERROR: fit measures not available if model did not converge</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a>model_medium <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_M + pe_ms_M + pe_st_M</span></span>
-<span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_M + ph_ms_M + ph_st_M</span></span>
-<span id="cb157-3"><a href="#cb157-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_M + me_ms_M + me_st_M</span></span>
-<span id="cb157-4"><a href="#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_M + ef_ms_M + ef_st_M</span></span>
-<span id="cb157-5"><a href="#cb157-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_M + ti_ms_M + ti_st_M</span></span>
-<span id="cb157-6"><a href="#cb157-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_M + fr_ms_M + fr_st_M</span></span>
-<span id="cb157-7"><a href="#cb157-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
-<span id="cb157-8"><a href="#cb157-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb157-9"><a href="#cb157-9" aria-hidden="true" tabindex="-1"></a>cfa_medium <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_medium, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a>model_medium <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_M + pe_ms_M + pe_st_M</span></span>
+<span id="cb162-2"><a href="#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_M + ph_ms_M + ph_st_M</span></span>
+<span id="cb162-3"><a href="#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_M + me_ms_M + me_st_M</span></span>
+<span id="cb162-4"><a href="#cb162-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_M + ef_ms_M + ef_st_M</span></span>
+<span id="cb162-5"><a href="#cb162-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_M + ti_ms_M + ti_st_M</span></span>
+<span id="cb162-6"><a href="#cb162-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_M + fr_ms_M + fr_st_M</span></span>
+<span id="cb162-7"><a href="#cb162-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
+<span id="cb162-8"><a href="#cb162-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-9"><a href="#cb162-9" aria-hidden="true" tabindex="-1"></a>cfa_medium <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_medium, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
 variances are negative</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lavaan 0.6.15 ended normally after 595 iterations
 
@@ -1554,27 +1763,27 @@ Variances:
    .FR              102.947   48.504    2.122    0.034
     OW                0.016    0.498    0.032    0.975</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  chisq      df  pvalue     cfi     tli   rmsea    srmr 
 414.006 129.000   0.000   0.637   0.569   0.173   0.141 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>model_hard <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_H + pe_ms_H + pe_st_H</span></span>
-<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_H + ph_ms_H + ph_st_H</span></span>
-<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_H + me_ms_H + me_st_H</span></span>
-<span id="cb163-4"><a href="#cb163-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_H + ef_ms_H + ef_st_H</span></span>
-<span id="cb163-5"><a href="#cb163-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_H + ti_ms_H + ti_st_H</span></span>
-<span id="cb163-6"><a href="#cb163-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_H + fr_ms_H + fr_st_H</span></span>
-<span id="cb163-7"><a href="#cb163-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
-<span id="cb163-8"><a href="#cb163-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb163-9"><a href="#cb163-9" aria-hidden="true" tabindex="-1"></a>cfa_hard <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_hard, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a>model_hard <span class="ot">&lt;-</span> <span class="st">"PE =~ pe_mr_H + pe_ms_H + pe_st_H</span></span>
+<span id="cb168-2"><a href="#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="st">PH =~ ph_mr_H + ph_ms_H + ph_st_H</span></span>
+<span id="cb168-3"><a href="#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="st">ME =~ me_mr_H + me_ms_H + me_st_H</span></span>
+<span id="cb168-4"><a href="#cb168-4" aria-hidden="true" tabindex="-1"></a><span class="st">EF =~ ef_mr_H + ef_ms_H + ef_st_H</span></span>
+<span id="cb168-5"><a href="#cb168-5" aria-hidden="true" tabindex="-1"></a><span class="st">TI =~ ti_mr_H + ti_ms_H + ti_st_H</span></span>
+<span id="cb168-6"><a href="#cb168-6" aria-hidden="true" tabindex="-1"></a><span class="st">FR =~ fr_mr_H + fr_ms_H + fr_st_H</span></span>
+<span id="cb168-7"><a href="#cb168-7" aria-hidden="true" tabindex="-1"></a><span class="st">OW =~ PE + ME + PH + EF + TI + FR"</span></span>
+<span id="cb168-8"><a href="#cb168-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb168-9"><a href="#cb168-9" aria-hidden="true" tabindex="-1"></a>cfa_hard <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model_hard, NASATLX_cfa,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in lav_object_post_check(object): lavaan WARNING: some estimated lv
 variances are negative</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa_medium, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lavaan 0.6.15 ended normally after 595 iterations
 
@@ -1691,7 +1900,7 @@ Variances:
    .FR              102.947   48.504    2.122    0.034
     OW                0.016    0.498    0.032    0.975</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_hard, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitmeasures</span>(cfa_hard, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>, <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  chisq      df  pvalue     cfi     tli   rmsea    srmr 
 366.213 129.000   0.000   0.664   0.601   0.159   0.115 </code></pre>

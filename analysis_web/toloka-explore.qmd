@@ -371,7 +371,7 @@ nasatlx_preproc <- function(d) {
 
 
 
-## Load fistbanch data
+## Load first data
 
 To compare
 
@@ -381,10 +381,10 @@ read_csv("MS_firstbanch_data_agg.csv") -> MS_fb_agg
 read_csv("ST_firstbanch_data_agg.csv") -> ST_fb_agg
 ```
 
-## Banch 1
+## Pool 1
 
-```{r toloka-banch1-files}
-files <- paste0("../data-toloka/banch1/", dir("../data-toloka/banch1"))
+```{r toloka-pool1-files}
+files <- paste0("../data-toloka/pool1/", dir("../data-toloka/pool1"))
 ```
 
 ```{r toloka-empty-tibbles-1}
@@ -485,10 +485,10 @@ ST_data |>
 
 
 
-## Banch 2
+## Pool 2
 
-```{r toloka-banch2-files}
-files <- paste0("../data-toloka/banch2/", dir("../data-toloka/banch2"))
+```{r toloka-pool2-files}
+files <- paste0("../data-toloka/pool2/", dir("../data-toloka/pool2"))
 ```
 
 ```{r toloka-empty-tibbles}
@@ -588,12 +588,12 @@ ST_data |>
 ```
 
 
-## Banch 1 & Banch 2 together
+## Pool 1 & Pool 2 together
 
-```{r toloka-banch1&2-files}
+```{r toloka-pool12-files}
 files <- c(
-  paste0("../data-toloka/banch1/", dir("../data-toloka/banch1")),
-  paste0("../data-toloka/banch2/", dir("../data-toloka/banch2"))
+  paste0("../data-toloka/pool1/", dir("../data-toloka/pool1")),
+  paste0("../data-toloka/pool2/", dir("../data-toloka/pool2"))
 )
 ```
 
@@ -685,4 +685,334 @@ ST_data |>
   stat_summary(aes(level, is_correct),
                fun = mean, geom = "point") +
   labs(title = "ST")
+```
+
+
+## Assignments Check IDs
+
+```{r load-assigns}
+pool88 <- read_tsv("../data-toloka/assignments/assignments_from_pool_40236288__21-07-2023.tsv")
+pool87 <- read_tsv("../data-toloka/assignments/assignments_from_pool_40260687__21-07-2023.tsv")
+pool68 <- read_tsv("../data-toloka/assignments/assignments_from_pool_40272468__21-07-2023.tsv")
+pool16 <- read_tsv("../data-toloka/assignments/assignments_from_pool_40307616__21-07-2023.tsv")
+```
+
+```{r}
+pool88$`ASSIGNMENT:worker_id` %in% pool87$`ASSIGNMENT:worker_id` |> sum()
+pool88$`ASSIGNMENT:worker_id` %in% pool68$`ASSIGNMENT:worker_id` |> sum()
+pool88$`ASSIGNMENT:worker_id` %in% pool16$`ASSIGNMENT:worker_id` |> sum()
+pool87$`ASSIGNMENT:worker_id` %in% pool68$`ASSIGNMENT:worker_id` |> sum()
+pool87$`ASSIGNMENT:worker_id` %in% pool16$`ASSIGNMENT:worker_id` |> sum()
+pool68$`ASSIGNMENT:worker_id` %in% pool16$`ASSIGNMENT:worker_id` |> sum()
+
+## duplicates
+pool68$`ASSIGNMENT:worker_id`[pool68$`ASSIGNMENT:worker_id` %in% pool16$`ASSIGNMENT:worker_id`]
+```
+
+## Pools 3 & 4
+
+```{r}
+#rm(list=ls())
+```
+
+```{r toloka-pool34-broken}
+## broken Column `mouse_MSh.time` doesn't exist.
+file.remove("../data-toloka/pool34/21111984_toloka_2023-07-21_17h42.24.114.csv")
+```
+
+```{r toloka-pool34-files}
+files <- paste0("../data-toloka/pool34/", dir("../data-toloka/pool34"))
+```
+
+```{r}
+MR_data <- tibble()
+ST_data <- tibble()
+MS_data <- tibble()
+NASATLX_data <- tibble()
+#SEQUENCE_data <- tibble()
+```
+
+```{r toloka-load-data-pool34}
+for (i in 1:length(files)) {
+  
+  print(files[i])
+  
+  d <- read_csv(files[i], show_col_types = FALSE)
+  
+  MR_data |> bind_rows(mr_preproc(d) |> mutate(file = files[i])) -> MR_data
+  ST_data |> bind_rows(st_preproc(d) |> mutate(file = files[i])) -> ST_data
+  MS_data |> bind_rows(ms_preproc(d) |> mutate(file = files[i])) -> MS_data
+  NASATLX_data |> bind_rows(nasatlx_preproc(d) |> mutate(file = files[i])) -> NASATLX_data
+  #SEQUENCE_data |> bind_rows(sequence_preproc(d)) -> SEQUENCE_data
+  
+}
+```
+
+```{r}
+# MR_data |> write_csv("mentral_rotation_data_toloka.csv")
+# ST_data |> write_csv("sternberg_data_toloka.csv")
+# MS_data |> write_csv("mental_span_data_toloka.csv")
+# NASATLX_data |> write_csv("nasa_tlx_data_toloka.csv")
+# SEQUENCE_data |> write_csv("sequence_data_toloka.csv")
+```
+
+```{r}
+MR_data$file |> unique() |> length()
+```
+
+```{r}
+MR_data |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  facet_wrap(~ file) +
+  labs(title = "MR")
+```
+
+``` {r}
+MR_data |> 
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct), fun = mean, geom = "point") +
+  facet_wrap(~ file) +
+  labs(title = "MR")
+```
+
+```{r}
+MS_data |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(data = MS_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  facet_wrap(~ file) +
+  labs(title = "MS")
+```
+
+```{r}
+MS_data |> 
+  ggplot(aes(level, acc)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(fun = mean, geom = "point") +
+  facet_wrap(~ file) +
+  labs(title = "MS")
+```
+
+```{r}
+ST_data |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(data = MR_fb_agg,
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  facet_wrap(~ file) +
+  labs(title = "ST")
+```
+
+```{r}
+ST_data |> 
+  ggplot() +
+  stat_summary(data = MR_fb_agg,
+               aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", color = "darkred") +
+  stat_summary(aes(level, is_correct),
+               fun = mean, geom = "point") +
+  facet_wrap(~ file) +
+  labs(title = "ST")
+```
+
+
+## All Toloka files
+
+```{r}
+## dropped with low accuracy
+file.remove("../data-toloka/pool2/MA1907_toloka_2023-07-19_16h56.11.966.csv")
+```
+
+```{r toloka-all-files}
+files <- c(
+  paste0("../data-toloka/pool1/", dir("../data-toloka/pool1")),
+  paste0("../data-toloka/pool2/", dir("../data-toloka/pool2")),
+  paste0("../data-toloka/pool34/", dir("../data-toloka/pool34"))
+)
+```
+
+```{r}
+MR_data <- tibble()
+ST_data <- tibble()
+MS_data <- tibble()
+NASATLX_data <- tibble()
+#SEQUENCE_data <- tibble()
+```
+
+```{r}
+for (i in 1:length(files)) {
+  
+  print(files[i])
+  
+  d <- read_csv(files[i], show_col_types = FALSE)
+  
+  MR_data |> bind_rows(mr_preproc(d) |> mutate(file = files[i])) -> MR_data
+  ST_data |> bind_rows(st_preproc(d) |> mutate(file = files[i])) -> ST_data
+  MS_data |> bind_rows(ms_preproc(d) |> mutate(file = files[i])) -> MS_data
+  NASATLX_data |> bind_rows(nasatlx_preproc(d) |> mutate(file = files[i])) -> NASATLX_data
+  #SEQUENCE_data |> bind_rows(sequence_preproc(d)) -> SEQUENCE_data
+  
+}
+```
+
+
+### Create IDs for Toloka files
+
+```{r}
+set.seed(116)
+tibble(file = MR_data$file |> unique(),
+       id = stringi::stri_rand_strings(MR_data$file |> unique() |> length(),
+                                       length = 10)) -> tolokaIDS
+```
+
+
+### Aggregate Toloka Data
+```{r}
+MR_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) |> 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> MR_data_toloka_agg
+
+ST_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) |> 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> ST_data_toloka_agg
+
+MS_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) |> 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(acc)) -> MS_data_toloka_agg
+
+NASATLX_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> NASATLX_data_toloka
+```
+
+```{r}
+MR_data_toloka_agg |> write_csv("mental_rotation_data_toloka.csv")
+ST_data_toloka_agg |> write_csv("sternberg_data_toloka.csv")
+MS_data_toloka_agg |> write_csv("mental_span_data_toloka.csv")
+NASATLX_data_toloka |> write_csv("nasa_tlx_data_toloka.csv")
+# SEQUENCE_data |> write_csv("sequence_data_toloka.csv")
+```
+
+```{r}
+rm(list = ls())
+```
+
+## Load first data Toloka aggregated data
+
+```{r}
+read_csv("MR_firstbanch_data_agg.csv") -> MR_fb_agg
+read_csv("MS_firstbanch_data_agg.csv") -> MS_fb_agg
+read_csv("ST_firstbanch_data_agg.csv") -> ST_fb_agg
+read_csv("NASATLX_firstbanch_data.csv") -> NASATLX_fb
+read_csv("mental_rotation_data_toloka.csv") -> MR_data_toloka
+read_csv("mental_span_data_toloka.csv") -> MS_data_toloka
+read_csv("sternberg_data_toloka.csv") -> ST_data_toloka
+read_csv("nasa_tlx_data_toloka.csv") -> NASATLX_data_toloka
+```
+
+
+```{r}
+MR_data_toloka$id |> unique() |> length()
+```
+
+```{r}
+MR_fb_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    MR_data_toloka |> 
+      mutate(banch = "toloka")
+  ) -> MR_full
+
+MS_fb_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    MS_data_toloka |> 
+      mutate(banch = "toloka")
+  ) -> MS_full
+
+ST_fb_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    ST_data_toloka |> 
+      mutate(banch = "toloka")
+  ) -> ST_full
+
+NASATLX_fb |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    NASATLX_data_toloka |> 
+      mutate(banch = "toloka")
+  ) -> NASATLX_full
+```
+
+```{r}
+pd <- position_dodge(.3)
+```
+
+```{r}
+MR_full |> 
+  ggplot(aes(level, rt, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "MR rt")
+```
+
+```{r}
+MR_full |> 
+  ggplot(aes(level, acc, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "MR acc")
+```
+
+```{r}
+MS_full |> 
+  ggplot(aes(level, rt, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "MS rt")
+```
+
+```{r}
+MS_full |> 
+  ggplot(aes(level, acc, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "MS acc")
+```
+
+```{r}
+ST_full |> 
+  ggplot(aes(level, rt, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "ST rt")
+```
+
+```{r}
+ST_full |> 
+  ggplot(aes(level, acc, color = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  labs(title = "ST acc")
+```
+
+```{r}
+NASATLX_full |> 
+  ggplot(aes(scale, score, color = level, shape = banch)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange", position = pd) +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  labs(title = "NASA-TLX")
 ```
