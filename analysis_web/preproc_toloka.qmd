@@ -1,22 +1,21 @@
-# First Banch Preprocess Workflow
+# Preprocess. Toloka Banch
 
 ## Packages
 
-```{r pkgs}
+```{r}
 library(tidyverse)
+theme_set(theme_bw())
 ```
 
+## Functions
 
-## Custom preprocess functions
-
-```{r mr-preproc-fun}
+```{r toloka-preproc-fun}
 mr_preproc <- function(d) {
-
+  
   require(tidyverse)
   
   d |> select(
     # select columns we need
-    "Индивидуальный_код",
     correctAns,
     base_pic,
     rotated_pic,
@@ -31,7 +30,6 @@ mr_preproc <- function(d) {
            # add difficulty level
            trial = 1:16) |> # number trials
     rename(
-      "id" = "Индивидуальный_код",
       # rename columns for handy usage
       "key" = resp_MR_easy.keys,
       "is_correct" = resp_MR_easy.corr,
@@ -41,7 +39,6 @@ mr_preproc <- function(d) {
   
   d |> select(
     # select columns we need
-    "Индивидуальный_код",
     correctAns,
     base_pic,
     rotated_pic,
@@ -57,7 +54,6 @@ mr_preproc <- function(d) {
            trial = 1:16) |>  # number trials
     rename(
       # rename columns for handy usage
-      "id" = "Индивидуальный_код",
       "key" = resp_MR_medium.keys,
       "is_correct" = resp_MR_medium.corr,
       "rt" = resp_MR_medium.rt
@@ -67,7 +63,6 @@ mr_preproc <- function(d) {
   
   d |> select(
     # select columns we need
-    "Индивидуальный_код",
     correctAns,
     base_pic,
     rotated_pic,
@@ -83,7 +78,6 @@ mr_preproc <- function(d) {
            trial = 1:16) |> # number trials
     rename(
       # rename columns for handy usage
-      "id" = "Индивидуальный_код",
       "key" = resp_MR_hard.keys,
       "is_correct" = resp_MR_hard.corr,
       "rt" = resp_MR_hard.rt
@@ -96,9 +90,79 @@ mr_preproc <- function(d) {
   return(MR)
   
 }
-```
 
-```{r ms-preproc-fun}
+st_preproc <- function(d) {
+  
+  require(tidyverse)
+  
+  d |> select(
+    # select columns we need
+    target_present,
+    key_resp_SE.keys,
+    key_resp_SE.corr,
+    key_resp_SE.rt
+  ) |>
+    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+           # add task name (Sternberg task)
+           level = "easy",
+           # add difficulty level
+           trial = 1:16) |> # number trials
+    rename(
+      # rename columns for handy usage
+      "key" = key_resp_SE.keys,
+      "is_correct" = key_resp_SE.corr,
+      "rt" = key_resp_SE.rt
+    ) -> ST_easy # ready to use
+  
+  d |> select(
+    # select columns we need
+    target_present,
+    key_resp_SM.keys,
+    key_resp_SM.corr,
+    key_resp_SM.rt
+  ) |>
+    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+           # add task name (Sternberg task)
+           level = "medium",
+           # add difficulty level
+           trial = 1:16) |> # number trials
+    rename(
+      # rename columns for handy usage
+      "key" = key_resp_SM.keys,
+      "is_correct" = key_resp_SM.corr,
+      "rt" = key_resp_SM.rt
+    ) -> ST_medium # ready to use
+  
+  
+  d |> select(
+    # select columns we need
+    target_present,
+    resp_S_H_trials.keys,
+    resp_S_H_trials.corr,
+    resp_S_H_trials.rt
+  ) |>
+    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
+    mutate(task = "ST",
+           # add task name (Sternberg task)
+           level = "hard",
+           # add difficulty level
+           trial = 1:16) |> # number trials
+    rename(
+      # rename columns for handy usage
+      "key" = resp_S_H_trials.keys,
+      "is_correct" = resp_S_H_trials.corr,
+      "rt" = resp_S_H_trials.rt
+    ) -> ST_hard # ready to use
+  
+  # bind all conditions of sternberg task to one tibble
+  bind_rows(ST_easy, ST_hard, ST_medium) -> ST
+  
+  return(ST)
+  
+}
+
 ms_preproc <- function(d) {
   
   # Since we our participants could fill the fields in any order, 
@@ -118,7 +182,6 @@ ms_preproc <- function(d) {
   if ("mouse_MSe.time" %in% colnames(d)) {
     
     d |> select(
-      "Индивидуальный_код",
       matches("^noun"),
       matches("resp\\d\\.text$"),
       "mouse_MSe.time"
@@ -131,13 +194,11 @@ ms_preproc <- function(d) {
         "resp1" = resp1.text,
         "resp2" = resp2.text,
         "resp3" = resp3.text,
-        "id" = "Индивидуальный_код",
         "rt" = "mouse_MSe.time"
       ) |>
       select(-c(paste0("noun", 4:7))) -> MS_easy
     
     d |> select(
-      "Индивидуальный_код",
       matches("^noun"),
       matches("MSm.text$"),
       "mouse_MSm.time"
@@ -146,8 +207,7 @@ ms_preproc <- function(d) {
       filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
              level = "medium") |> 
-      rename("id" = "Индивидуальный_код",
-             "rt" = "mouse_MSm.time") |>
+      rename("rt" = "mouse_MSm.time") |>
       rename_with(.fn = str_replace_all, 
                   pattern = "_MSm\\.text", 
                   replacement = "") |> 
@@ -155,7 +215,6 @@ ms_preproc <- function(d) {
     
     
     d |> select(
-      "Индивидуальный_код",
       matches("^noun"),
       matches("MSh.text$"),
       "mouse_MSh.time"
@@ -163,16 +222,14 @@ ms_preproc <- function(d) {
       filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) |>
       mutate(task = "MS",
              level = "hard") |>
-      rename("id" = "Индивидуальный_код",
-             "rt" = "mouse_MSh.time") |> 
+      rename("rt" = "mouse_MSh.time") |> 
       rename_with(.fn = str_replace_all,
                   pattern = "_MSh\\.text",
                   replacement = "") -> MS_hard
     
   } else {
     
-    d |> select("Индивидуальный_код",
-                matches("^noun"),
+    d |> select(matches("^noun"),
                 matches("resp\\d\\.text$")) |>
       filter_at(vars(paste0("noun", 1:3)), all_vars(!is.na(.))) |>
       filter_at(vars(paste0("noun", 4:7)), all_vars(is.na(.))) |>
@@ -182,41 +239,36 @@ ms_preproc <- function(d) {
       rename(
         "resp1" = resp1.text,
         "resp2" = resp2.text,
-        "resp3" = resp3.text,
-        "id" = "Индивидуальный_код"
+        "resp3" = resp3.text
       ) |>
       select(-c(paste0("noun", 4:7))) -> MS_easy
     
-    d |> select("Индивидуальный_код",
-                matches("^noun"),
+    d |> select(matches("^noun"),
                 matches("MSm.text$")) |>
       filter_at(vars(paste0("noun", 4:5)), all_vars(!is.na(.))) |>
       filter_at(vars(paste0("noun", 6:7)), all_vars(is.na(.))) |>
       mutate(task = "MS",
              level = "medium",
              rt = NA) |>
-      rename("id" = "Индивидуальный_код") |>
       rename_with(.fn = str_replace_all,
                   pattern = "_MSm\\.text",
                   replacement = "") |> 
       select(-noun6, -noun7) -> MS_medium
     
     
-    d |> select("Индивидуальный_код",
-                matches("^noun"),
+    d |> select(matches("^noun"),
                 matches("MSh.text$")) |>
       filter_at(vars(paste0("noun", 1:7)), all_vars(!is.na(.))) |>
       mutate(task = "MS",
              level = "hard",
              rt = NA) |>
-      rename("id" = "Индивидуальный_код") |> 
       rename_with(.fn = str_replace_all,
                   pattern = "_MSh\\.text", 
                   replacement = "") -> MS_hard
   }
   
   tibble(
-    id = MS_easy$id[1],
+    #id = MS_easy$id[1],
     trials = 1:16,
     MS_easy_n = n_count(MS_easy),
     MS_easy_rt = MS_easy$rt,
@@ -225,7 +277,7 @@ ms_preproc <- function(d) {
     MS_hard_n = n_count(MS_hard),
     MS_hard_rt = MS_hard$rt
   ) |>
-    pivot_longer(cols = -c("id", "trials"), values_to = "value") |>
+    pivot_longer(cols = -c("trials"), values_to = "value") |>
     separate(name, c("task", "level", "name")) |>
     pivot_wider(values_from = value, names_from = name) |>
     mutate(acc = ifelse(level == "easy", n / 3,
@@ -237,98 +289,14 @@ ms_preproc <- function(d) {
   return(MS)
   
 }
-```
 
-```{r st-preproc-fun}
-st_preproc <- function(d) {
-
-  require(tidyverse)
-  
-  d |> select(
-    # select columns we need
-    "Индивидуальный_код",
-    target_present,
-    key_resp_SE.keys,
-    key_resp_SE.corr,
-    key_resp_SE.rt
-  ) |>
-    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
-    mutate(task = "ST",
-           # add task name (Sternberg task)
-           level = "easy",
-           # add difficulty level
-           trial = 1:16) |> # number trials
-    rename(
-      # rename columns for handy usage
-      "id" = "Индивидуальный_код",
-      "key" = key_resp_SE.keys,
-      "is_correct" = key_resp_SE.corr,
-      "rt" = key_resp_SE.rt
-    ) -> ST_easy # ready to use
-  
-  d |> select(
-    # select columns we need
-    "Индивидуальный_код",
-    target_present,
-    key_resp_SM.keys,
-    key_resp_SM.corr,
-    key_resp_SM.rt
-  ) |>
-    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
-    mutate(task = "ST",
-           # add task name (Sternberg task)
-           level = "medium",
-           # add difficulty level
-           trial = 1:16) |> # number trials
-    rename(
-      # rename columns for handy usage
-      "id" = "Индивидуальный_код",
-      "key" = key_resp_SM.keys,
-      "is_correct" = key_resp_SM.corr,
-      "rt" = key_resp_SM.rt
-    ) -> ST_medium # ready to use
-  
-  
-  d |> select(
-    # select columns we need
-    "Индивидуальный_код",
-    target_present,
-    resp_S_H_trials.keys,
-    resp_S_H_trials.corr,
-    resp_S_H_trials.rt
-  ) |>
-    drop_na() |> # remove technical NAs (recording artefacts, not missing data)
-    mutate(task = "ST",
-           # add task name (Sternberg task)
-           level = "hard",
-           # add difficulty level
-           trial = 1:16) |> # number trials
-    rename(
-      # rename columns for handy usage
-      "id" = "Индивидуальный_код",
-      "key" = resp_S_H_trials.keys,
-      "is_correct" = resp_S_H_trials.corr,
-      "rt" = resp_S_H_trials.rt
-    ) -> ST_hard # ready to use
-  
-  # bind all conditions of sternberg task to one tibble
-  bind_rows(ST_easy, ST_hard, ST_medium) -> ST
-  
-  return(ST)
-
-}
-```
-
-```{r nasatlx-preproc-fun}
 nasatlx_preproc <- function(d) {
-  d |> select("Индивидуальный_код",
-              slider.response,
+  d |> select(slider.response,
               head,
               task_type,
               task_level) |>
     filter_at(vars(head, task_type, task_level), all_vars(!is.na(.))) |>
-    rename("id" = "Индивидуальный_код",
-           "score" = slider.response) |>
+    rename("score" = slider.response) |>
     mutate(
       scale = recode(
         head,
@@ -352,15 +320,13 @@ nasatlx_preproc <- function(d) {
         "3" = "hard"
       )
     ) |>
-    select(id, scale, score, task, level) -> NASATLX
+    select(scale, score, task, level) -> NASATLX
   
   return(NASATLX)
 }
-```
 
-```{r seq-preproc-fun}
 sequence_preproc <- function(d) {
-  
+
   d |> select(
     E_rotation,
     M_rotation,
@@ -373,11 +339,11 @@ sequence_preproc <- function(d) {
     H_span
   ) |>
     drop_na() |>
-    sapply(function(x) which(x == 1)) -> v 
-    
+    sapply(function(x) which(x == 1)) -> v
+
   tibble(name = names(v),
-           order = v,
-           id = d[["Индивидуальный_код"]][1]) |>
+         order = v,
+         id = d[["Индивидуальный_код"]][1]) |>
     arrange(order) |>
     separate(name, c("level", "task"), "_") |>
     mutate(
@@ -394,30 +360,71 @@ sequence_preproc <- function(d) {
         "H" = "hard"
       )
     ) -> SEQUENCE
-  
+
   return(SEQUENCE)
+
+}
+
+weights_preproc <- function(d) {
+  
+  d %>% 
+    select(matches("^pair"), task_type) %>% 
+    drop_na() %>% 
+    pivot_longer(cols = matches("^pair")) %>% 
+    mutate(value = value %>% str_remove_all("\\\\n|\\[|\\]")) %>% 
+    separate(value, into = c("option1", "option2"), sep = ",") -> pairs
+  
+  d %>% 
+    select(matches("^S_pc"), task_type) %>% 
+    drop_na() %>% 
+    pivot_longer(cols = matches("^S_pc")) %>% 
+    mutate(name = name %>% str_remove("\\.response") %>% 
+             str_replace("S_pc_", "pair")) %>% 
+    full_join(pairs, by = join_by(task_type, name)) %>% 
+    mutate(choice = ifelse(value == 1, option1, option2)) %>% 
+    mutate(choice = recode(choice,
+                           '"Умственнаянагрузка"' = "ME",
+                           '"Физическаянагрузка"' = "PH",
+                           '"Усилия"' = "EF",
+                           '"Давленивремени"' = "TI",
+                           '"Успешностьвыполнения"' = "PE",
+                           '"Уровеньфрустрации"' = "FR")) %>% 
+    group_by(task_type, choice) %>% 
+    summarise(n = n()) %>% 
+    mutate(w = n / 15) -> WEIGHTS
+  
+  return(WEIGHTS)
   
 }
+
 ```
 
 
-## Load & preprocess data
+## All Toloka files
 
-```{r file-paths}
-files <- paste0("../data-firstbanch/", dir("../data-firstbanch"))
-length(files)
+```{r}
+## dropped with low accuracy
+file.remove("../data-toloka/pool2/MA1907_toloka_2023-07-19_16h56.11.966.csv")
 ```
 
-```{r empty-tibbles}
+```{r toloka-all-files}
+files <- c(
+  paste0("../data-toloka/pool1/", dir("../data-toloka/pool1")),
+  paste0("../data-toloka/pool2/", dir("../data-toloka/pool2")),
+  paste0("../data-toloka/pool34/", dir("../data-toloka/pool34"))
+)
+```
+
+```{r}
 MR_data <- tibble()
 ST_data <- tibble()
 MS_data <- tibble()
 NASATLX_data <- tibble()
 SEQUENCE_data <- tibble()
+WEIGHTS_data <- tibble()
 ```
 
-```{r preprocess}
-
+```{r loading-data, message=FALSE}
 for (i in 1:length(files)) {
   
   print(files[i])
@@ -429,76 +436,131 @@ for (i in 1:length(files)) {
   MS_data |> bind_rows(ms_preproc(d) |> mutate(file = files[i])) -> MS_data
   NASATLX_data |> bind_rows(nasatlx_preproc(d) |> mutate(file = files[i])) -> NASATLX_data
   SEQUENCE_data |> bind_rows(sequence_preproc(d) |> mutate(file = files[i])) -> SEQUENCE_data
-
-}
-
-```
-
-```{r check-ids}
-unique(MR_data$file) |> length()
-unique(ST_data$file) |> length()
-unique(MS_data$file) |> length()
-unique(NASATLX_data$file) |> length()
-unique(SEQUENCE_data$file) |> length()
-```
-
-## Overall experiment time
-
-```{r exptime-extract}
-
-exptime <- tibble()
-
-for (j in 1:length(files)) {
-  
-  print(files[j])
-  
-  tibble(file = files[j],
-         start = files[j] |> 
-           str_extract("\\d{4}-\\d{2}-\\d{2}_\\d+h\\d+\\.\\d+") |> 
-           str_replace("h", ":") |> 
-           str_replace("\\.", ":") |> 
-           str_replace("_", " ") |> 
-           as_datetime(tz = "Etc/GMT-3"),
-         end = file.info(files[j])$mtime |> 
-           as_datetime(tz = "UTC")
-  ) |> 
-    bind_rows(exptime) -> exptime
+  WEIGHTS_data |> bind_rows(weights_preproc(d) |> mutate(file = files[i])) -> WEIGHTS_data
   
 }
 ```
 
-```{r duration-calc}
-exptime |> 
-  mutate(dur = abs(start - end)) -> exptime
+
+### Create IDs for Toloka files
+
+```{r}
+set.seed(116)
+tibble(file = MR_data$file |> unique(),
+       id = stringi::stri_rand_strings(MR_data$file |> unique() |> length(),
+                                       length = 10)) -> tolokaIDS
+
 ```
 
-## Create and add ids
 
-```{r create-ids}
-set.seed(123)
-tibble(
-  file = exptime$file,
-  id = stringi::stri_rand_strings(length(exptime$file), 10)) -> IDS
+## Plotting
+
+```{r}
+MR_data %>% 
+  ggplot(aes(level, rt)) +
+  geom_boxplot() +
+  facet_wrap(~ file, scales = "free_y")
 ```
+
+```{r}
+MS_data %>% 
+  ggplot(aes(level, rt)) +
+  geom_boxplot() +
+  facet_wrap(~ file, scales = "free_y")
+```
+
+```{r}
+ST_data %>% 
+  ggplot(aes(level, rt)) +
+  geom_boxplot() +
+  facet_wrap(~ file, scales = "free_y")
+```
+
 
 ```{r add-ids}
-MR_data |> select(-id) |> full_join(IDS, by = "file") -> MR_data
-ST_data |> select(-id) |> full_join(IDS, by = "file") -> ST_data
-MS_data |> select(-id) |> full_join(IDS, by = "file") -> MS_data
-NASATLX_data |> select(-id) |> full_join(IDS, by = "file") -> NASATLX_data
-SEQUENCE_data |> select(-id) |> full_join(IDS, by = "file") -> SEQUENCE_data
-exptime |> full_join(IDS, by = "file") -> exptime
+MR_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> MR_data
+MS_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> MS_data
+ST_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> ST_data
+NASATLX_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> NASATLX_data
+SEQUENCE_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> SEQUENCE_data
+WEIGHTS_data |> 
+  full_join(tolokaIDS) |> 
+  select(-file) -> WEIGHTS_data
 ```
 
 
-## Save preprocessed data
+## Clear & Aggregate
 
-```{r save-preproc-data}
-MR_data |> select(-file) |> write_csv("MR_firstbanch_data.csv")
-ST_data |> select(-file) |> write_csv("ST_firstbanch_data.csv")
-MS_data |> select(-file) |> write_csv("MS_firstbanch_data.csv")
-NASATLX_data |> select(-file) |> write_csv("NASATLX_firstbanch_data.csv")
-SEQUENCE_data |> select(-file) |> write_csv("SEQ_firstbanch_data.csv")
-exptime |> select(-file) |> write_csv("EXPTIME_firstbanch_data.csv")
-IDS |> write_csv("IDS_firstbanch_data.csv")
+```{r}
+MR_data %>% 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(MR_data, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> MR_data_toloka_agg
 ```
+
+
+```{r}
+ST_data |> 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(ST_data, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> ST_data_toloka_agg
+```
+
+
+```{r}
+MS_data |> 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(MS_data, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, 
+                              TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(acc)) -> MS_data_toloka_agg
+```
+
+
+
+
+
+## Export preprocessed data
+
+```{r}
+MR_data_toloka_agg |> write_csv("../preproc-data/mental_rotation_data_toloka.csv")
+ST_data_toloka_agg |> write_csv("../preproc-data/sternberg_data_toloka.csv")
+MS_data_toloka_agg |> write_csv("../preproc-data/mental_span_data_toloka.csv")
+NASATLX_data |> write_csv("../preproc-data/nasa_tlx_data_toloka.csv")
+SEQUENCE_data |> write_csv("../preproc-data/sequence_data_toloka.csv")
+WEIGHTS_data |> write_csv("../preproc-data/weights_data_toloka.csv")
+```
+

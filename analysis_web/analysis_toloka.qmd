@@ -1,0 +1,614 @@
+# Analysis. Toloka Banch
+
+## Packages
+
+```{r}
+library(tidyverse)
+theme_set(theme_bw())
+library(lme4)
+library(lmerTest)
+library(MuMIn)
+```
+
+## Load Pavlovia & Toloka aggregated data
+
+```{r}
+read_csv("../preproc-data/MR_firstbanch_data_agg.csv") -> MR_pav_agg
+read_csv("../preproc-data/MS_firstbanch_data_agg.csv") -> MS_pav_agg
+read_csv("../preproc-data/ST_firstbanch_data_agg.csv") -> ST_pav_agg
+read_csv("../preproc-data/NASATLX_firstbanch_data.csv") -> NASATLX_pav
+read_csv("../preproc-data/SEQ_firstbanch_data.csv") -> SEQ_data_pav
+read_csv("../preproc-data/mental_rotation_data_toloka.csv") -> MR_data_toloka
+read_csv("../preproc-data/mental_span_data_toloka.csv") -> MS_data_toloka
+read_csv("../preproc-data/sternberg_data_toloka.csv") -> ST_data_toloka
+read_csv("../preproc-data/nasa_tlx_data_toloka.csv") -> NASATLX_data_toloka
+read_csv("../preproc-data/sequence_data_toloka.csv") -> SEQ_data_toloka
+read_csv("../preproc-data/weights_data_toloka.csv") -> WEIGHTS_data_toloka
+```
+
+
+```{r}
+MR_data_toloka$id |> unique() |> length()
+MR_pav_agg$id |> unique() |> length()
+MS_data_toloka$id |> unique() |> length()
+MS_pav_agg$id |> unique() |> length()
+ST_data_toloka$id |> unique() |> length()
+ST_pav_agg$id |> unique() |> length()
+NASATLX_data_toloka$id |> unique() |> length()
+NASATLX_pav$id |> unique() |> length()
+```
+
+```{r merge-pav-toloka}
+MR_pav_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    MR_data_toloka |> 
+      mutate(banch = "toloka")
+  ) %>% 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> MR_full
+
+MS_pav_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    MS_data_toloka |> 
+      mutate(banch = "toloka")
+  ) %>% 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> MS_full
+
+ST_pav_agg |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    ST_data_toloka |> 
+      mutate(banch = "toloka")
+  ) %>% 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> ST_full
+
+NASATLX_pav |> 
+  mutate(banch = "manual") |> 
+  bind_rows(
+    NASATLX_data_toloka |> 
+      mutate(banch = "toloka")
+  ) %>% 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> NASATLX_full
+
+SEQ_data_pav %>% 
+  mutate(banch = "manual") %>% 
+  bind_rows(
+    SEQ_data_toloka %>% 
+    mutate(banch = "toloka")
+  ) %>% 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> SEQ_full
+```
+
+
+
+## Plotting 
+
+```{r}
+pd <- position_dodge(.3)
+level_colors <- c("#4bd752", "#d7984b", "#d7524b")
+task_colors <- c("red4", "green4", "blue4")
+```
+
+
+### Mental Rotation
+
+```{r}
+MR_full |> 
+  ggplot() +
+  stat_summary(aes(level, rt, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd) +
+  stat_summary(aes(level, rt),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Mental Rotation",
+       subtitle = "Reaction time",
+       x = "Difficulty level",
+       y = "Reaction time (s)")
+```
+
+```{r}
+MR_full |> 
+  ggplot() +
+  stat_summary(aes(level, acc, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange",
+               position = pd) +
+  stat_summary(aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Mental Rotation",
+       subtitle = "Accuracy",
+       x = "Difficulty level",
+       y = "Accuracy")
+```
+
+
+### Memory Span
+
+```{r}
+MS_full |> 
+  ggplot() +
+  stat_summary(aes(level, rt, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd) +
+  stat_summary(aes(level, rt),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Memory Span",
+       subtitle = "Reaction time",
+       x = "Difficulty level",
+       y = "Reaction time (s)")
+```
+
+```{r}
+MS_full |> 
+  ggplot() +
+  stat_summary(aes(level, acc, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange",
+               position = pd) +
+  stat_summary(aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Memory Span",
+       subtitle = "Accuracy",
+       x = "Difficulty level",
+       y = "Accuracy")
+```
+
+
+### Sternberg Task
+
+```{r}
+ST_full |> 
+  ggplot() +
+  stat_summary(aes(level, rt, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd) +
+  stat_summary(aes(level, rt),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Sternberg Task",
+       subtitle = "Reaction time",
+       x = "Difficulty level",
+       y = "Reaction time (s)")
+```
+
+```{r}
+ST_full |> 
+  ggplot() +
+  stat_summary(aes(level, acc, color = banch),
+               fun.data = mean_cl_boot, geom = "pointrange",
+               position = pd) +
+  stat_summary(aes(level, acc),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, color = "gray30") +
+  theme(legend.position = "bottom") +
+  labs(title = "Sternberg Task",
+       subtitle = "Accuracy",
+       x = "Difficulty level",
+       y = "Accuracy")
+```
+
+
+### NASA-TLX
+
+```{r}
+NASATLX_full |> 
+  ggplot() +
+  stat_summary(aes(scale, score, color = level, shape = banch),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd) +
+  stat_summary(aes(scale, score, color = level),
+               fun.data = mean_cl_boot, geom = "pointrange", 
+               position = pd, shape = 15) +
+  facet_grid(task ~ .) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(title = "NASA-TLX",
+       x = "Subscale",
+       y = "Score (raw)")
+```
+
+
+
+## Behavioral Data
+
+```{r}
+MR_full %>% 
+  bind_rows(MS_full, ST_full) -> behave_full
+```
+
+```{r r2-to-f2}
+r2tof2 <- function(r2) r2 / (1 - r2)
+```
+
+### Mental Rotation
+
+```{r}
+mix_MR_rt <- lmer(rt ~ level + (1|id), 
+               MR_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_MR_rt)
+anova(mix_MR_rt)
+r.squaredGLMM(mix_MR_rt)
+r2tof2(r.squaredGLMM(mix_MR_rt)[1])
+```
+
+```{r}
+mix_MR_acc <- lmer(acc ~ level + (1|id), 
+               MR_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_MR_acc)
+anova(mix_MR_acc)
+r.squaredGLMM(mix_MR_acc)
+r2tof2(r.squaredGLMM(mix_MR_acc)[1])
+```
+
+
+### Memory Span
+
+```{r}
+mix_MS_rt <- lmer(rt ~ level + (1|id), 
+               MS_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_MS_rt)
+anova(mix_MS_rt)
+r.squaredGLMM(mix_MS_rt)
+r2tof2(r.squaredGLMM(mix_MS_rt)[1])
+```
+
+```{r}
+mix_MS_acc <- lmer(acc ~ level + (1|id), 
+               MS_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_MS_acc)
+anova(mix_MS_acc)
+r.squaredGLMM(mix_MS_acc)
+r2tof2(r.squaredGLMM(mix_MS_acc)[1])
+```
+
+
+### Sternberg Task
+
+```{r}
+mix_ST_rt <- lmer(rt ~ level + (1|id), 
+               ST_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_ST_rt)
+anova(mix_ST_rt)
+r.squaredGLMM(mix_ST_rt)
+r2tof2(r.squaredGLMM(mix_ST_rt)[1])
+```
+
+```{r}
+mix_ST_acc <- lmer(acc ~ level + (1|id), 
+               ST_full,
+               contrasts = list(level="contr.treatment"))
+summary(mix_ST_acc)
+anova(mix_ST_acc)
+r.squaredGLMM(mix_ST_acc)
+r2tof2(r.squaredGLMM(mix_ST_acc)[1])
+```
+
+
+
+## NASA-TLX: GLMM scales
+
+```{r nasatlx-wide}
+NASATLX_full |> 
+  pivot_wider(values_from = score, names_from = scale) %>% 
+  mutate(OW = ME + PH + TI + PE + EF + FR) -> NASATLX_wide
+```
+
+
+
+### ME
+
+```{r}
+mix_ME <- lmer(ME ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_ME)
+anova(mix_ME)
+r.squaredGLMM(mix_ME)
+r2tof2(r.squaredGLMM(mix_ME)[1])
+```
+
+
+### PH
+
+```{r}
+mix_PH <- lmer(PH ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PH)
+anova(mix_PH)
+r.squaredGLMM(mix_PH)
+r2tof2(r.squaredGLMM(mix_PH)[1])
+```
+
+
+### TI
+
+```{r}
+mix_TI <- lmer(TI ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_TI)
+anova(mix_TI)
+r.squaredGLMM(mix_TI)
+r2tof2(r.squaredGLMM(mix_TI)[1])
+```
+
+
+### PE
+
+```{r}
+mix_PE <- lmer(PE ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PE)
+anova(mix_PE)
+r.squaredGLMM(mix_PE)
+r2tof2(r.squaredGLMM(mix_PE)[1])
+```
+
+### EF
+```{r}
+mix_EF <- lmer(EF ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_EF)
+anova(mix_EF)
+r.squaredGLMM(mix_EF)
+r2tof2(r.squaredGLMM(mix_EF)[1])
+```
+
+
+### FR
+
+```{r}
+mix_FR <- lmer(FR ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_FR)
+anova(mix_FR)
+r.squaredGLMM(mix_FR)
+r2tof2(r.squaredGLMM(mix_FR)[1])
+```
+
+
+### OW
+
+```{r}
+mix_OW <- lmer(OW ~ task * level + (1|id), 
+               NASATLX_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_OW)
+anova(mix_OW)
+r.squaredGLMM(mix_OW)
+r2tof2(r.squaredGLMM(mix_OW)[1])
+```
+
+### Plots Raw Scales
+
+```{r}
+NASATLX_wide |> 
+  pivot_longer(cols = c("ME", "PH", "EF", "PE", "TI", "FR", "OW"),
+               names_to = "scale", values_to = "raw_score") %>% 
+  filter(scale != "OW") %>% 
+  ggplot() + 
+  stat_summary(aes(level, raw_score),
+               fun.data = mean_cl_boot, geom = "errorbar", 
+               width = .5,
+               position = pd) +
+  stat_summary(aes(level, raw_score),
+               fun = mean, geom = "point",
+               size = 2,
+               position = pd) +
+  facet_grid(task ~ scale, scales = "free_y") +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(title = "NASA-TLX",
+       x = "Difficulty Level",
+       y = "Score (raw)")
+```
+
+
+```{r}
+NASATLX_wide |> 
+  pivot_longer(cols = c("ME", "PH", "EF", "PE", "TI", "FR", "OW"),
+               names_to = "scale", values_to = "raw_score") %>% 
+  filter(scale == "OW") %>% 
+  ggplot() + 
+  stat_summary(aes(level, raw_score),
+               fun.data = mean_cl_boot, geom = "errorbar", 
+               width = .3,
+               position = pd) +
+  stat_summary(aes(level, raw_score),
+               fun = mean, geom = "point",
+               size = 2,
+               position = pd) +
+  facet_grid(task ~ scale, scales = "free_y") +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(title = "NASA-TLX",
+       x = "Difficulty Level",
+       y = "Score (raw)")
+```
+
+
+
+## NASA-TLX: GLMM Weighted Scales
+
+```{r}
+WEIGHTS_data_toloka %>% 
+  rename("scale" = choice,
+         "task" = task_type) %>% 
+  mutate(task = recode(task,
+                       "mental_rotation" = "MR",
+                       "sternberg" = "ST",
+                       "mental_span" = "MS")) %>% 
+  full_join(NASATLX_data_toloka,
+            by = join_by(id, task, scale)) %>% 
+  mutate(score_w = w * score) %>% 
+  select(-c("n", "w", "score")) %>% 
+  pivot_wider(values_from = score_w, names_from = scale) %>% 
+  mutate(OW = ME + PH + TI + PE + EF + FR) -> NASATLX_weighted_toloka
+```
+
+
+### ME
+
+```{r}
+mix_ME_w <- lmer(ME ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_ME_w)
+anova(mix_ME_w)
+r.squaredGLMM(mix_ME_w)
+r2tof2(r.squaredGLMM(mix_ME_w)[1])
+```
+
+
+### PH
+
+```{r}
+mix_PH_w <- lmer(PH ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PH_w)
+anova(mix_PH_w)
+r.squaredGLMM(mix_PH_w)
+r2tof2(r.squaredGLMM(mix_PH_w)[1])
+```
+
+
+### TI
+
+```{r}
+mix_TI_w <- lmer(TI ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_TI_w)
+anova(mix_TI_w)
+r.squaredGLMM(mix_TI_w)
+r2tof2(r.squaredGLMM(mix_TI_w)[1])
+```
+
+
+### PE
+
+```{r}
+mix_PE_w <- lmer(PE ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PE_w)
+anova(mix_PE_w)
+r.squaredGLMM(mix_PE_w)
+r2tof2(r.squaredGLMM(mix_PE_w)[1])
+```
+
+### EF
+```{r}
+mix_EF_w <- lmer(EF ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_EF_w)
+anova(mix_EF_w)
+r.squaredGLMM(mix_EF_w)
+r2tof2(r.squaredGLMM(mix_EF_w)[1])
+```
+
+
+### FR
+
+```{r}
+mix_FR_w <- lmer(FR ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_FR_w)
+anova(mix_FR_w)
+r.squaredGLMM(mix_FR_w)
+r2tof2(r.squaredGLMM(mix_FR_w)[1])
+```
+
+
+### OW
+
+```{r}
+mix_OW_w <- lmer(OW ~ task * level + (1|id), 
+               NASATLX_weighted_toloka,
+               contrasts = list(level="contr.treatment"))
+summary(mix_OW_w)
+anova(mix_OW_w)
+r.squaredGLMM(mix_OW_w)
+r2tof2(r.squaredGLMM(mix_OW_w)[1])
+```
+
+
+### Plots Weighted Scales
+
+```{r}
+NASATLX_weighted_toloka |> 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) %>% 
+  pivot_longer(cols = c("ME", "PH", "EF", "PE", "TI", "FR", "OW"),
+               names_to = "scale", values_to = "weighted_score") %>% 
+  filter(scale != "OW") %>% 
+  ggplot() + 
+  stat_summary(aes(level, weighted_score),
+               fun.data = mean_cl_boot, geom = "errorbar", 
+               width = .5,
+               position = pd) +
+  stat_summary(aes(level, weighted_score),
+               fun = mean, geom = "point",
+               size = 2,
+               position = pd) +
+  facet_grid(task ~ scale, scales = "free_y") +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(title = "NASA-TLX",
+       x = "Difficulty Level",
+       y = "Score (weighted)")
+```
+
+
+```{r}
+NASATLX_weighted_toloka |> 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) %>% 
+  pivot_longer(cols = c("ME", "PH", "EF", "PE", "TI", "FR", "OW"),
+               names_to = "scale", values_to = "weighted_score") %>% 
+  filter(scale == "OW") %>% 
+  ggplot() + 
+  stat_summary(aes(level, weighted_score),
+               fun.data = mean_cl_boot, geom = "errorbar", 
+               width = .3,
+               position = pd) +
+  stat_summary(aes(level, weighted_score),
+               fun = mean, geom = "point",
+               size = 2,
+               position = pd) +
+  facet_grid(task ~ scale, scales = "free_y") +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(title = "NASA-TLX",
+       x = "Difficulty Level",
+       y = "Score (weighted)")
+```
+
+
+
+

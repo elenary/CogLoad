@@ -7,12 +7,16 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: preprocess.qmd
-        text: Preprocess
-      - href: analysis.qmd
-        text: Analysis
+      - href: preproc_pavlovia.qmd
+        text: Preprocess Pavlovia Banch
+      - href: analysis_pavlovia.qmd
+        text: Analysis Pavlovia Banch
       - href: toloka_explore.qmd
-        text: Ya.Toloka Explore
+        text: Ya.Toloka Exploration
+      - href: preproc_toloka.qmd
+        text: Preprocess Toloka Banch
+      - href: analysis_toloka.qmd
+        text: Analysis Toloka Banch
 
 format:
   html:

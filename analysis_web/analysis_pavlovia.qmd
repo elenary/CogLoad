@@ -26,12 +26,12 @@ rm(list = ls())
 ## Reading data
 
 ```{r reading-data}
-MR_data <- read_csv("MR_firstbanch_data.csv")
-ST_data <- read_csv("ST_firstbanch_data.csv")
-MS_data <- read_csv("MS_firstbanch_data.csv")
-NASATLX_data <- read_csv("NASATLX_firstbanch_data.csv")
-SEQUENCE_data <- read_csv("SEQ_firstbanch_data.csv")
-EXPTIME <- read_csv("EXPTIME_firstbanch_data.csv")
+MR_data <- read_csv("../preproc-data/MR_firstbanch_data.csv")
+ST_data <- read_csv("../preproc-data/ST_firstbanch_data.csv")
+MS_data <- read_csv("../preproc-data/MS_firstbanch_data.csv")
+NASATLX_data <- read_csv("../preproc-data/NASATLX_firstbanch_data.csv")
+SEQUENCE_data <- read_csv("../preproc-data/SEQ_firstbanch_data.csv")
+EXPTIME <- read_csv("../preproc-data/EXPTIME_firstbanch_data.csv")
 ```
 
 
@@ -79,7 +79,7 @@ MR_data |>
 ```
 
 ```{r}
-MR_data_agg |> write_csv("MR_firstbanch_data_agg.csv")
+MR_data_agg |> write_csv("../preproc-data/MR_firstbanch_data_agg.csv")
 ```
 
 ```{r mr_rt_desc}
@@ -137,7 +137,7 @@ MS_data |>
 ```
 
 ```{r}
-MS_data_agg |> write_csv("MS_firstbanch_data_agg.csv")
+MS_data_agg |> write_csv("../preproc-data/MS_firstbanch_data_agg.csv")
 ```
 
 ```{r ms_rt_desc}
@@ -195,7 +195,7 @@ ST_data |>
 ```
 
 ```{r}
-ST_data_agg |> write_csv("ST_firstbanch_data_agg.csv")
+ST_data_agg |> write_csv("../preproc-data/ST_firstbanch_data_agg.csv")
 ```
 
 ```{r st_rt_desc}
