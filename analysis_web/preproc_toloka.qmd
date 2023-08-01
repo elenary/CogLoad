@@ -489,7 +489,12 @@ ST_data |>
   select(-file) -> ST_data
 NASATLX_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> NASATLX_data
+  select(-file) %>% 
+  pivot_wider(names_from = scale, values_from = score) %>% 
+  mutate(PE = 20 - PE) %>% # reverse PE scale
+  pivot_longer(cols = -c("task", "level", "id"),
+               names_to = "scale", values_to = "score") %>% 
+  mutate(score = (score * 5) %>% round()) -> NASATLX_data
 SEQUENCE_data |> 
   full_join(tolokaIDS) |> 
   select(-file) -> SEQUENCE_data

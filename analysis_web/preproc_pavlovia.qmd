@@ -485,7 +485,14 @@ tibble(
 MR_data |> select(-id) |> full_join(IDS, by = "file") -> MR_data
 ST_data |> select(-id) |> full_join(IDS, by = "file") -> ST_data
 MS_data |> select(-id) |> full_join(IDS, by = "file") -> MS_data
-NASATLX_data |> select(-id) |> full_join(IDS, by = "file") -> NASATLX_data
+NASATLX_data |> 
+  select(-id) |> 
+  full_join(IDS, by = "file") %>% 
+  pivot_wider(names_from = scale, values_from = score) %>% 
+  mutate(PE = 20 - PE) %>% # reverse PE scale
+  pivot_longer(cols = -c("task", "level", "id"),
+               names_to = "scale", values_to = "score") %>% 
+  mutate(score = (score * 5) %>% round()) -> NASATLX_data
 SEQUENCE_data |> select(-id) |> full_join(IDS, by = "file") -> SEQUENCE_data
 exptime |> full_join(IDS, by = "file") -> exptime
 ```
@@ -494,11 +501,17 @@ exptime |> full_join(IDS, by = "file") -> exptime
 ## Save preprocessed data
 
 ```{r save-preproc-data}
-MR_data |> select(-file) |> write_csv("../preproc-data/MR_pav_data.csv")
-ST_data |> select(-file) |> write_csv("../preproc-data/ST_pav_data.csv")
-MS_data |> select(-file) |> write_csv("../preproc-data/MS_pav_data.csv")
-NASATLX_data |> select(-file) |> write_csv("../preproc-data/NASATLX_pav_data.csv")
-SEQUENCE_data |> select(-file) |> write_csv("../preproc-data/SEQ_pav_data.csv")
-exptime |> select(-file) |> write_csv("../preproc-data/EXPTIME_pav_data.csv")
+MR_data |> select(-file) |> 
+  write_csv("../preproc-data/MR_pav_data.csv")
+ST_data |> select(-file) |> 
+  write_csv("../preproc-data/ST_pav_data.csv")
+MS_data |> select(-file) |> 
+  write_csv("../preproc-data/MS_pav_data.csv")
+NASATLX_data |> select(-file) |>
+  write_csv("../preproc-data/NASATLX_pav_data.csv")
+SEQUENCE_data |> select(-file) |> 
+  write_csv("../preproc-data/SEQ_pav_data.csv")
+exptime |> select(-file) |> 
+  write_csv("../preproc-data/EXPTIME_pav_data.csv")
 IDS |> write_csv("../preproc-data/IDS_pav_data.csv")
 ```

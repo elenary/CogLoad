@@ -610,5 +610,140 @@ NASATLX_weighted_toloka |>
 ```
 
 
+## Correlation Matrix
+
+### MR hard
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MR" & level == "hard") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+### MR medium
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MR" & level == "medium") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
+### MR easy
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MR" & level == "easy") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+### MS hard
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MS" & level == "hard") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
+### MS medium
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MS" & level == "medium") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MS" & level == "easy") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
+### MS easy
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "MS" & level == "easy") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+### ST hard
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "ST" & level == "hard") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+### ST medium
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "ST" & level == "medium") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
+### ST easy
+
+```{r}
+corrplot::corrplot.mixed(
+  cor(NASATLX_full %>% 
+        filter(task == "ST" & level == "easy") %>% 
+        select(scale, score, id) %>% 
+        pivot_wider(names_from = scale, values_from = score) %>% 
+        select(-id)
+      )
+)
+```
+
+
 
 
