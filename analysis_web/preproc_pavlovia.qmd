@@ -416,6 +416,16 @@ NASATLX_data <- tibble()
 SEQUENCE_data <- tibble()
 ```
 
+```{r}
+## broken files
+file.remove("../data-pav/043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv")
+```
+
+```{r file-paths-upd}
+files <- paste0("../data-pav/", dir("../data-pav"))
+length(files)
+```
+
 ```{r preprocess}
 
 for (i in 1:length(files)) {

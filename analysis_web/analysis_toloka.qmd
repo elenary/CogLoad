@@ -745,5 +745,52 @@ corrplot::corrplot.mixed(
 ```
 
 
+## $SE_r$ and sample size
+
+```{r}
+# calc se of r
+se_r <- function(r, n) {
+  return(sqrt(1 - r^2) / sqrt(n - 2))
+}
+```
+
+```{r}
+# calc sample size based on r and se of r
+se_r_n <- function(r, se) {
+  return(list(r = r,
+              se = se,
+              n = (1 - r^2) / se^2 + 2))
+}
+```
+
+```{r}
+## test
+se_r(0.3, 200) # 0.06779351
+se_r_n(0.3, 0.06779351) # 200
+
+se_r(0.3, 120) # 0.08781722
+se_r_n(0.3, 0.08781722) # 120
+```
+
+```{r}
+seq(0.01, 0.1, by = 0.01) |> map(se_r_n, r = 0.27) |> unlist()
+```
+
+```{r}
+ci_r <- function(r, n) {
+  r_ = atanh(r)
+  se_ = 1 / sqrt(n - 3)
+  lower_ = r_ - 1.96 * se_
+  upper_ = r_ + 1.96 * se_
+  return(list(r = r,
+              n = n,
+              CI = c(lower = tanh(lower_),
+                     upper = tanh(upper_))))
+}
+```
+
+```{r}
+seq(0.01, 0.1, by = 0.01) |> map(se_r_n, r = 0.27) |> map(function(x) x$n) |> map(ci_r, r = 0.27)
+```
 
 

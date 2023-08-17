@@ -342,8 +342,7 @@ sequence_preproc <- function(d) {
     sapply(function(x) which(x == 1)) -> v
 
   tibble(name = names(v),
-         order = v,
-         id = d[["Индивидуальный_код"]][1]) |>
+         order = v) |>
     arrange(order) |>
     separate(name, c("level", "task"), "_") |>
     mutate(
@@ -402,16 +401,19 @@ weights_preproc <- function(d) {
 
 ## All Toloka files
 
-```{r}
+```{r, include=FALSE}
 ## dropped with low accuracy
 file.remove("../data-toloka/pool2/MA1907_toloka_2023-07-19_16h56.11.966.csv")
+## broken file, no MS hard data 
+file.remove("../data-toloka/pool34/21111984_toloka_2023-07-21_17h42.24.114.csv")
 ```
 
 ```{r toloka-all-files}
 files <- c(
   paste0("../data-toloka/pool1/", dir("../data-toloka/pool1")),
   paste0("../data-toloka/pool2/", dir("../data-toloka/pool2")),
-  paste0("../data-toloka/pool34/", dir("../data-toloka/pool34"))
+  paste0("../data-toloka/pool34/", dir("../data-toloka/pool34")),
+  paste0("../data-toloka/pool5/", dir("../data-toloka/pool5"))
 )
 ```
 
@@ -448,10 +450,18 @@ for (i in 1:length(files)) {
 set.seed(116)
 tibble(file = MR_data$file |> unique(),
        id = stringi::stri_rand_strings(MR_data$file |> unique() |> length(),
-                                       length = 10)) -> tolokaIDS
+                                       length = 10)) |> 
+  mutate(pool = str_extract_all(file, "pool\\d+") |> unlist()) -> tolokaIDS
 
 ```
 
+```{r}
+unique(MR_data$file) |> length()
+unique(ST_data$file) |> length()
+unique(MS_data$file) |> length()
+unique(NASATLX_data$file) |> length()
+unique(SEQUENCE_data$file) |> length()
+```
 
 ## Plotting
 
