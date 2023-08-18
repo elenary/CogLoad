@@ -467,23 +467,35 @@ unique(SEQUENCE_data$file) |> length()
 
 ```{r}
 MR_data %>% 
+  full_join(tolokaIDS, by = "file") |> 
+  filter(pool == "pool5")|> 
   ggplot(aes(level, rt)) +
+  geom_boxplot(data = MR_data |> select(-file), color = "darkred") +
   geom_boxplot() +
-  facet_wrap(~ file, scales = "free_y")
+  facet_wrap(~ file, scales = "free_y") +
+  ylim(0, 100)
 ```
 
 ```{r}
 MS_data %>% 
+  full_join(tolokaIDS, by = "file") |> 
+  filter(pool == "pool5")|>
   ggplot(aes(level, rt)) +
+  geom_boxplot(data = MS_data |> select(-file), color = "darkred") +
   geom_boxplot() +
-  facet_wrap(~ file, scales = "free_y")
+  facet_wrap(~ file, scales = "free_y") +
+  ylim(0, 250)
 ```
 
 ```{r}
 ST_data %>% 
+  full_join(tolokaIDS, by = "file") |> 
+  filter(pool == "pool5")|>
   ggplot(aes(level, rt)) +
+  geom_boxplot(data = ST_data |> select(-file), color = "darkred") +
   geom_boxplot() +
-  facet_wrap(~ file, scales = "free_y")
+  facet_wrap(~ file, scales = "free_y") +
+  ylim(0, 25)
 ```
 
 
