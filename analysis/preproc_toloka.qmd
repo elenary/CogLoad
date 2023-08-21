@@ -1,5 +1,9 @@
 # Preprocess. Toloka Banch
 
+```{r prep-tol-opts}
+#knitr::opts_chunk$set(eval = FALSE)
+```
+
 ## Packages
 
 ```{r}
@@ -415,6 +419,7 @@ files <- c(
   paste0("../data-toloka/pool34/", dir("../data-toloka/pool34")),
   paste0("../data-toloka/pool5/", dir("../data-toloka/pool5"))
 )
+files |> length()
 ```
 
 ```{r}
@@ -443,6 +448,14 @@ for (i in 1:length(files)) {
 }
 ```
 
+```{r}
+MR_data$file |> unique() |> length()
+MS_data$file |> unique() |> length()
+ST_data$file |> unique() |> length()
+NASATLX_data$file |> unique() |> length()
+SEQUENCE_data$file |> unique() |> length()
+WEIGHTS_data$file |> unique() |> length()
+```
 
 ### Create IDs for Toloka files
 
@@ -455,17 +468,9 @@ tibble(file = MR_data$file |> unique(),
 
 ```
 
-```{r}
-unique(MR_data$file) |> length()
-unique(ST_data$file) |> length()
-unique(MS_data$file) |> length()
-unique(NASATLX_data$file) |> length()
-unique(SEQUENCE_data$file) |> length()
-```
 
-## Plotting
 
-```{r}
+```{r, include=FALSE}
 MR_data %>% 
   full_join(tolokaIDS, by = "file") |> 
   filter(pool == "pool5")|> 
@@ -476,7 +481,7 @@ MR_data %>%
   ylim(0, 100)
 ```
 
-```{r}
+```{r, include=FALSE}
 MS_data %>% 
   full_join(tolokaIDS, by = "file") |> 
   filter(pool == "pool5")|>
@@ -487,7 +492,7 @@ MS_data %>%
   ylim(0, 250)
 ```
 
-```{r}
+```{r, include=FALSE}
 ST_data %>% 
   full_join(tolokaIDS, by = "file") |> 
   filter(pool == "pool5")|>
@@ -502,29 +507,51 @@ ST_data %>%
 ```{r add-ids}
 MR_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> MR_data
+  select(-file) -> MR_data_prep
+
 MS_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> MS_data
+  select(-file) -> MS_data_prep
+
 ST_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> ST_data
+  select(-file) -> ST_data_prep
+
 NASATLX_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) %>% 
-  pivot_wider(names_from = scale, values_from = score) %>% 
-  mutate(PE = 20 - PE) %>% # reverse PE scale
-  pivot_longer(cols = -c("task", "level", "id"),
-               names_to = "scale", values_to = "score") %>% 
-  mutate(score = (score * 5) %>% round()) -> NASATLX_data
+  select(-file) |> 
+  pivot_wider(names_from = scale, values_from = score) |> 
+  mutate(PE = 20 - PE)  |>  # reverse PE scale
+  pivot_longer(cols = -c("task", "level", "id", "pool"),
+               names_to = "scale", values_to = "score") |> 
+  mutate(score = (score * 5) %>% round()) -> NASATLX_data_prep
+
 SEQUENCE_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> SEQUENCE_data
+  select(-file) -> SEQUENCE_data_prep
+
 WEIGHTS_data |> 
   full_join(tolokaIDS) |> 
-  select(-file) -> WEIGHTS_data
+  select(-file) -> WEIGHTS_data_prep
 ```
 
+
+## Save data
+
+```{r}
+MR_data_prep |> 
+  write_csv("../preproc-data/MR-tol-data.csv")
+MS_data_prep |> 
+  write_csv("../preproc-data/MS-tol-data.csv")
+ST_data_prep |> 
+  write_csv("../preproc-data/ST-tol-data.csv")
+NASATLX_data_prep |> 
+  write_csv("../preproc-data/NASATLX-tol-data.csv")
+SEQUENCE_data_prep |> 
+  write_csv("../preproc-data/SEQ-tol-data.csv")
+WEIGHTS_data_prep |> 
+  write_csv("../preproc-data/WEIGHTS-tol-data.csv")
+```
 
 ## Clear & Aggregate
 

@@ -1,6 +1,6 @@
 # First banch. Analysis workflow
 
-```{r}
+```{r an-pav-opts}
 knitr::opts_chunk$set(error = TRUE)
 ```
 
@@ -9,13 +9,11 @@ knitr::opts_chunk$set(error = TRUE)
 ```{r pkgs-analysis}
 library(tidyverse)
 theme_set(theme_bw()) # set black and white theme
-library(lavaan)
-library(tidySEM)
-library(semPower)
 library(lme4)
 library(lmerTest)
 library(MuMIn)
 library(pwr)
+library(ez)
 ```
 
 ```{r}
@@ -26,82 +24,121 @@ rm(list = ls())
 ## Reading data
 
 ```{r reading-data}
-MR_data <- read_csv("../preproc-data/MR_firstbanch_data.csv")
-ST_data <- read_csv("../preproc-data/ST_firstbanch_data.csv")
-MS_data <- read_csv("../preproc-data/MS_firstbanch_data.csv")
-NASATLX_data <- read_csv("../preproc-data/NASATLX_firstbanch_data.csv")
-SEQUENCE_data <- read_csv("../preproc-data/SEQ_firstbanch_data.csv")
-EXPTIME <- read_csv("../preproc-data/EXPTIME_firstbanch_data.csv")
-```
-
-
-
-## Experimental time
-
-```{r exp-time-raw-density}
-EXPTIME |> ggplot(aes(dur)) +
-  geom_density()
-```
-
-```{r exp-time-desc}
-EXPTIME |> 
-  filter(dur < 250) |> 
-  ggplot(aes(dur)) +
-  # geom_density() +
-  geom_histogram() +
-  geom_vline(xintercept = 70) +
-  geom_vline(xintercept = 75) +
-  geom_vline(xintercept = 100)
-
-EXPTIME |> 
-  filter(dur < 250) |> 
-  ggplot(aes(dur)) +
-  geom_boxplot() 
-  #geom_vline(xintercept = 93, linetype = "dashed")
-```
-
-```{r}
-EXPTIME$dur |> min(na.rm = TRUE)
-quantile(EXPTIME$dur[EXPTIME$dur<250], .75, na.rm = TRUE) + 1.5 * IQR(EXPTIME$dur[EXPTIME$dur<250], na.rm = TRUE)
+MR_data <- read_csv("../preproc-data/MR_pav_data.csv")
+ST_data <- read_csv("../preproc-data/ST_pav_data.csv")
+MS_data <- read_csv("../preproc-data/MS_pav_data.csv")
+NASATLX_data <- read_csv("../preproc-data/NASATLX_pav_data.csv")
+SEQUENCE_data <- read_csv("../preproc-data/SEQ_pav_data.csv")
 ```
 
 
 
 ## Behavioral data
 
-### Mental Rotation
+### Remove outliers & Aggregate
 
-```{r mr-agg}
+```{r is-outlier-fun}
+is_outlier <- function(x) ifelse(x > quantile(x, .25, na.rm = TRUE) - 1.5 * IQR(x, na.rm = TRUE) &
+                                   x < quantile(x, .75, na.rm = TRUE) + 1.5 * IQR(x, na.rm = TRUE),
+                                 FALSE, TRUE)
+```
+
+#### Mental Rotation
+
+```{r}
 MR_data |> 
   group_by(id, level, task) |> 
+  mutate(is_outlier = is_outlier(rt)) |> 
+  filter(!is_outlier) |> 
   summarise(rt = mean(rt),
             acc = mean(is_correct)) -> MR_data_agg
 ```
 
 ```{r}
-MR_data_agg |> write_csv("../preproc-data/MR_firstbanch_data_agg.csv")
+MR_data_agg |> write_csv("../preproc-data/MR_pav_data_agg.csv")
 ```
+
+#### Memory Span
+
+```{r ms-agg}
+MS_data |> 
+  group_by(id, level, task) |> 
+  mutate(is_outlier = is_outlier(rt)) |> 
+  mutate(is_outlier = ifelse(is.na(is_outlier), FALSE, is_outlier)) |> 
+  filter(!is_outlier) |> 
+  summarise(rt = mean(rt),
+            acc = mean(acc)) -> MS_data_agg
+```
+
+```{r}
+MS_data_agg |> write_csv("../preproc-data/MS_pav_data_agg.csv")
+```
+
+#### Sternberg Task
+
+```{r st-agg}
+ST_data |> 
+  group_by(id, level, task) |> 
+  mutate(is_outlier = is_outlier(rt)) |> 
+  filter(!is_outlier) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> ST_data_agg
+```
+
+```{r}
+ST_data_agg |> write_csv("../preproc-data/ST_pav_data_agg.csv")
+```
+
+
+### Plot all paradigms
+
+```{r rt_plot, warning=FALSE}
+MR_data_agg |> 
+  bind_rows(MS_data_agg, ST_data_agg) |>
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, rt)) +
+  facet_wrap(~ task, scales = "free_y", 
+             labeller = labeller(task = c(MR = "Mental Rotation",
+                                          MS = "Memory Span", 
+                                          ST = "Sternberg Task"))) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s")
+```
+
+```{r acc_plot}
+MR_data_agg |> 
+  bind_rows(MS_data_agg, ST_data_agg) |>
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, acc)) +
+  facet_wrap(~ task, scales = "free_y", 
+             labeller = labeller(task = c(MR = "Mental Rotation",
+                                          MS = "Memory Span", 
+                                          ST = "Sternberg Task"))) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Accuracy")
+```
+
+### Desriptives
+
+#### Mental Rotation 
 
 ```{r mr_rt_desc}
 MR_data_agg |> 
   group_by(level, task) |> 
   summarise(n = unique(id) |> length(),
             mean = mean(rt),
+            median = median(rt),
             sd = sd(rt),
             min = min(rt),
             max = max(rt),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
-```
-
-```{r mr_rt_plot}
-MR_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, rt)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MR")
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  # mutate_all(.funs = function(x) if (is.double(x)) return(round(x, 2)) else return(x)) |> 
+  knitr::kable(caption = "Mental Rotation. Reaction Time", digits = 2)
 ```
 
 ```{r mr_acc_desc}
@@ -113,53 +150,27 @@ MR_data_agg |>
             min = min(acc),
             max = max(acc),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
-```
-
-```{r mr_acc_plot}
-MR_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, acc)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MR")
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  # mutate_all(.funs = function(x) if (is.double(x)) return(round(x, 3)) else return(x)) |> 
+  knitr::kable(caption = "Mental Rotation. Accuracy", digits = 3)
 ```
 
 
-### Mental Span
-
-```{r ms-agg}
-MS_data |> 
-  group_by(id, level, task) |> 
-  summarise(rt = mean(rt),
-            acc = mean(acc)) -> MS_data_agg
-```
-
-```{r}
-MS_data_agg |> write_csv("../preproc-data/MS_firstbanch_data_agg.csv")
-```
+#### Memory Span
 
 ```{r ms_rt_desc}
 MS_data_agg |> 
   group_by(level, task) |> 
   summarise(n = unique(id) |> length(),
             mean = mean(rt, na.rm = TRUE),
+            median = median(rt, na.rm = TRUE),
             sd = sd(rt, na.rm = TRUE),
             min = min(rt, na.rm = TRUE),
             max = max(rt, na.rm = TRUE),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
-```
-
-```{r ms_rt_plot}
-MS_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, rt)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MS")
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  # mutate_all(.funs = function(x) if (is.double(x)) return(round(x, 2)) else return(x)) |> 
+  knitr::kable(caption = "Memory Span. Reaction Time", digits = 2)
 ```
 
 ```{r ms_acc_desc}
@@ -171,32 +182,12 @@ MS_data_agg |>
             min = min(acc),
             max = max(acc),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
-```
-
-```{r ms_acc_plot}
-MS_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, acc)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "MS")
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  knitr::kable(caption = "Memory Span. Accuracy", digits = 3)
 ```
 
 
-### Sternberg
-
-```{r st-agg}
-ST_data |> 
-  group_by(id, level, task) |> 
-  summarise(rt = mean(rt),
-            acc = mean(is_correct)) -> ST_data_agg
-```
-
-```{r}
-ST_data_agg |> write_csv("../preproc-data/ST_firstbanch_data_agg.csv")
-```
+#### Sternberg Task
 
 ```{r st_rt_desc}
 ST_data_agg |> 
@@ -207,17 +198,8 @@ ST_data_agg |>
             min = min(rt),
             max = max(rt),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
-```
-
-```{r st_rt_plot}
-ST_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, rt)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "ST")
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  knitr::kable(caption = "Sternberg Task. Reaction Time", digits = 2)
 ```
 
 ```{r st_acc_desc}
@@ -229,52 +211,69 @@ ST_data_agg |>
             min = min(acc),
             max = max(acc),
             CI_lower = mean - 1.96 * sd / sqrt(n),
-            CI_upper = mean + 1.96 * sd / sqrt(n))
+            CI_upper = mean + 1.96 * sd / sqrt(n)) |> 
+  knitr::kable(caption = "Sternberg Task. Accuracy", digits = 3)
 ```
 
 
-```{r st_acc_plot}
-ST_data_agg |> 
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, acc)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "ST")
-```
+### ANOVA
 
-
-### Plot all paradigms
-
-```{r rt_plot}
+```{r bind-data}
 MR_data_agg |> 
-  bind_rows(MS_data_agg, ST_data_agg) |>
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, rt)) +
-  facet_wrap(~ task, scales = "free_y") +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "Reaction Time")
+  bind_rows(MS_data_agg, ST_data_agg) -> all_pav_data_agg
 ```
 
-```{r acc_plot}
-MR_data_agg |> 
-  bind_rows(MS_data_agg, ST_data_agg) |>
-  mutate(level = factor(level, 
-                        ordered = TRUE, 
-                        levels = c("easy", "medium", "hard"))) |> 
-  ggplot(aes(level, acc)) +
-  facet_wrap(~ task, scales = "free_y") +
-  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
-  labs(title = "Accuracy")
+#### Reaction Time
+
+```{r rt-anova}
+lmer(rt ~ task * level + (1|id), all_pav_data_agg) |> anova()
+```
+
+```{r pairwise-rt}
+pairwise.t.test(
+  x = all_pav_data_agg$rt,
+  g = interaction(all_pav_data_agg$task,
+                  all_pav_data_agg$level),
+  # paired = TRUE
+  )
+```
+
+#### Accuracy
+
+```{r acc-anova}
+ezANOVA(data = all_pav_data_agg,
+        dv = acc,
+        wid = id,
+        within = .(task, level),
+        detailed = TRUE) |> 
+  psychReport::aovEffectSize() -> acc_anova
+
+acc_anova$ANOVA |> 
+  knitr::kable(caption = "Accuracy ANOVA Results", digits = 3)
+
+acc_anova$`Mauchly's Test for Sphericity` |> 
+  knitr::kable(caption = "Mauchly's Test for Sphericity Results", digits = 3)
+
+acc_anova$`Sphericity Corrections` |> 
+  knitr::kable(caption = "Sphericity Corrections", digits = 3)
+```
+
+```{r pairwise-acc}
+pairwise.t.test(
+  x = all_pav_data_agg$acc,
+  g = interaction(all_pav_data_agg$task,
+                  all_pav_data_agg$level),
+  # paired = TRUE
+  )
 ```
 
 
 
-## NASA-TLX
 
-```{r}
+
+## Questionnaire Data
+
+```{r nasa-fix-factor}
 NASATLX_data |> 
   # fix factor
   mutate(
@@ -282,18 +281,11 @@ NASATLX_data |>
       level,
       levels = c("easy", "medium", "hard"),
       ordered = TRUE
-    ),
-    # modify vars to match with previously created encoding
-    scl = str_to_lower(scale),
-    tsk = str_to_lower(task),
-    lvl = str_sub(level, start = 1, end = 1) |> str_to_upper(),
-    score = score * 5
-  ) |>
-  # create a new var for CFA
-  unite(item, scl, tsk, lvl) -> NASATLX_data
+    )
+  ) -> NASATLX_data
 ```
 
-```{r}
+```{r set-colors}
 level_colors <- c("#4bd752", "#d7984b", "#d7524b")
 task_colors <- c("red4", "green4", "blue4")
 back_histogram_color <- "gray60"
@@ -303,7 +295,12 @@ back_histogram_color <- "gray60"
 NASATLX_data |>
   ggplot(aes(scale, score, fill = level)) +
   geom_boxplot() +
-  facet_grid(task ~ .) +
+  facet_grid(task ~ .,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
   theme(legend.position = "bottom") +
   labs(x = "NASA-TLX Scale",
        y = "NASA-TLX Score (raw)",
@@ -319,7 +316,12 @@ NASATLX_data |>
                position = pd, width = .3) +
   stat_summary(fun = mean, geom = "point",
                position = pd) +
-  facet_grid(task ~ .) +
+   facet_grid(task ~ .,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
   theme(legend.position = "bottom") +
   labs(x = "NASA-TLX Scale",
        y = "NASA-TLX Score (raw)",
@@ -370,11 +372,8 @@ ggsave("anova_errorbars.png", dpi = 300)
 
 ```{r nasatlx-wide}
 NASATLX_data |> 
-  select(-item) |> 
-  # mutate(row_nubmer = row_number()) |> 
-  pivot_wider(values_from = score, names_from = scale) -> nasa_tlx_wide
-# NASA_TLX |> group_by(task, level) |> summarise(n=n())
-# nasa_tlx_wide |> group_by(task, level) |> summarise(n=n())
+  pivot_wider(values_from = score, names_from = scale) |> 
+  mutate(OW = ME + PH + TI + PE + EF + FR) -> nasa_tlx_wide
 ```
 
 ```{r r2-to-f2}
@@ -382,7 +381,8 @@ r2tof2 <- function(r2) r2 / (1 - r2)
 ```
 
 #### ME
-```{r}
+
+```{r mix-me}
 mix_ME <- lmer(ME ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -391,13 +391,13 @@ anova(mix_ME)
 r.squaredGLMM(mix_ME)[1]
 r2tof2(r.squaredGLMM(mix_ME)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_ME)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
 #### PH
-```{r}
+```{r mix-ph}
 mix_PH <- lmer(PH ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -406,13 +406,13 @@ anova(mix_PH)
 r.squaredGLMM(mix_PH)[1]
 r2tof2(r.squaredGLMM(mix_PH)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_PH)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
 #### TI
-```{r}
+```{r mix-ti}
 mix_TI <- lmer(TI ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -421,13 +421,13 @@ anova(mix_TI)
 r.squaredGLMM(mix_TI)[1]
 r2tof2(r.squaredGLMM(mix_TI)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_TI)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
 #### PE
-```{r}
+```{r mix-pe}
 mix_PE <- lmer(PE ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -436,13 +436,13 @@ anova(mix_PE)
 r.squaredGLMM(mix_PE)[1]
 r2tof2(r.squaredGLMM(mix_PE)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_PE)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
 #### EF
-```{r}
+```{r mix-ef}
 mix_EF <- lmer(EF ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -451,13 +451,13 @@ anova(mix_EF)
 r.squaredGLMM(mix_EF)[1]
 r2tof2(r.squaredGLMM(mix_EF)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_EF)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
 #### FR
-```{r}
+```{r mix-fr}
 mix_FR <- lmer(FR ~ task * level + (1|id), 
                nasa_tlx_wide,
                contrasts = list(level="contr.treatment"))
@@ -466,103 +466,24 @@ anova(mix_FR)
 r.squaredGLMM(mix_FR)[1]
 r2tof2(r.squaredGLMM(mix_FR)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_FR)[1]),
-            u = 7,
+            u = 8,
             sig.level = .05,
             power = .8)
 ```
 
-### CFA apriopri power analysis
 
-```{r lavmodel}
-lavmodel <- "
-PE =~ PE_mr + PE_ms + PE_st
-ME =~ ME_mr + ME_ms + ME_st
-PH =~ PH_mr + PH_ms + PH_st
-EF =~ EF_mr + EF_ms + EF_st
-TI =~ TI_mr + TI_ms + TI_st
-FR =~ FR_mr + FR_ms + FR_st
-OW =~ PE + ME + PH + EF + TI + FR"
+#### Overall Workload
+
+```{r mix-ow}
+mix_OW <- lmer(OW ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_OW)
+anova(mix_OW)
+r.squaredGLMM(mix_OW)[1]
+r2tof2(r.squaredGLMM(mix_OW)[1])
+pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_OW)[1]),
+            u = 7,
+            sig.level = .05,
+            power = .8)
 ```
-
-```{r lavmodel-df}
-semPower.getDf(lavmodel)
-```
-
-```{r}
-ap <- semPower.aPriori(effect = .05, effect.measure = 'RMSEA',
-                       alpha = .05, power = .80, df = semPower.getDf(lavmodel))
-summary(ap)
-```
-
-### CFA analysis
-
-```{r nasatlx-data-cfa}
-NASATLX_data |> 
-  pivot_wider(id_cols = id, 
-              names_from = item, 
-              values_from = score,
-              values_fn = unlist) -> NASATLX_cfa
-```
-
-### Initial model 
-
-```{r}
-model1 <- "PE =~ pe_st_E + pe_st_M + pe_st_H + pe_mr_E + pe_mr_M + pe_mr_H + pe_ms_E + pe_ms_M + pe_ms_H
-ME =~ me_st_E + me_st_M + me_st_H + me_mr_E + me_mr_M + me_mr_H + me_ms_E + me_ms_M + me_ms_H
-PH =~ ph_st_E + ph_st_M + ph_st_H + ph_mr_E + ph_mr_M + ph_mr_H + ph_ms_E + ph_ms_M + ph_ms_H
-EF =~ ef_st_E + ef_st_M + ef_st_H + ef_mr_E + ef_mr_M + ef_mr_H + ef_ms_E + ef_ms_M + ef_ms_H
-TI =~ ti_st_E + ti_st_M + ti_st_H + ti_mr_E + ti_mr_M + ti_mr_H + ti_ms_E + ti_ms_M + ti_ms_H
-FR =~ fr_st_E + fr_st_M + fr_st_H + fr_mr_E + fr_mr_M + fr_mr_H + fr_ms_E + fr_ms_M + fr_ms_H
-OW =~ PE + ME + PH + EF + TI + FR"
-```
-
-```{r}
-cfa1 <- cfa(model1, NASATLX_cfa)
-summary(cfa1, fit.measures = TRUE)
-```
-
-```{r nasatlx-cfa-easy}
-model_easy <- "PE =~ pe_mr_E + pe_ms_E + pe_st_E
-PH =~ ph_mr_E + ph_ms_E + ph_st_E
-ME =~ me_mr_E + me_ms_E + me_st_E
-EF =~ ef_mr_E + ef_ms_E + ef_st_E
-TI =~ ti_mr_E + ti_ms_E + ti_st_E
-FR =~ fr_mr_E + fr_ms_E + fr_st_E
-OW =~ PE + ME + PH + EF + TI + FR"
-
-cfa_easy <- cfa(model_easy, NASATLX_cfa,)
-summary(cfa_easy, fit.measures = TRUE)
-
-fitmeasures(cfa_easy, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
-```
-
-```{r nasatlx-cfa-medium}
-model_medium <- "PE =~ pe_mr_M + pe_ms_M + pe_st_M
-PH =~ ph_mr_M + ph_ms_M + ph_st_M
-ME =~ me_mr_M + me_ms_M + me_st_M
-EF =~ ef_mr_M + ef_ms_M + ef_st_M
-TI =~ ti_mr_M + ti_ms_M + ti_st_M
-FR =~ fr_mr_M + fr_ms_M + fr_st_M
-OW =~ PE + ME + PH + EF + TI + FR"
-
-cfa_medium <- cfa(model_medium, NASATLX_cfa,)
-summary(cfa_medium, fit.measures = TRUE)
-
-fitmeasures(cfa_medium, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
-```
-
-```{r nasatlx-cfa-hard}
-model_hard <- "PE =~ pe_mr_H + pe_ms_H + pe_st_H
-PH =~ ph_mr_H + ph_ms_H + ph_st_H
-ME =~ me_mr_H + me_ms_H + me_st_H
-EF =~ ef_mr_H + ef_ms_H + ef_st_H
-TI =~ ti_mr_H + ti_ms_H + ti_st_H
-FR =~ fr_mr_H + fr_ms_H + fr_st_H
-OW =~ PE + ME + PH + EF + TI + FR"
-
-cfa_hard <- cfa(model_hard, NASATLX_cfa,)
-summary(cfa_medium, fit.measures = TRUE)
-
-fitmeasures(cfa_hard, fit.measures = c("chisq", "df", "pvalue", "cfi", "tli", "rmsea", "srmr"))
-```
-

@@ -1,5 +1,9 @@
 # Yandex.Toloka Data Exploration
 
+```{r exp-tol-opts}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 ## Packages
 
 ```{r}

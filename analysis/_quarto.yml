@@ -8,15 +8,15 @@ website:
       - href: index.qmd
         text: Home
       - href: preproc_pavlovia.qmd
-        text: Preprocess Pavlovia Banch
+        text: Preprocess First Banch
       - href: analysis_pavlovia.qmd
-        text: Analysis Pavlovia Banch
+        text: Analysis First Banch
       - href: toloka_explore.qmd
-        text: Ya.Toloka Exploration
+        text: Second Banch Exploration
       - href: preproc_toloka.qmd
-        text: Preprocess Toloka Banch
+        text: Preprocess Second Banch
       - href: analysis_toloka.qmd
-        text: Analysis Toloka Banch
+        text: Analysis Second Banch
 
 format:
   html:

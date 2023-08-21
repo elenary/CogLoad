@@ -418,12 +418,12 @@ SEQUENCE_data <- tibble()
 
 ```{r}
 ## broken files
-file.remove("../data-pav/043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv")
+## file.remove("../data-pav/043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv")
 ```
 
 ```{r file-paths-upd}
-files <- paste0("../data-pav/", dir("../data-pav"))
-length(files)
+# files <- paste0("../data-pav/", dir("../data-pav"))
+# length(files)
 ```
 
 ```{r preprocess}
@@ -492,36 +492,60 @@ tibble(
 ```
 
 ```{r add-ids}
-MR_data |> select(-id) |> full_join(IDS, by = "file") -> MR_data
-ST_data |> select(-id) |> full_join(IDS, by = "file") -> ST_data
-MS_data |> select(-id) |> full_join(IDS, by = "file") -> MS_data
+MR_data |> 
+  select(-id) |> 
+  full_join(IDS, by = "file") |> 
+  select(-file,
+         -base_pic,
+         -rotated_pic,
+         ) -> MR_data_prep
+
+ST_data |> 
+  select(-id) |> 
+  full_join(IDS, by = "file") |> 
+  select(-file) -> ST_data_prep
+
+MS_data |> 
+  select(-id) |> 
+  full_join(IDS, by = "file") |> 
+  select(-file) -> MS_data_prep
+
 NASATLX_data |> 
   select(-id) |> 
-  full_join(IDS, by = "file") %>% 
-  pivot_wider(names_from = scale, values_from = score) %>% 
-  mutate(PE = 20 - PE) %>% # reverse PE scale
+  full_join(IDS, by = "file") |>
+  select(-file) |> 
+  pivot_wider(names_from = scale, values_from = score) |> 
+  mutate(PE = 20 - PE) |> # reverse PE scale
   pivot_longer(cols = -c("task", "level", "id"),
-               names_to = "scale", values_to = "score") %>% 
-  mutate(score = (score * 5) %>% round()) -> NASATLX_data
-SEQUENCE_data |> select(-id) |> full_join(IDS, by = "file") -> SEQUENCE_data
-exptime |> full_join(IDS, by = "file") -> exptime
+               names_to = "scale", values_to = "score")  |>  
+  mutate(score = (score * 5) |> round()) -> NASATLX_data_prep
+
+SEQUENCE_data |> 
+  select(-id) |> 
+  full_join(IDS, by = "file") |> 
+  select(-file) -> SEQUENCE_data_prep
+
+exptime |> 
+  full_join(IDS, by = "file") |> 
+  select(-file) -> exptime_prep
 ```
 
 
 ## Save preprocessed data
 
 ```{r save-preproc-data}
-MR_data |> select(-file) |> 
+MR_data_prep |> 
   write_csv("../preproc-data/MR_pav_data.csv")
-ST_data |> select(-file) |> 
+ST_data_prep |> 
   write_csv("../preproc-data/ST_pav_data.csv")
-MS_data |> select(-file) |> 
+MS_data_prep |> 
   write_csv("../preproc-data/MS_pav_data.csv")
-NASATLX_data |> select(-file) |>
+NASATLX_data_prep |> 
   write_csv("../preproc-data/NASATLX_pav_data.csv")
-SEQUENCE_data |> select(-file) |> 
+SEQUENCE_data_prep |> 
   write_csv("../preproc-data/SEQ_pav_data.csv")
-exptime |> select(-file) |> 
+exptime |> 
   write_csv("../preproc-data/EXPTIME_pav_data.csv")
-IDS |> write_csv("../preproc-data/IDS_pav_data.csv")
+IDS |> 
+  write_csv("../preproc-data/IDS_pav_data.csv")
 ```
