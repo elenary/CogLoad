@@ -376,6 +376,14 @@ NASATLX_data |>
   mutate(OW = ME + PH + TI + PE + EF + FR) -> nasa_tlx_wide
 ```
 
+```{r}
+nasa_tlx_wide |> write_csv("../preproc-data/nasatlx_raw_score_pav_data.csv")
+```
+
+```{r}
+nasa_tlx_wide |> write_csv("")
+```
+
 ```{r r2-to-f2}
 r2tof2 <- function(r2) r2 / (1 - r2)
 ```

@@ -155,16 +155,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="menu-text">Analysis First Banch</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./toloka_explore.html">
- <span class="menu-text">Second Banch Exploration</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./preproc_toloka.html">
  <span class="menu-text">Preprocess Second Banch</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./analysis_toloka.html" aria-current="page">
  <span class="menu-text">Analysis Second Banch</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./correlations.html">
+ <span class="menu-text">Correlations</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -262,18 +262,18 @@ The following object is masked from 'package:stats':
 <section id="reading-data" class="level2">
 <h2 class="anchored" data-anchor-id="reading-data">Reading data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/MR-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/MR_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 3312 Columns: 11
+<pre><code>Rows: 3312 Columns: 9
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (8): correctAns, base_pic, rotated_pic, key, task, level, id, pool
+chr (6): correctAns, key, task, level, id, pool
 dbl (3): is_correct, rt, trial
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ST_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/ST-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ST_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/ST_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3312 Columns: 9
 ── Column specification ────────────────────────────────────────────────────────
@@ -284,7 +284,7 @@ dbl (4): target_present, is_correct, rt, trial
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>MS_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/MS-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>MS_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/MS_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3312 Columns: 8
 ── Column specification ────────────────────────────────────────────────────────
@@ -295,7 +295,7 @@ dbl (4): trials, n, rt, acc
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/NASATLX-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/NASATLX_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3726 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
@@ -306,7 +306,7 @@ dbl (1): score
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/SEQ-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/SEQ_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 621 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
@@ -317,7 +317,7 @@ dbl (1): order
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/WEIGHTS-tol-data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../preproc-data/WEIGHTS_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 1062 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
@@ -1346,6 +1346,8 @@ P value adjustment method: holm </code></pre>
 <span id="cb67-29"><a href="#cb67-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="fu">join_by</span>(id, task, level)</span>
 <span id="cb67-30"><a href="#cb67-30" aria-hidden="true" tabindex="-1"></a>      ) <span class="ot">-&gt;</span> NASATLX</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="plot-score-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="plot-score-distribution">Plot Score Distribution</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>NASATLX_weighted <span class="sc">|&gt;</span></span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale_w <span class="sc">!=</span> <span class="st">"OW_w"</span>) <span class="sc">|&gt;</span> </span>
@@ -1358,75 +1360,146 @@ P value adjustment method: holm </code></pre>
 <span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
 <span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
 <span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>) <span class="sc">+</span></span>
-<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> level_colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="analysis_toloka_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>NASATLX_weighted <span class="sc">|&gt;</span></span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale_w <span class="sc">!=</span> <span class="st">"OW_w"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale_w, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_grid</span>(task <span class="sc">~</span> .,</span>
-<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
-<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
-<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
-<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
-<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
-<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>) <span class="sc">+</span></span>
-<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>NASATLX_weighted <span class="sc">|&gt;</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale_w <span class="sc">==</span> <span class="st">"OW_w"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale_w, score_w, <span class="at">fill =</span> level)) <span class="sc">+</span></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> task,</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted Overall Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="analysis_toloka_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>NASATLX <span class="sc">|&gt;</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"pool"</span>),</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(scale, <span class="st">"_w"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"score_w"</span> <span class="ot">=</span> score) <span class="sc">|&gt;</span> </span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">scale =</span> <span class="fu">str_remove_all</span>(scale, <span class="st">"_w"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    NASATLX <span class="sc">|&gt;</span> </span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"pool"</span>),</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(scale, <span class="st">"_w"</span>)),</span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"scale"</span>, <span class="st">"pool"</span>)</span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="ot">-&gt;</span> nasatlx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>NASATLX_weighted <span class="sc">|&gt;</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale_w <span class="sc">!=</span> <span class="st">"OW_w"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale_w, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_grid</span>(task <span class="sc">~</span> .,</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="analysis_toloka_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> </span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">!=</span> <span class="st">"OW"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(score, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(task <span class="sc">~</span> scale) <span class="sc">+</span></span>
-<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>NASATLX_weighted <span class="sc">|&gt;</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale_w <span class="sc">==</span> <span class="st">"OW_w"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale_w, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_grid</span>(. <span class="sc">~</span> task,</span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
+<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb71-19"><a href="#cb71-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb71-20"><a href="#cb71-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted Overall Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="analysis_toloka_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> </span>
-<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task, level, scale) <span class="sc">|&gt;</span> </span>
-<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cor =</span> <span class="fu">cor</span>(score, score_w)) <span class="sc">|&gt;</span> </span>
-<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Correlations between raw and weighted scores"</span>,</span>
-<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>NASATLX <span class="sc">|&gt;</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"pool"</span>),</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(scale, <span class="st">"_w"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"score_w"</span> <span class="ot">=</span> score) <span class="sc">|&gt;</span> </span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">scale =</span> <span class="fu">str_remove_all</span>(scale, <span class="st">"_w"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>    NASATLX <span class="sc">|&gt;</span> </span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"pool"</span>),</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(scale, <span class="st">"_w"</span>)),</span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"id"</span>, <span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"scale"</span>, <span class="st">"pool"</span>)</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="ot">-&gt;</span> nasatlx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/nasatlx_weighted&amp;raw_score_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="correlations-between-weighted-and-raw-score" class="level4">
+<h4 class="anchored" data-anchor-id="correlations-between-weighted-and-raw-score">Correlations between Weighted and Raw Score</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">!=</span> <span class="st">"OW"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(score, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(task <span class="sc">~</span> scale) <span class="sc">+</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="analysis_toloka_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> </span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"OW"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(score, score_w, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(task <span class="sc">~</span> scale) <span class="sc">+</span></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="analysis_toloka_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span> </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task, level, scale) <span class="sc">|&gt;</span> </span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cor =</span> <span class="fu">cor</span>(score, score_w)) <span class="sc">|&gt;</span> </span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(cor)) <span class="sc">|&gt;</span> </span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Correlations between raw and weighted scores"</span>,</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'task', 'level'. You can override using the
 `.groups` argument.</code></pre>
@@ -1444,25 +1517,13 @@ P value adjustment method: holm </code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">MR</td>
+<td style="text-align: left;">MS</td>
 <td style="text-align: left;">easy</td>
-<td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.91</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.98</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.77</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.89</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MR</td>
+<td style="text-align: left;">ST</td>
 <td style="text-align: left;">easy</td>
 <td style="text-align: left;">OW</td>
 <td style="text-align: right;">0.97</td>
@@ -1470,38 +1531,14 @@ P value adjustment method: holm </code></pre>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
 <td style="text-align: left;">easy</td>
-<td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.67</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.97</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.53</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.78</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MR</td>
+<td style="text-align: left;">MS</td>
 <td style="text-align: left;">medium</td>
-<td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.91</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.72</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.84</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.96</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
@@ -1511,21 +1548,45 @@ P value adjustment method: holm </code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MR</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
 <td style="text-align: left;">medium</td>
-<td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.52</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.93</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.92</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.62</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">EF</td>
+<td style="text-align: right;">0.91</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MR</td>
 <td style="text-align: left;">medium</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.64</td>
+<td style="text-align: left;">EF</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.88</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
@@ -1534,10 +1595,34 @@ P value adjustment method: holm </code></pre>
 <td style="text-align: right;">0.88</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MR</td>
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">EF</td>
+<td style="text-align: right;">0.86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
 <td style="text-align: left;">hard</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.74</td>
+<td style="text-align: left;">OW</td>
+<td style="text-align: right;">0.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">EF</td>
+<td style="text-align: right;">0.85</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
@@ -1547,51 +1632,87 @@ P value adjustment method: holm </code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MR</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.94</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.84</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MR</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.40</td>
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.81</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MR</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.71</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.78</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MR</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.68</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.77</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
-<td style="text-align: left;">easy</td>
+<td style="text-align: left;">medium</td>
 <td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">0.77</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">EF</td>
+<td style="text-align: right;">0.76</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">MS</td>
 <td style="text-align: left;">easy</td>
 <td style="text-align: left;">FR</td>
 <td style="text-align: right;">0.75</td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.88</td>
-</tr>
 <tr class="odd">
 <td style="text-align: left;">MS</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ST</td>
 <td style="text-align: left;">easy</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.98</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.73</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.72</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
@@ -1600,22 +1721,22 @@ P value adjustment method: holm </code></pre>
 <td style="text-align: right;">0.71</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">easy</td>
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">hard</td>
 <td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.71</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.87</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MS</td>
+<td style="text-align: left;">ST</td>
 <td style="text-align: left;">medium</td>
 <td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.69</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
@@ -1624,34 +1745,22 @@ P value adjustment method: holm </code></pre>
 <td style="text-align: right;">0.69</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.75</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.96</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">medium</td>
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">easy</td>
 <td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.69</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.62</td>
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.68</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.75</td>
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">PE</td>
+<td style="text-align: right;">0.67</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
@@ -1662,8 +1771,44 @@ P value adjustment method: holm </code></pre>
 <tr class="odd">
 <td style="text-align: left;">MS</td>
 <td style="text-align: left;">hard</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.66</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">PE</td>
+<td style="text-align: right;">0.66</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">TI</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">hard</td>
 <td style="text-align: left;">FR</td>
 <td style="text-align: right;">0.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">ME</td>
+<td style="text-align: right;">0.63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MS</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.62</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
@@ -1672,16 +1817,40 @@ P value adjustment method: holm </code></pre>
 <td style="text-align: right;">0.62</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MS</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.92</td>
+<td style="text-align: left;">MR</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.62</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.62</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">MS</td>
 <td style="text-align: left;">hard</td>
 <td style="text-align: left;">PE</td>
 <td style="text-align: right;">0.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">hard</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ST</td>
+<td style="text-align: left;">easy</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.58</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MS</td>
@@ -1691,117 +1860,21 @@ P value adjustment method: holm </code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">MS</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.66</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.86</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.73</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.81</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">easy</td>
-<td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.69</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
 <td style="text-align: left;">easy</td>
 <td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">0.55</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">ST</td>
+<td style="text-align: left;">MR</td>
 <td style="text-align: left;">easy</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.87</td>
+<td style="text-align: left;">PH</td>
+<td style="text-align: right;">0.53</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.69</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.61</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.63</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.93</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
+<td style="text-align: left;">MR</td>
 <td style="text-align: left;">medium</td>
 <td style="text-align: left;">PE</td>
-<td style="text-align: right;">0.42</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.62</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">medium</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.74</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">EF</td>
-<td style="text-align: right;">0.76</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">FR</td>
-<td style="text-align: right;">0.62</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">ME</td>
-<td style="text-align: right;">0.69</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ST</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">OW</td>
-<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">0.52</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">ST</td>
@@ -1811,30 +1884,109 @@ P value adjustment method: holm </code></pre>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ST</td>
-<td style="text-align: left;">hard</td>
-<td style="text-align: left;">PH</td>
-<td style="text-align: right;">0.60</td>
+<td style="text-align: left;">medium</td>
+<td style="text-align: left;">PE</td>
+<td style="text-align: right;">0.42</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">ST</td>
+<td style="text-align: left;">MR</td>
 <td style="text-align: left;">hard</td>
-<td style="text-align: left;">TI</td>
-<td style="text-align: right;">0.74</td>
+<td style="text-align: left;">PE</td>
+<td style="text-align: right;">0.40</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </section>
+<section id="comparison-of-weighted-and-raw-score" class="level4">
+<h4 class="anchored" data-anchor-id="comparison-of-weighted-and-raw-score">Comparison of Weighted and Raw Score</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"score"</span>, <span class="st">"score_w"</span>),</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"type"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">recode</span>(type,</span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"score"</span> <span class="ot">=</span> <span class="st">"raw"</span>,</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"score_w"</span> <span class="ot">=</span> <span class="st">"weighted"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">!=</span> <span class="st">"OW"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level, <span class="at">shape =</span> type)) <span class="sc">+</span></span>
+<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb80-12"><a href="#cb80-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb80-13"><a href="#cb80-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb80-14"><a href="#cb80-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(type <span class="sc">~</span> task,</span>
+<span id="cb80-15"><a href="#cb80-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">scales =</span> <span class="st">"free_y"</span>,</span>
+<span id="cb80-16"><a href="#cb80-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
+<span id="cb80-17"><a href="#cb80-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
+<span id="cb80-18"><a href="#cb80-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
+<span id="cb80-19"><a href="#cb80-19" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
+<span id="cb80-20"><a href="#cb80-20" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
+<span id="cb80-21"><a href="#cb80-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb80-22"><a href="#cb80-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb80-23"><a href="#cb80-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">type =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb80-24"><a href="#cb80-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb80-25"><a href="#cb80-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb80-26"><a href="#cb80-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb80-27"><a href="#cb80-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted &amp; Raw Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="analysis_toloka_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>nasatlx <span class="sc">|&gt;</span></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"score"</span>, <span class="st">"score_w"</span>),</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"type"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">recode</span>(type,</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"score"</span> <span class="ot">=</span> <span class="st">"raw"</span>,</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"score_w"</span> <span class="ot">=</span> <span class="st">"weighted"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"OW"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level, <span class="at">shape =</span> <span class="st">"type"</span>)) <span class="sc">+</span></span>
+<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb81-11"><a href="#cb81-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb81-12"><a href="#cb81-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb81-13"><a href="#cb81-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb81-14"><a href="#cb81-14" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_grid</span>(type <span class="sc">~</span> task,</span>
+<span id="cb81-15"><a href="#cb81-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">scales =</span> <span class="st">"free_y"</span>,</span>
+<span id="cb81-16"><a href="#cb81-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">task =</span> <span class="fu">c</span>(</span>
+<span id="cb81-17"><a href="#cb81-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">MR =</span> <span class="st">"Mental Rotation"</span>,</span>
+<span id="cb81-18"><a href="#cb81-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">MS =</span> <span class="st">"Memory Span"</span>,</span>
+<span id="cb81-19"><a href="#cb81-19" aria-hidden="true" tabindex="-1"></a>               <span class="at">ST =</span> <span class="st">"Sternberg Task"</span></span>
+<span id="cb81-20"><a href="#cb81-20" aria-hidden="true" tabindex="-1"></a>             ))) <span class="sc">+</span></span>
+<span id="cb81-21"><a href="#cb81-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb81-22"><a href="#cb81-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb81-23"><a href="#cb81-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb81-24"><a href="#cb81-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb81-25"><a href="#cb81-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb81-26"><a href="#cb81-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb81-27"><a href="#cb81-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weighted &amp; Raw Overall Score Distributions by Scale"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="analysis_toloka_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
 <section id="glmm-weighted-scales" class="level3">
 <h3 class="anchored" data-anchor-id="glmm-weighted-scales">GLMM weighted scales</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="sc">|&gt;</span> </span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> score, <span class="at">names_from =</span> scale) <span class="sc">|&gt;</span> </span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">OW =</span> ME <span class="sc">+</span> PH <span class="sc">+</span> TI <span class="sc">+</span> PE <span class="sc">+</span> EF <span class="sc">+</span> FR) <span class="ot">-&gt;</span> nasa_tlx_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>nasa_tlx_weighted_wide <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/nasatlx_weighted_score_tol_data.csv"</span>)</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/nasatlx_raw_score_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="me" class="level4">
 <h4 class="anchored" data-anchor-id="me">ME</h4>
+<section id="weigted" class="level5">
+<h5 class="anchored" data-anchor-id="weigted">Weigted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>mix_ME_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ME_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_ME_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>mix_ME_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ME_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_ME_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -1878,7 +2030,7 @@ tskST:lvlmd  0.368 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.368 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.368 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_ME_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_ME_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
            Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -1888,7 +2040,7 @@ task:level 1029.4  257.35     4   544  6.3661 5.192e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_ME_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_ME_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: 'r.squaredGLMM' now calculates a revised statistic. See the help page.</code></pre>
 </div>
@@ -1897,13 +2049,82 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
+<section id="raw" class="level5">
+<h5 class="anchored" data-anchor-id="raw">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>mix_ME <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ME <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_ME)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: ME ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5518.8
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2861 -0.5940  0.0310  0.6191  3.0099 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 339.0    18.41   
+ Residual             352.7    18.78   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          49.870      3.166 209.471  15.751  &lt; 2e-16 ***
+taskMS              -14.174      3.197 544.000  -4.433 1.12e-05 ***
+taskST              -13.058      3.197 544.000  -4.084 5.09e-05 ***
+levelmedium           9.841      3.197 544.000   3.078 0.002190 ** 
+levelhard            12.304      3.197 544.000   3.848 0.000133 ***
+taskMS:levelmedium   24.449      4.522 544.000   5.407 9.60e-08 ***
+taskST:levelmedium   17.884      4.522 544.000   3.955 8.66e-05 ***
+taskMS:levelhard     35.304      4.522 544.000   7.808 3.01e-14 ***
+taskST:levelhard     25.536      4.522 544.000   5.648 2.63e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.505                                                             
+taskST      -0.505  0.500                                                      
+levelmedium -0.505  0.500  0.500                                               
+levelhard   -0.505  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.357 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.357 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.357 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.357 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_ME)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF  F value    Pr(&gt;F)    
+task         3708    1854     2   544   5.2562  0.005483 ** 
+level      117987   58994     2   544 167.2723 &lt; 2.2e-16 ***
+task:level  24083    6021     4   544  17.0714 3.368e-13 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_ME)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2536959</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="ph" class="level4">
 <h4 class="anchored" data-anchor-id="ph">PH</h4>
+<section id="weighted" class="level5">
+<h5 class="anchored" data-anchor-id="weighted">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>mix_PH_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PH_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PH_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>mix_PH_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PH_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PH_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -1947,7 +2168,7 @@ tskST:lvlmd  0.351 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.351 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.351 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PH_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PH_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
             Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -1957,19 +2178,88 @@ task:level  59.268  14.817     4   544  1.4622    0.2123
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PH_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PH_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02282704</code></pre>
 </div>
 </div>
 </section>
+<section id="raw-1" class="level5">
+<h5 class="anchored" data-anchor-id="raw-1">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>mix_PH <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PH <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PH)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: PH ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5495.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.4930 -0.5665  0.0078  0.4865  3.8505 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 513.9    22.67   
+ Residual             322.5    17.96   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          28.232      3.482 152.224   8.109 1.57e-13 ***
+taskMS               -3.116      3.057 544.000  -1.019 0.308567    
+taskST               -6.217      3.057 544.000  -2.034 0.042473 *  
+levelmedium           5.884      3.057 544.000   1.925 0.054800 .  
+levelhard             1.710      3.057 544.000   0.559 0.576141    
+taskMS:levelmedium   12.145      4.324 544.000   2.809 0.005149 ** 
+taskST:levelmedium    3.304      4.324 544.000   0.764 0.445050    
+taskMS:levelhard     25.710      4.324 544.000   5.946 4.91e-09 ***
+taskST:levelhard     15.710      4.324 544.000   3.634 0.000306 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.439                                                             
+taskST      -0.439  0.500                                                      
+levelmedium -0.439  0.500  0.500                                               
+levelhard   -0.439  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.310 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.310 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.310 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.310 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PH)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+task        12304  6152.2     2   544 19.0785 9.818e-09 ***
+level       26401 13200.3     2   544 40.9350 &lt; 2.2e-16 ***
+task:level  12141  3035.3     4   544  9.4128 2.314e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PH)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.08929729</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="ti" class="level4">
 <h4 class="anchored" data-anchor-id="ti">TI</h4>
+<section id="weighted-1" class="level5">
+<h5 class="anchored" data-anchor-id="weighted-1">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>mix_TI_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(TI_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_TI_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>mix_TI_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(TI_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_TI_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -2013,7 +2303,7 @@ tskST:lvlmd  0.410 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.410 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.410 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_TI_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_TI_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
             Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -2023,19 +2313,88 @@ task:level  4003.6  1000.9     4   544  22.041 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_TI_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_TI_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.4582838</code></pre>
 </div>
 </div>
 </section>
+<section id="raw-2" class="level5">
+<h5 class="anchored" data-anchor-id="raw-2">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>mix_TI <span class="ot">&lt;-</span> <span class="fu">lmer</span>(TI <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_TI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: TI ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5611.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.9496 -0.6940 -0.0229  0.6904  3.2746 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 185.5    13.62   
+ Residual             443.6    21.06   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          23.493      3.020 360.955   7.780 7.69e-14 ***
+taskMS                8.029      3.586 544.000   2.239   0.0256 *  
+taskST               16.087      3.586 544.000   4.486 8.86e-06 ***
+levelmedium           2.116      3.586 544.000   0.590   0.5554    
+levelhard             3.203      3.586 544.000   0.893   0.3722    
+taskMS:levelmedium   29.536      5.071 544.000   5.824 9.83e-09 ***
+taskST:levelmedium   33.986      5.071 544.000   6.702 5.17e-11 ***
+taskMS:levelhard     47.188      5.071 544.000   9.305  &lt; 2e-16 ***
+taskST:levelhard     42.768      5.071 544.000   8.433 3.03e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.594                                                             
+taskST      -0.594  0.500                                                      
+levelmedium -0.594  0.500  0.500                                               
+levelhard   -0.594  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.420 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.420 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.420 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.420 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_TI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+task       202227  101113     2   544 227.918 &lt; 2.2e-16 ***
+level      120189   60094     2   544 135.458 &lt; 2.2e-16 ***
+task:level  50523   12631     4   544  28.471 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_TI)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4887747</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="pe" class="level4">
 <h4 class="anchored" data-anchor-id="pe">PE</h4>
+<section id="weighted-2" class="level5">
+<h5 class="anchored" data-anchor-id="weighted-2">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>mix_PE_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PE_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PE_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>mix_PE_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PE_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PE_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -2079,7 +2438,7 @@ tskST:lvlmd  0.402 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.402 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.402 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PE_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PE_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
            Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -2089,19 +2448,88 @@ task:level  552.1  138.02     4   544  7.9127 3.331e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PE_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PE_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.196197</code></pre>
 </div>
 </div>
 </section>
+<section id="raw-3" class="level5">
+<h5 class="anchored" data-anchor-id="raw-3">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>mix_PE <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PE <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_PE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: PE ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5482
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.43867 -0.66875  0.00908  0.59628  3.11748 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 168.6    12.98   
+ Residual             355.2    18.85   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          35.783      2.755 334.688  12.988  &lt; 2e-16 ***
+taskMS              -25.841      3.209 544.000  -8.053 5.11e-15 ***
+taskST              -24.841      3.209 544.000  -7.742 4.81e-14 ***
+levelmedium           4.174      3.209 544.000   1.301  0.19386    
+levelhard            10.029      3.209 544.000   3.126  0.00187 ** 
+taskMS:levelmedium   19.899      4.538 544.000   4.385 1.39e-05 ***
+taskST:levelmedium   28.304      4.538 544.000   6.238 8.93e-10 ***
+taskMS:levelhard     36.696      4.538 544.000   8.087 4.00e-15 ***
+taskST:levelhard     40.232      4.538 544.000   8.866  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.582                                                             
+taskST      -0.582  0.500                                                      
+levelmedium -0.582  0.500  0.500                                               
+levelhard   -0.582  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.412 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.412 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.412 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.412 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_PE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF  F value    Pr(&gt;F)    
+task         5344    2672     2   544   7.5229 0.0005987 ***
+level      132498   66249     2   544 186.5180 &lt; 2.2e-16 ***
+task:level  35984    8996     4   544  25.3273 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_PE)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3486665</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="ef" class="level4">
 <h4 class="anchored" data-anchor-id="ef">EF</h4>
+<section id="weighted-3" class="level5">
+<h5 class="anchored" data-anchor-id="weighted-3">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>mix_EF_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_EF_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>mix_EF_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_EF_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -2145,7 +2573,7 @@ tskST:lvlmd  0.360 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.360 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.360 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_EF_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_EF_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
            Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -2155,19 +2583,88 @@ task:level  773.2  193.30     4   544  6.5178 3.968e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_EF_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_EF_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1066379</code></pre>
 </div>
 </div>
 </section>
+<section id="raw-4" class="level5">
+<h5 class="anchored" data-anchor-id="raw-4">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>mix_EF <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_EF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: EF ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5513.1
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.4600 -0.5525  0.0329  0.6072  3.6893 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 337.8    18.38   
+ Residual             349.2    18.69   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          46.942      3.156 208.585  14.876  &lt; 2e-16 ***
+taskMS               -8.493      3.182 544.000  -2.669 0.007828 ** 
+taskST               -3.739      3.182 544.000  -1.175 0.240418    
+levelmedium           6.725      3.182 544.000   2.114 0.035005 *  
+levelhard            11.957      3.182 544.000   3.758 0.000190 ***
+taskMS:levelmedium   25.261      4.499 544.000   5.614 3.15e-08 ***
+taskST:levelmedium   16.507      4.499 544.000   3.669 0.000268 ***
+taskMS:levelhard     31.319      4.499 544.000   6.961 9.79e-12 ***
+taskST:levelhard     14.971      4.499 544.000   3.327 0.000936 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.504                                                             
+taskST      -0.504  0.500                                                      
+levelmedium -0.504  0.500  0.500                                               
+levelhard   -0.504  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.356 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.356 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.356 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.356 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_EF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+task        11464    5732     2   544  16.413 1.198e-07 ***
+level       84301   42150     2   544 120.693 &lt; 2.2e-16 ***
+task:level  19598    4899     4   544  14.029 6.685e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_EF)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2131083</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="fr" class="level4">
 <h4 class="anchored" data-anchor-id="fr">FR</h4>
+<section id="weighted-4" class="level5">
+<h5 class="anchored" data-anchor-id="weighted-4">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>mix_FR_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(FR_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_FR_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>mix_FR_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(FR_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_FR_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -2211,7 +2708,7 @@ tskST:lvlmd  0.419 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.419 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.419 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_FR_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_FR_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
             Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -2221,19 +2718,88 @@ task:level  721.07  180.27     4   544  4.6736  0.001024 **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_FR_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_FR_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1022324</code></pre>
 </div>
 </div>
 </section>
+<section id="raw-5" class="level5">
+<h5 class="anchored" data-anchor-id="raw-5">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>mix_FR <span class="ot">&lt;-</span> <span class="fu">lmer</span>(FR <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_FR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: FR ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 5716.6
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.62461 -0.67383  0.01968  0.65635  2.73013 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 277.0    16.64   
+ Residual             515.2    22.70   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)          41.043      3.388 309.416  12.113  &lt; 2e-16 ***
+taskMS               -6.275      3.864 544.000  -1.624 0.104982    
+taskST               -8.667      3.864 544.000  -2.243 0.025320 *  
+levelmedium           5.565      3.864 544.000   1.440 0.150412    
+levelhard             7.739      3.864 544.000   2.003 0.045710 *  
+taskMS:levelmedium   18.406      5.465 544.000   3.368 0.000811 ***
+taskST:levelmedium   20.623      5.465 544.000   3.774 0.000179 ***
+taskMS:levelhard     31.681      5.465 544.000   5.797 1.15e-08 ***
+taskST:levelhard     31.435      5.465 544.000   5.752 1.47e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.570                                                             
+taskST      -0.570  0.500                                                      
+levelmedium -0.570  0.500  0.500                                               
+levelhard   -0.570  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.403 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.403 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.403 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.403 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_FR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+task        12906    6453     2   544  12.524 4.811e-06 ***
+level       88133   44066     2   544  85.529 &lt; 2.2e-16 ***
+task:level  23461    5865     4   544  11.384 7.027e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_FR)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2022211</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="overall-workload" class="level4">
 <h4 class="anchored" data-anchor-id="overall-workload">Overall Workload</h4>
+<section id="weighted-5" class="level5">
+<h5 class="anchored" data-anchor-id="weighted-5">Weighted</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>mix_OW_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(OW_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
-<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
-<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
-<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_OW_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a>mix_OW_w <span class="ot">&lt;-</span> <span class="fu">lmer</span>(OW_w <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_weighted_wide,</span>
+<span id="cb157-3"><a href="#cb157-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb157-4"><a href="#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_OW_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -2277,7 +2843,7 @@ tskST:lvlmd  0.372 -0.354 -0.707 -0.707 -0.354  0.500
 tskMS:lvlhr  0.372 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
 tskST:lvlhr  0.372 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_OW_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_OW_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
            Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -2287,13 +2853,80 @@ task:level  29934    7483     4   544  31.242 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_OW_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_OW_w)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3757273</code></pre>
 </div>
 </div>
+</section>
+<section id="raw-6" class="level5">
+<h5 class="anchored" data-anchor-id="raw-6">Raw</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>mix_OW <span class="ot">&lt;-</span> <span class="fu">lmer</span>(OW <span class="sc">~</span> task <span class="sc">*</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), </span>
+<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a>               nasa_tlx_wide,</span>
+<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">level=</span><span class="st">"contr.treatment"</span>))</span>
+<span id="cb163-4"><a href="#cb163-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_OW)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: OW ~ task * level + (1 | id)
+   Data: nasa_tlx_wide
+
+REML criterion at convergence: 7280.6
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.7837 -0.6182 -0.0215  0.6269  3.5456 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 6918     83.18   
+ Residual             6180     78.61   
+Number of obs: 621, groups:  id, 69
+
+Fixed effects:
+                   Estimate Std. Error     df t value Pr(&gt;|t|)    
+(Intercept)          225.36      13.78 189.36  16.357  &lt; 2e-16 ***
+taskMS               -49.87      13.38 544.00  -3.726 0.000215 ***
+taskST               -40.43      13.38 544.00  -3.021 0.002636 ** 
+levelmedium           34.30      13.38 544.00   2.563 0.010641 *  
+levelhard             46.94      13.38 544.00   3.507 0.000490 ***
+taskMS:levelmedium   129.70      18.93 544.00   6.852 1.98e-11 ***
+taskST:levelmedium   120.61      18.93 544.00   6.372 3.98e-10 ***
+taskMS:levelhard     207.90      18.93 544.00  10.984  &lt; 2e-16 ***
+taskST:levelhard     170.65      18.93 544.00   9.016  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) taskMS taskST lvlmdm lvlhrd tskMS:lvlm tskST:lvlm tskMS:lvlh
+taskMS      -0.486                                                             
+taskST      -0.486  0.500                                                      
+levelmedium -0.486  0.500  0.500                                               
+levelhard   -0.486  0.500  0.500  0.500                                        
+tskMS:lvlmd  0.343 -0.707 -0.354 -0.707 -0.354                                 
+tskST:lvlmd  0.343 -0.354 -0.707 -0.707 -0.354  0.500                          
+tskMS:lvlhr  0.343 -0.707 -0.354 -0.354 -0.707  0.500      0.250               
+tskST:lvlhr  0.343 -0.354 -0.707 -0.354 -0.707  0.250      0.500      0.500    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_OW)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+            Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+task        494874  247437     2   544  40.039 &lt; 2.2e-16 ***
+level      3236282 1618141     2   544 261.840 &lt; 2.2e-16 ***
+task:level  878556  219639     4   544  35.541 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_OW)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3620964</code></pre>
+</div>
+</div>
 
 
+</section>
 </section>
 </section>
 </section>

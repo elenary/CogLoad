@@ -6,6 +6,10 @@
 library(tidyverse)
 ```
 
+```{r}
+rm(list=ls())
+```
+
 
 ## Custom preprocess functions
 
@@ -416,17 +420,17 @@ NASATLX_data <- tibble()
 SEQUENCE_data <- tibble()
 ```
 
-```{r}
+```{r, include=FALSE}
 ## broken files
 ## file.remove("../data-pav/043SSMZ_entire_exp_2022-08-17_14h14.50.460.csv")
 ```
 
-```{r file-paths-upd}
+```{r file-paths-upd, include=FALSE}
 # files <- paste0("../data-pav/", dir("../data-pav"))
 # length(files)
 ```
 
-```{r preprocess}
+```{r preprocess, cache=TRUE}
 
 for (i in 1:length(files)) {
   
@@ -444,7 +448,7 @@ for (i in 1:length(files)) {
 
 ```
 
-```{r check-ids}
+```{r check-ids, cache=TRUE}
 unique(MR_data$file) |> length()
 unique(ST_data$file) |> length()
 unique(MS_data$file) |> length()
@@ -533,7 +537,7 @@ exptime |>
 
 ## Save preprocessed data
 
-```{r save-preproc-data}
+```{r save-preproc-data, eval=FALSE}
 MR_data_prep |> 
   write_csv("../preproc-data/MR_pav_data.csv")
 ST_data_prep |> 

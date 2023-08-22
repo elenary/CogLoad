@@ -11,12 +11,14 @@ website:
         text: Preprocess First Banch
       - href: analysis_pavlovia.qmd
         text: Analysis First Banch
-      - href: toloka_explore.qmd
-        text: Second Banch Exploration
+      #- href: toloka_explore.qmd
+      #  text: Second Banch Exploration
       - href: preproc_toloka.qmd
         text: Preprocess Second Banch
       - href: analysis_toloka.qmd
         text: Analysis Second Banch
+      - href: correlations.qmd
+        text: Correlations
 
 format:
   html:

@@ -155,10 +155,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="menu-text">Analysis First Banch</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./toloka_explore.html">
- <span class="menu-text">Second Banch Exploration</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./preproc_toloka.html" aria-current="page">
  <span class="menu-text">Preprocess Second Banch</span></a>
   </li>  
@@ -189,9 +185,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#create-ids-for-toloka-files" id="toc-create-ids-for-toloka-files" class="nav-link" data-scroll-target="#create-ids-for-toloka-files">Create IDs for Toloka files</a></li>
   </ul></li>
-  <li><a href="#plotting" id="toc-plotting" class="nav-link" data-scroll-target="#plotting">Plotting</a></li>
-  <li><a href="#clear-aggregate" id="toc-clear-aggregate" class="nav-link" data-scroll-target="#clear-aggregate">Clear &amp; Aggregate</a></li>
-  <li><a href="#export-preprocessed-data" id="toc-export-preprocessed-data" class="nav-link" data-scroll-target="#export-preprocessed-data">Export preprocessed data</a></li>
+  <li><a href="#save-data" id="toc-save-data" class="nav-link" data-scroll-target="#save-data">Save data</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -204,570 +198,626 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="preprocess.-toloka-banch" class="level1">
 <h1>Preprocess. Toloka Banch</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">eval =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#knitr::opts_chunk$set(eval = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="packages" class="level2">
 <h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mr_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(tidyverse)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.keys,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.corr,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.rt</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"easy"</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_easy.keys,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_easy.corr,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_easy.rt</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_easy <span class="co"># ready to use</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.keys,</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.corr,</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.rt</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"medium"</span>,</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span>  <span class="co"># number trials</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_medium.keys,</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_medium.corr,</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_medium.rt</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_medium <span class="co"># ready to use</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.keys,</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.corr,</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.rt</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"hard"</span>,</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_hard.keys,</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_hard.corr,</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_hard.rt</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_hard <span class="co"># ready to use</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bind all conditions of mental rotation task to one tibble</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(MR_easy, MR_medium, MR_hard) <span class="ot">-&gt;</span> MR</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MR)</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>st_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(tidyverse)</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.keys,</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.corr,</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.rt</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"easy"</span>,</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> key_resp_SE.keys,</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> key_resp_SE.corr,</span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> key_resp_SE.rt</span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_easy <span class="co"># ready to use</span></span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.keys,</span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.corr,</span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.rt</span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"medium"</span>,</span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> key_resp_SM.keys,</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> key_resp_SM.corr,</span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> key_resp_SM.rt</span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_medium <span class="co"># ready to use</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.keys,</span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.corr,</span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.rt</span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"hard"</span>,</span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_S_H_trials.keys,</span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_S_H_trials.corr,</span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_S_H_trials.rt</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_hard <span class="co"># ready to use</span></span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bind all conditions of sternberg task to one tibble</span></span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(ST_easy, ST_hard, ST_medium) <span class="ot">-&gt;</span> ST</span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ST)</span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>ms_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Since we our participants could fill the fields in any order, </span></span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here is a function which allows us to count correct inputs </span></span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>  <span class="co"># our subjects made.</span></span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>  n_count <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>)) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>() <span class="ot">-&gt;</span> s</span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^resp"</span>)) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>() <span class="ot">-&gt;</span> r</span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> 16L)</span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) {</span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>      a[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(r[i, ] <span class="sc">%in%</span> s[i, ])</span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(a)</span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="st">"mouse_MSe.time"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(d)) {</span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"resp</span><span class="sc">\\</span><span class="st">d</span><span class="sc">\\</span><span class="st">.text$"</span>),</span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSe.time"</span></span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"easy"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(</span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp1"</span> <span class="ot">=</span> resp1.text,</span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp2"</span> <span class="ot">=</span> resp2.text,</span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp3"</span> <span class="ot">=</span> resp3.text,</span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSe.time"</span></span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>))) <span class="ot">-&gt;</span> MS_easy</span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"MSm.text$"</span>),</span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSm.time"</span></span>
-<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"medium"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSm.time"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all, </span>
-<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSm</span><span class="sc">\\</span><span class="st">.text"</span>, </span>
-<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>noun6, <span class="sc">-</span>noun7) <span class="ot">-&gt;</span> MS_medium</span>
-<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"MSh.text$"</span>),</span>
-<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSh.time"</span></span>
-<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"hard"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSh.time"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
-<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSh</span><span class="sc">\\</span><span class="st">.text"</span>,</span>
-<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="ot">-&gt;</span> MS_hard</span>
-<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"resp</span><span class="sc">\\</span><span class="st">d</span><span class="sc">\\</span><span class="st">.text$"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"easy"</span>,</span>
-<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(</span>
-<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp1"</span> <span class="ot">=</span> resp1.text,</span>
-<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp2"</span> <span class="ot">=</span> resp2.text,</span>
-<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp3"</span> <span class="ot">=</span> resp3.text</span>
-<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
-<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>))) <span class="ot">-&gt;</span> MS_easy</span>
-<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"MSm.text$"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"medium"</span>,</span>
-<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
-<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSm</span><span class="sc">\\</span><span class="st">.text"</span>,</span>
-<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>noun6, <span class="sc">-</span>noun7) <span class="ot">-&gt;</span> MS_medium</span>
-<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
-<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"MSh.text$"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
-<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"hard"</span>,</span>
-<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
-<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSh</span><span class="sc">\\</span><span class="st">.text"</span>, </span>
-<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="ot">-&gt;</span> MS_hard</span>
-<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>    <span class="co">#id = MS_easy$id[1],</span></span>
-<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">trials =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>,</span>
-<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_easy_n =</span> <span class="fu">n_count</span>(MS_easy),</span>
-<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_easy_rt =</span> MS_easy<span class="sc">$</span>rt,</span>
-<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_medium_n =</span> <span class="fu">n_count</span>(MS_medium),</span>
-<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_medium_rt =</span> MS_medium<span class="sc">$</span>rt,</span>
-<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_hard_n =</span> <span class="fu">n_count</span>(MS_hard),</span>
-<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_hard_rt =</span> MS_hard<span class="sc">$</span>rt</span>
-<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"trials"</span>), <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(name, <span class="fu">c</span>(<span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"name"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> value, <span class="at">names_from =</span> name) <span class="sc">|&gt;</span></span>
-<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">acc =</span> <span class="fu">ifelse</span>(level <span class="sc">==</span> <span class="st">"easy"</span>, n <span class="sc">/</span> <span class="dv">3</span>,</span>
-<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">ifelse</span>(</span>
-<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>                          level <span class="sc">==</span> <span class="st">"medium"</span>, n <span class="sc">/</span> <span class="dv">5</span>,</span>
-<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(level <span class="sc">==</span> <span class="st">"hard"</span>, n <span class="sc">/</span> <span class="dv">7</span>, <span class="cn">NA</span>)</span>
-<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a>                        ))) <span class="ot">-&gt;</span> MS</span>
-<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MS)</span>
-<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>nasatlx_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(slider.response,</span>
-<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>              head,</span>
-<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>              task_type,</span>
-<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>              task_level) <span class="sc">|&gt;</span></span>
-<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_at</span>(<span class="fu">vars</span>(head, task_type, task_level), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
-<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"score"</span> <span class="ot">=</span> slider.response) <span class="sc">|&gt;</span></span>
-<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>      <span class="at">scale =</span> <span class="fu">recode</span>(</span>
-<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>        head,</span>
-<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Умственная нагрузка"</span> <span class="ot">=</span> <span class="st">"ME"</span>,</span>
-<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Физическая нагрузка"</span> <span class="ot">=</span> <span class="st">"PH"</span>,</span>
-<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Давление времени"</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
-<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Успешность выполнения"</span> <span class="ot">=</span> <span class="st">"PE"</span>,</span>
-<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Усилия"</span> <span class="ot">=</span> <span class="st">"EF"</span>,</span>
-<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Уровень фрустрации"</span> <span class="ot">=</span> <span class="st">"FR"</span></span>
-<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">recode</span>(</span>
-<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>        task_type,</span>
-<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mental_rotation"</span> <span class="ot">=</span> <span class="st">"MR"</span>,</span>
-<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sternberg"</span> <span class="ot">=</span> <span class="st">"ST"</span>,</span>
-<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mental_span"</span> <span class="ot">=</span> <span class="st">"MS"</span></span>
-<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>      <span class="at">level =</span> <span class="fu">recode</span>(</span>
-<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a>        task_level,</span>
-<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>        <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"easy"</span>,</span>
-<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>        <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"medium"</span>,</span>
-<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a>        <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"hard"</span></span>
-<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(scale, score, task, level) <span class="ot">-&gt;</span> NASATLX</span>
-<span id="cb3-312"><a href="#cb3-312" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-313"><a href="#cb3-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(NASATLX)</span>
-<span id="cb3-314"><a href="#cb3-314" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-315"><a href="#cb3-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-316"><a href="#cb3-316" aria-hidden="true" tabindex="-1"></a>sequence_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-317"><a href="#cb3-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-318"><a href="#cb3-318" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
-<span id="cb3-319"><a href="#cb3-319" aria-hidden="true" tabindex="-1"></a>    E_rotation,</span>
-<span id="cb3-320"><a href="#cb3-320" aria-hidden="true" tabindex="-1"></a>    M_rotation,</span>
-<span id="cb3-321"><a href="#cb3-321" aria-hidden="true" tabindex="-1"></a>    H_rotation,</span>
-<span id="cb3-322"><a href="#cb3-322" aria-hidden="true" tabindex="-1"></a>    E_Sternberg,</span>
-<span id="cb3-323"><a href="#cb3-323" aria-hidden="true" tabindex="-1"></a>    M_Sternberg,</span>
-<span id="cb3-324"><a href="#cb3-324" aria-hidden="true" tabindex="-1"></a>    H_Sternberg,</span>
-<span id="cb3-325"><a href="#cb3-325" aria-hidden="true" tabindex="-1"></a>    E_span,</span>
-<span id="cb3-326"><a href="#cb3-326" aria-hidden="true" tabindex="-1"></a>    M_span,</span>
-<span id="cb3-327"><a href="#cb3-327" aria-hidden="true" tabindex="-1"></a>    H_span</span>
-<span id="cb3-328"><a href="#cb3-328" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-329"><a href="#cb3-329" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-330"><a href="#cb3-330" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sapply</span>(<span class="cf">function</span>(x) <span class="fu">which</span>(x <span class="sc">==</span> <span class="dv">1</span>)) <span class="ot">-&gt;</span> v</span>
-<span id="cb3-331"><a href="#cb3-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-332"><a href="#cb3-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">name =</span> <span class="fu">names</span>(v),</span>
-<span id="cb3-333"><a href="#cb3-333" aria-hidden="true" tabindex="-1"></a>         <span class="at">order =</span> v) <span class="sc">|&gt;</span></span>
-<span id="cb3-334"><a href="#cb3-334" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(order) <span class="sc">|&gt;</span></span>
-<span id="cb3-335"><a href="#cb3-335" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(name, <span class="fu">c</span>(<span class="st">"level"</span>, <span class="st">"task"</span>), <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-336"><a href="#cb3-336" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb3-337"><a href="#cb3-337" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">recode</span>(</span>
-<span id="cb3-338"><a href="#cb3-338" aria-hidden="true" tabindex="-1"></a>        task,</span>
-<span id="cb3-339"><a href="#cb3-339" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rotation"</span> <span class="ot">=</span> <span class="st">"MR"</span>,</span>
-<span id="cb3-340"><a href="#cb3-340" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sternberg"</span> <span class="ot">=</span> <span class="st">"ST"</span>,</span>
-<span id="cb3-341"><a href="#cb3-341" aria-hidden="true" tabindex="-1"></a>        <span class="st">"span"</span> <span class="ot">=</span> <span class="st">"MS"</span></span>
-<span id="cb3-342"><a href="#cb3-342" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb3-343"><a href="#cb3-343" aria-hidden="true" tabindex="-1"></a>      <span class="at">level =</span> <span class="fu">recode</span>(</span>
-<span id="cb3-344"><a href="#cb3-344" aria-hidden="true" tabindex="-1"></a>        level,</span>
-<span id="cb3-345"><a href="#cb3-345" aria-hidden="true" tabindex="-1"></a>        <span class="st">"E"</span> <span class="ot">=</span> <span class="st">"easy"</span>,</span>
-<span id="cb3-346"><a href="#cb3-346" aria-hidden="true" tabindex="-1"></a>        <span class="st">"M"</span> <span class="ot">=</span> <span class="st">"medium"</span>,</span>
-<span id="cb3-347"><a href="#cb3-347" aria-hidden="true" tabindex="-1"></a>        <span class="st">"H"</span> <span class="ot">=</span> <span class="st">"hard"</span></span>
-<span id="cb3-348"><a href="#cb3-348" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-349"><a href="#cb3-349" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> SEQUENCE</span>
-<span id="cb3-350"><a href="#cb3-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-351"><a href="#cb3-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SEQUENCE)</span>
-<span id="cb3-352"><a href="#cb3-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-353"><a href="#cb3-353" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-354"><a href="#cb3-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-355"><a href="#cb3-355" aria-hidden="true" tabindex="-1"></a>weights_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
-<span id="cb3-356"><a href="#cb3-356" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-357"><a href="#cb3-357" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span> </span>
-<span id="cb3-358"><a href="#cb3-358" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^pair"</span>), task_type) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-359"><a href="#cb3-359" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb3-360"><a href="#cb3-360" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^pair"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-361"><a href="#cb3-361" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">value =</span> value <span class="sc">%&gt;%</span> <span class="fu">str_remove_all</span>(<span class="st">"</span><span class="sc">\\\\</span><span class="st">n|</span><span class="sc">\\</span><span class="st">[|</span><span class="sc">\\</span><span class="st">]"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-362"><a href="#cb3-362" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(value, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"option1"</span>, <span class="st">"option2"</span>), <span class="at">sep =</span> <span class="st">","</span>) <span class="ot">-&gt;</span> pairs</span>
-<span id="cb3-363"><a href="#cb3-363" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-364"><a href="#cb3-364" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span> </span>
-<span id="cb3-365"><a href="#cb3-365" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^S_pc"</span>), task_type) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-366"><a href="#cb3-366" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb3-367"><a href="#cb3-367" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^S_pc"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-368"><a href="#cb3-368" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">name =</span> name <span class="sc">%&gt;%</span> <span class="fu">str_remove</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.response"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-369"><a href="#cb3-369" aria-hidden="true" tabindex="-1"></a>             <span class="fu">str_replace</span>(<span class="st">"S_pc_"</span>, <span class="st">"pair"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-370"><a href="#cb3-370" aria-hidden="true" tabindex="-1"></a>    <span class="fu">full_join</span>(pairs, <span class="at">by =</span> <span class="fu">join_by</span>(task_type, name)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-371"><a href="#cb3-371" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">choice =</span> <span class="fu">ifelse</span>(value <span class="sc">==</span> <span class="dv">1</span>, option1, option2)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-372"><a href="#cb3-372" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">choice =</span> <span class="fu">recode</span>(choice,</span>
-<span id="cb3-373"><a href="#cb3-373" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Умственнаянагрузка"'</span> <span class="ot">=</span> <span class="st">"ME"</span>,</span>
-<span id="cb3-374"><a href="#cb3-374" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Физическаянагрузка"'</span> <span class="ot">=</span> <span class="st">"PH"</span>,</span>
-<span id="cb3-375"><a href="#cb3-375" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Усилия"'</span> <span class="ot">=</span> <span class="st">"EF"</span>,</span>
-<span id="cb3-376"><a href="#cb3-376" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Давленивремени"'</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
-<span id="cb3-377"><a href="#cb3-377" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Успешностьвыполнения"'</span> <span class="ot">=</span> <span class="st">"PE"</span>,</span>
-<span id="cb3-378"><a href="#cb3-378" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Уровеньфрустрации"'</span> <span class="ot">=</span> <span class="st">"FR"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-379"><a href="#cb3-379" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(task_type, choice) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-380"><a href="#cb3-380" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-381"><a href="#cb3-381" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">w =</span> n <span class="sc">/</span> <span class="dv">15</span>) <span class="ot">-&gt;</span> WEIGHTS</span>
-<span id="cb3-382"><a href="#cb3-382" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-383"><a href="#cb3-383" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(WEIGHTS)</span>
-<span id="cb3-384"><a href="#cb3-384" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-385"><a href="#cb3-385" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mr_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(tidyverse)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.keys,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.corr,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    resp_MR_easy.rt</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"easy"</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_easy.keys,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_easy.corr,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_easy.rt</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_easy <span class="co"># ready to use</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.keys,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.corr,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    resp_MR_medium.rt</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"medium"</span>,</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span>  <span class="co"># number trials</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_medium.keys,</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_medium.corr,</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_medium.rt</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_medium <span class="co"># ready to use</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    correctAns,</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    base_pic,</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    rotated_pic,</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.keys,</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.corr,</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    resp_MR_hard.rt</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MR"</span>,</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (mental rotation)</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"hard"</span>,</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_MR_hard.keys,</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_MR_hard.corr,</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_MR_hard.rt</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> MR_hard <span class="co"># ready to use</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bind all conditions of mental rotation task to one tibble</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(MR_easy, MR_medium, MR_hard) <span class="ot">-&gt;</span> MR</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MR)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>st_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(tidyverse)</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.keys,</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.corr,</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>    key_resp_SE.rt</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"easy"</span>,</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> key_resp_SE.keys,</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> key_resp_SE.corr,</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> key_resp_SE.rt</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_easy <span class="co"># ready to use</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.keys,</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.corr,</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    key_resp_SM.rt</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"medium"</span>,</span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> key_resp_SM.keys,</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> key_resp_SM.corr,</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> key_resp_SM.rt</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_medium <span class="co"># ready to use</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns we need</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>    target_present,</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.keys,</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.corr,</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    resp_S_H_trials.rt</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># remove technical NAs (recording artefacts, not missing data)</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"ST"</span>,</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add task name (Sternberg task)</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>           <span class="at">level =</span> <span class="st">"hard"</span>,</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>           <span class="co"># add difficulty level</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>           <span class="at">trial =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">|&gt;</span> <span class="co"># number trials</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>      <span class="co"># rename columns for handy usage</span></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>      <span class="st">"key"</span> <span class="ot">=</span> resp_S_H_trials.keys,</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>      <span class="st">"is_correct"</span> <span class="ot">=</span> resp_S_H_trials.corr,</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>      <span class="st">"rt"</span> <span class="ot">=</span> resp_S_H_trials.rt</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> ST_hard <span class="co"># ready to use</span></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bind all conditions of sternberg task to one tibble</span></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(ST_easy, ST_hard, ST_medium) <span class="ot">-&gt;</span> ST</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ST)</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>ms_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Since we our participants could fill the fields in any order, </span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here is a function which allows us to count correct inputs </span></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>  <span class="co"># our subjects made.</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>  n_count <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>)) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>() <span class="ot">-&gt;</span> s</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^resp"</span>)) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>() <span class="ot">-&gt;</span> r</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> 16L)</span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) {</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>      a[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(r[i, ] <span class="sc">%in%</span> s[i, ])</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(a)</span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="st">"mouse_MSe.time"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(d)) {</span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"resp</span><span class="sc">\\</span><span class="st">d</span><span class="sc">\\</span><span class="st">.text$"</span>),</span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSe.time"</span></span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"easy"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(</span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp1"</span> <span class="ot">=</span> resp1.text,</span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp2"</span> <span class="ot">=</span> resp2.text,</span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp3"</span> <span class="ot">=</span> resp3.text,</span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSe.time"</span></span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>))) <span class="ot">-&gt;</span> MS_easy</span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"MSm.text$"</span>),</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSm.time"</span></span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"medium"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSm.time"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all, </span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSm</span><span class="sc">\\</span><span class="st">.text"</span>, </span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>noun6, <span class="sc">-</span>noun7) <span class="ot">-&gt;</span> MS_medium</span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>      <span class="fu">matches</span>(<span class="st">"MSh.text$"</span>),</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>      <span class="st">"mouse_MSh.time"</span></span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"hard"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="st">"rt"</span> <span class="ot">=</span> <span class="st">"mouse_MSh.time"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSh</span><span class="sc">\\</span><span class="st">.text"</span>,</span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="ot">-&gt;</span> MS_hard</span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"resp</span><span class="sc">\\</span><span class="st">d</span><span class="sc">\\</span><span class="st">.text$"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"easy"</span>,</span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp1"</span> <span class="ot">=</span> resp1.text,</span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp2"</span> <span class="ot">=</span> resp2.text,</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>        <span class="st">"resp3"</span> <span class="ot">=</span> resp3.text</span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>))) <span class="ot">-&gt;</span> MS_easy</span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"MSm.text$"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"medium"</span>,</span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSm</span><span class="sc">\\</span><span class="st">.text"</span>,</span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>noun6, <span class="sc">-</span>noun7) <span class="ot">-&gt;</span> MS_medium</span>
+<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a>    d <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^noun"</span>),</span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a>                <span class="fu">matches</span>(<span class="st">"MSh.text$"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">paste0</span>(<span class="st">"noun"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">task =</span> <span class="st">"MS"</span>,</span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a>             <span class="at">level =</span> <span class="st">"hard"</span>,</span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a>             <span class="at">rt =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename_with</span>(<span class="at">.fn =</span> str_replace_all,</span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pattern =</span> <span class="st">"_MSh</span><span class="sc">\\</span><span class="st">.text"</span>, </span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>                  <span class="at">replacement =</span> <span class="st">""</span>) <span class="ot">-&gt;</span> MS_hard</span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>    <span class="co">#id = MS_easy$id[1],</span></span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">trials =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>,</span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_easy_n =</span> <span class="fu">n_count</span>(MS_easy),</span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_easy_rt =</span> MS_easy<span class="sc">$</span>rt,</span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_medium_n =</span> <span class="fu">n_count</span>(MS_medium),</span>
+<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_medium_rt =</span> MS_medium<span class="sc">$</span>rt,</span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_hard_n =</span> <span class="fu">n_count</span>(MS_hard),</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a>    <span class="at">MS_hard_rt =</span> MS_hard<span class="sc">$</span>rt</span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"trials"</span>), <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(name, <span class="fu">c</span>(<span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"name"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> value, <span class="at">names_from =</span> name) <span class="sc">|&gt;</span></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">acc =</span> <span class="fu">ifelse</span>(level <span class="sc">==</span> <span class="st">"easy"</span>, n <span class="sc">/</span> <span class="dv">3</span>,</span>
+<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">ifelse</span>(</span>
+<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a>                          level <span class="sc">==</span> <span class="st">"medium"</span>, n <span class="sc">/</span> <span class="dv">5</span>,</span>
+<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(level <span class="sc">==</span> <span class="st">"hard"</span>, n <span class="sc">/</span> <span class="dv">7</span>, <span class="cn">NA</span>)</span>
+<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a>                        ))) <span class="ot">-&gt;</span> MS</span>
+<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MS)</span>
+<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a>nasatlx_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(slider.response,</span>
+<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a>              head,</span>
+<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a>              task_type,</span>
+<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a>              task_level) <span class="sc">|&gt;</span></span>
+<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_at</span>(<span class="fu">vars</span>(head, task_type, task_level), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">|&gt;</span></span>
+<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"score"</span> <span class="ot">=</span> slider.response) <span class="sc">|&gt;</span></span>
+<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a>      <span class="at">scale =</span> <span class="fu">recode</span>(</span>
+<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a>        head,</span>
+<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Умственная нагрузка"</span> <span class="ot">=</span> <span class="st">"ME"</span>,</span>
+<span id="cb6-292"><a href="#cb6-292" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Физическая нагрузка"</span> <span class="ot">=</span> <span class="st">"PH"</span>,</span>
+<span id="cb6-293"><a href="#cb6-293" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Давление времени"</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
+<span id="cb6-294"><a href="#cb6-294" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Успешность выполнения"</span> <span class="ot">=</span> <span class="st">"PE"</span>,</span>
+<span id="cb6-295"><a href="#cb6-295" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Усилия"</span> <span class="ot">=</span> <span class="st">"EF"</span>,</span>
+<span id="cb6-296"><a href="#cb6-296" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Уровень фрустрации"</span> <span class="ot">=</span> <span class="st">"FR"</span></span>
+<span id="cb6-297"><a href="#cb6-297" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb6-298"><a href="#cb6-298" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">recode</span>(</span>
+<span id="cb6-299"><a href="#cb6-299" aria-hidden="true" tabindex="-1"></a>        task_type,</span>
+<span id="cb6-300"><a href="#cb6-300" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mental_rotation"</span> <span class="ot">=</span> <span class="st">"MR"</span>,</span>
+<span id="cb6-301"><a href="#cb6-301" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sternberg"</span> <span class="ot">=</span> <span class="st">"ST"</span>,</span>
+<span id="cb6-302"><a href="#cb6-302" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mental_span"</span> <span class="ot">=</span> <span class="st">"MS"</span></span>
+<span id="cb6-303"><a href="#cb6-303" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb6-304"><a href="#cb6-304" aria-hidden="true" tabindex="-1"></a>      <span class="at">level =</span> <span class="fu">recode</span>(</span>
+<span id="cb6-305"><a href="#cb6-305" aria-hidden="true" tabindex="-1"></a>        task_level,</span>
+<span id="cb6-306"><a href="#cb6-306" aria-hidden="true" tabindex="-1"></a>        <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"easy"</span>,</span>
+<span id="cb6-307"><a href="#cb6-307" aria-hidden="true" tabindex="-1"></a>        <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"medium"</span>,</span>
+<span id="cb6-308"><a href="#cb6-308" aria-hidden="true" tabindex="-1"></a>        <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"hard"</span></span>
+<span id="cb6-309"><a href="#cb6-309" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-310"><a href="#cb6-310" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb6-311"><a href="#cb6-311" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(scale, score, task, level) <span class="ot">-&gt;</span> NASATLX</span>
+<span id="cb6-312"><a href="#cb6-312" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-313"><a href="#cb6-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(NASATLX)</span>
+<span id="cb6-314"><a href="#cb6-314" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-315"><a href="#cb6-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-316"><a href="#cb6-316" aria-hidden="true" tabindex="-1"></a>sequence_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-317"><a href="#cb6-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-318"><a href="#cb6-318" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb6-319"><a href="#cb6-319" aria-hidden="true" tabindex="-1"></a>    E_rotation,</span>
+<span id="cb6-320"><a href="#cb6-320" aria-hidden="true" tabindex="-1"></a>    M_rotation,</span>
+<span id="cb6-321"><a href="#cb6-321" aria-hidden="true" tabindex="-1"></a>    H_rotation,</span>
+<span id="cb6-322"><a href="#cb6-322" aria-hidden="true" tabindex="-1"></a>    E_Sternberg,</span>
+<span id="cb6-323"><a href="#cb6-323" aria-hidden="true" tabindex="-1"></a>    M_Sternberg,</span>
+<span id="cb6-324"><a href="#cb6-324" aria-hidden="true" tabindex="-1"></a>    H_Sternberg,</span>
+<span id="cb6-325"><a href="#cb6-325" aria-hidden="true" tabindex="-1"></a>    E_span,</span>
+<span id="cb6-326"><a href="#cb6-326" aria-hidden="true" tabindex="-1"></a>    M_span,</span>
+<span id="cb6-327"><a href="#cb6-327" aria-hidden="true" tabindex="-1"></a>    H_span</span>
+<span id="cb6-328"><a href="#cb6-328" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-329"><a href="#cb6-329" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-330"><a href="#cb6-330" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sapply</span>(<span class="cf">function</span>(x) <span class="fu">which</span>(x <span class="sc">==</span> <span class="dv">1</span>)) <span class="ot">-&gt;</span> v</span>
+<span id="cb6-331"><a href="#cb6-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-332"><a href="#cb6-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">name =</span> <span class="fu">names</span>(v),</span>
+<span id="cb6-333"><a href="#cb6-333" aria-hidden="true" tabindex="-1"></a>         <span class="at">order =</span> v) <span class="sc">|&gt;</span></span>
+<span id="cb6-334"><a href="#cb6-334" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(order) <span class="sc">|&gt;</span></span>
+<span id="cb6-335"><a href="#cb6-335" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(name, <span class="fu">c</span>(<span class="st">"level"</span>, <span class="st">"task"</span>), <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-336"><a href="#cb6-336" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-337"><a href="#cb6-337" aria-hidden="true" tabindex="-1"></a>      <span class="at">task =</span> <span class="fu">recode</span>(</span>
+<span id="cb6-338"><a href="#cb6-338" aria-hidden="true" tabindex="-1"></a>        task,</span>
+<span id="cb6-339"><a href="#cb6-339" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rotation"</span> <span class="ot">=</span> <span class="st">"MR"</span>,</span>
+<span id="cb6-340"><a href="#cb6-340" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sternberg"</span> <span class="ot">=</span> <span class="st">"ST"</span>,</span>
+<span id="cb6-341"><a href="#cb6-341" aria-hidden="true" tabindex="-1"></a>        <span class="st">"span"</span> <span class="ot">=</span> <span class="st">"MS"</span></span>
+<span id="cb6-342"><a href="#cb6-342" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb6-343"><a href="#cb6-343" aria-hidden="true" tabindex="-1"></a>      <span class="at">level =</span> <span class="fu">recode</span>(</span>
+<span id="cb6-344"><a href="#cb6-344" aria-hidden="true" tabindex="-1"></a>        level,</span>
+<span id="cb6-345"><a href="#cb6-345" aria-hidden="true" tabindex="-1"></a>        <span class="st">"E"</span> <span class="ot">=</span> <span class="st">"easy"</span>,</span>
+<span id="cb6-346"><a href="#cb6-346" aria-hidden="true" tabindex="-1"></a>        <span class="st">"M"</span> <span class="ot">=</span> <span class="st">"medium"</span>,</span>
+<span id="cb6-347"><a href="#cb6-347" aria-hidden="true" tabindex="-1"></a>        <span class="st">"H"</span> <span class="ot">=</span> <span class="st">"hard"</span></span>
+<span id="cb6-348"><a href="#cb6-348" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-349"><a href="#cb6-349" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> SEQUENCE</span>
+<span id="cb6-350"><a href="#cb6-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-351"><a href="#cb6-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SEQUENCE)</span>
+<span id="cb6-352"><a href="#cb6-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-353"><a href="#cb6-353" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-354"><a href="#cb6-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-355"><a href="#cb6-355" aria-hidden="true" tabindex="-1"></a>weights_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb6-356"><a href="#cb6-356" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-357"><a href="#cb6-357" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span> </span>
+<span id="cb6-358"><a href="#cb6-358" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^pair"</span>), task_type) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-359"><a href="#cb6-359" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-360"><a href="#cb6-360" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^pair"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-361"><a href="#cb6-361" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">value =</span> value <span class="sc">%&gt;%</span> <span class="fu">str_remove_all</span>(<span class="st">"</span><span class="sc">\\\\</span><span class="st">n|</span><span class="sc">\\</span><span class="st">[|</span><span class="sc">\\</span><span class="st">]"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-362"><a href="#cb6-362" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate</span>(value, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"option1"</span>, <span class="st">"option2"</span>), <span class="at">sep =</span> <span class="st">","</span>) <span class="ot">-&gt;</span> pairs</span>
+<span id="cb6-363"><a href="#cb6-363" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-364"><a href="#cb6-364" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span> </span>
+<span id="cb6-365"><a href="#cb6-365" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"^S_pc"</span>), task_type) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-366"><a href="#cb6-366" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-367"><a href="#cb6-367" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^S_pc"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-368"><a href="#cb6-368" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">name =</span> name <span class="sc">%&gt;%</span> <span class="fu">str_remove</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.response"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-369"><a href="#cb6-369" aria-hidden="true" tabindex="-1"></a>             <span class="fu">str_replace</span>(<span class="st">"S_pc_"</span>, <span class="st">"pair"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-370"><a href="#cb6-370" aria-hidden="true" tabindex="-1"></a>    <span class="fu">full_join</span>(pairs, <span class="at">by =</span> <span class="fu">join_by</span>(task_type, name)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-371"><a href="#cb6-371" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">choice =</span> <span class="fu">ifelse</span>(value <span class="sc">==</span> <span class="dv">1</span>, option1, option2)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-372"><a href="#cb6-372" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">choice =</span> <span class="fu">recode</span>(choice,</span>
+<span id="cb6-373"><a href="#cb6-373" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Умственнаянагрузка"'</span> <span class="ot">=</span> <span class="st">"ME"</span>,</span>
+<span id="cb6-374"><a href="#cb6-374" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Физическаянагрузка"'</span> <span class="ot">=</span> <span class="st">"PH"</span>,</span>
+<span id="cb6-375"><a href="#cb6-375" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Усилия"'</span> <span class="ot">=</span> <span class="st">"EF"</span>,</span>
+<span id="cb6-376"><a href="#cb6-376" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Давленивремени"'</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
+<span id="cb6-377"><a href="#cb6-377" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Успешностьвыполнения"'</span> <span class="ot">=</span> <span class="st">"PE"</span>,</span>
+<span id="cb6-378"><a href="#cb6-378" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'"Уровеньфрустрации"'</span> <span class="ot">=</span> <span class="st">"FR"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-379"><a href="#cb6-379" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(task_type, choice) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-380"><a href="#cb6-380" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-381"><a href="#cb6-381" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">w =</span> n <span class="sc">/</span> <span class="dv">15</span>) <span class="ot">-&gt;</span> WEIGHTS</span>
+<span id="cb6-382"><a href="#cb6-382" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-383"><a href="#cb6-383" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(WEIGHTS)</span>
+<span id="cb6-384"><a href="#cb6-384" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-385"><a href="#cb6-385" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="all-toloka-files" class="level2">
 <h2 class="anchored" data-anchor-id="all-toloka-files">All Toloka files</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool1/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool1"</span>)),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool2/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool2"</span>)),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool34/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool34"</span>)),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool5/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool5"</span>))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool1/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool1"</span>)),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool2/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool2"</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool34/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool34"</span>)),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"../data-toloka/pool5/"</span>, <span class="fu">dir</span>(<span class="st">"../data-toloka/pool5"</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>files <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ST_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>MS_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ST_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>MS_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="preproc_toloka_cache/html/loading-data_b2028acb503b0719babf6a2890fb3ae1">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(files)) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(files[i])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(files[i], <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  MR_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">mr_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> MR_data</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  ST_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">st_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> ST_data</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  MS_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">ms_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> MS_data</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  NASATLX_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">nasatlx_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> NASATLX_data</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  SEQUENCE_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">sequence_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> SEQUENCE_data</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  WEIGHTS_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">weights_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> WEIGHTS_data</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "../data-toloka/pool1/365de3d587a6051d9066b869baebe6e2_toloka_2023-07-18_16h41.40.855.csv"
+[1] "../data-toloka/pool1/6af6b02e8c1c6bd3a161eb57c5e15aec_toloka_2023-07-18_16h45.12.214.csv"
+[1] "../data-toloka/pool1/BM1907_toloka_2023-07-19_12h24.59.648.csv"
+[1] "../data-toloka/pool1/EK_87c83102d38e143f82f3ee0ba479365c_toloka_2023-07-19_10h44.00.598.csv"
+[1] "../data-toloka/pool1/ОВ1907_toloka_2023-07-19_10h50.37.778.csv"
+[1] "../data-toloka/pool2/22.12.1976_toloka_2023-07-20_13h46.18.948.csv"
+[1] "../data-toloka/pool2/AA1907_toloka_2023-07-19_18h28.35.931.csv"
+[1] "../data-toloka/pool2/AC1907_toloka_2023-07-19_16h28.42.052.csv"
+[1] "../data-toloka/pool2/AT1907_toloka_2023-07-19_21h02.24.635.csv"
+[1] "../data-toloka/pool2/BH1907_toloka_2023-07-19_16h30.33.286.csv"
+[1] "../data-toloka/pool2/EA19.07.2023_toloka_2023-07-19_15h45.55.420.csv"
+[1] "../data-toloka/pool2/EC1907_toloka_2023-07-19_23h27.32.195.csv"
+[1] "../data-toloka/pool2/ВГ1907_toloka_2023-07-19_16h28.02.926.csv"
+[1] "../data-toloka/pool2/ГВ1907_toloka_2023-07-19_16h56.45.263.csv"
+[1] "../data-toloka/pool2/толкачева людмила петровна_toloka_2023-07-19_17h00.04.319.csv"
+[1] "../data-toloka/pool34/01.09.1988_toloka_2023-07-21_16h03.32.707.csv"
+[1] "../data-toloka/pool34/010390_toloka_2023-07-21_13h41.57.595.csv"
+[1] "../data-toloka/pool34/02.10.1992_toloka_2023-07-21_13h49.46.426.csv"
+[1] "../data-toloka/pool34/03.07.1987_toloka_2023-07-21_18h22.46.276.csv"
+[1] "../data-toloka/pool34/031186_toloka_2023-07-21_13h45.33.796.csv"
+[1] "../data-toloka/pool34/03121996_toloka_2023-07-21_19h46.15.237.csv"
+[1] "../data-toloka/pool34/04.11.1995_toloka_2023-07-21_18h39.24.717.csv"
+[1] "../data-toloka/pool34/040485_toloka_2023-07-21_17h36.41.405.csv"
+[1] "../data-toloka/pool34/040485_toloka_2023-07-21_17h56.38.378.csv"
+[1] "../data-toloka/pool34/040897_toloka_2023-07-21_15h56.53.591.csv"
+[1] "../data-toloka/pool34/05011994_toloka_2023-07-21_18h04.14.803.csv"
+[1] "../data-toloka/pool34/060302_toloka_2023-07-21_15h02.31.748.csv"
+[1] "../data-toloka/pool34/06051987_toloka_2023-07-21_18h25.49.317.csv"
+[1] "../data-toloka/pool34/09021990_toloka_2023-07-21_13h41.16.661.csv"
+[1] "../data-toloka/pool34/090291_toloka_2023-07-21_23h39.02.549.csv"
+[1] "../data-toloka/pool34/10111988_toloka_2023-07-21_13h28.34.745.csv"
+[1] "../data-toloka/pool34/120786_toloka_2023-07-21_15h34.34.535.csv"
+[1] "../data-toloka/pool34/13.01.1989_toloka_2023-07-21_18h04.48.759.csv"
+[1] "../data-toloka/pool34/14021986_toloka_2023-07-21_18h07.50.397.csv"
+[1] "../data-toloka/pool34/140800_toloka_2023-07-21_22h35.26.001.csv"
+[1] "../data-toloka/pool34/1511987_toloka_2023-07-21_22h11.58.878.csv"
+[1] "../data-toloka/pool34/151295_toloka_2023-07-21_14h20.24.718.csv"
+[1] "../data-toloka/pool34/16121987_toloka_2023-07-21_14h15.15.295.csv"
+[1] "../data-toloka/pool34/17.06.1988_toloka_2023-07-21_13h56.37.405.csv"
+[1] "../data-toloka/pool34/19091998_toloka_2023-07-21_13h59.25.510.csv"
+[1] "../data-toloka/pool34/19121989_toloka_2023-07-21_18h44.23.764.csv"
+[1] "../data-toloka/pool34/201085_toloka_2023-07-21_13h48.03.696.csv"
+[1] "../data-toloka/pool34/20121998_toloka_2023-07-21_18h21.19.291.csv"
+[1] "../data-toloka/pool34/210499_toloka_2023-07-21_13h37.56.499.csv"
+[1] "../data-toloka/pool34/210723_toloka_2023-07-21_18h40.05.195.csv"
+[1] "../data-toloka/pool34/211104_toloka_2023-07-21_17h06.29.907.csv"
+[1] "../data-toloka/pool34/230697_toloka_2023-07-21_23h40.02.926.csv"
+[1] "../data-toloka/pool34/230799_toloka_2023-07-21_21h03.46.166.csv"
+[1] "../data-toloka/pool34/24051985_toloka_2023-07-21_14h07.46.171.csv"
+[1] "../data-toloka/pool34/26042003_toloka_2023-07-21_20h24.07.570.csv"
+[1] "../data-toloka/pool34/27.11.1987_toloka_2023-07-21_18h20.10.164.csv"
+[1] "../data-toloka/pool34/28101993_toloka_2023-07-21_14h03.32.293.csv"
+[1] "../data-toloka/pool34/281184_toloka_2023-07-21_20h40.16.637.csv"
+[1] "../data-toloka/pool34/291295_toloka_2023-07-21_14h47.45.284.csv"
+[1] "../data-toloka/pool34/300305_toloka_2023-07-21_14h46.09.683.csv"
+[1] "../data-toloka/pool34/301099_toloka_2023-07-22_11h34.54.059.csv"
+[1] "../data-toloka/pool34/31081998_toloka_2023-07-21_13h39.43.342.csv"
+[1] "../data-toloka/pool5/090704_toloka_2023-07-29_20h17.24.389.csv"
+[1] "../data-toloka/pool5/09102002_toloka_2023-07-29_17h58.38.132.csv"
+[1] "../data-toloka/pool5/101004_toloka_2023-07-30_16h48.31.036.csv"
+[1] "../data-toloka/pool5/101297_toloka_2023-07-26_21h32.42.137.csv"
+[1] "../data-toloka/pool5/151104_toloka_2023-07-26_23h54.34.536.csv"
+[1] "../data-toloka/pool5/170501_toloka_2023-07-26_20h36.53.017.csv"
+[1] "../data-toloka/pool5/20042004_toloka_2023-07-27_10h54.24.685.csv"
+[1] "../data-toloka/pool5/250803_toloka_2023-07-22_18h23.49.041.csv"
+[1] "../data-toloka/pool5/251202_toloka_2023-07-26_20h52.51.321.csv"
+[1] "../data-toloka/pool5/28032005_toloka_2023-07-26_15h57.55.645.csv"
+[1] "../data-toloka/pool5/280396_toloka_2023-07-26_20h54.46.852.csv"
+[1] "../data-toloka/pool5/30082002_toloka_2023-07-22_14h26.39.819.csv"</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(files)) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(files[i])</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(files[i], <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  MR_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">mr_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> MR_data</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  ST_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">st_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> ST_data</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  MS_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">ms_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> MS_data</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  NASATLX_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">nasatlx_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> NASATLX_data</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  SEQUENCE_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">sequence_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> SEQUENCE_data</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  WEIGHTS_data <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>(<span class="fu">weights_preproc</span>(d) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">file =</span> files[i])) <span class="ot">-&gt;</span> WEIGHTS_data</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>MR_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>MS_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ST_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>NASATLX_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
 </div>
 <section id="create-ids-for-toloka-files" class="level3">
 <h3 class="anchored" data-anchor-id="create-ids-for-toloka-files">Create IDs for Toloka files</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">116</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">file =</span> MR_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>(),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">id =</span> stringi<span class="sc">::</span><span class="fu">stri_rand_strings</span>(MR_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>(),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">length =</span> <span class="dv">10</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pool =</span> <span class="fu">str_extract_all</span>(file, <span class="st">"pool</span><span class="sc">\\</span><span class="st">d+"</span>) <span class="sc">|&gt;</span> <span class="fu">unlist</span>()) <span class="ot">-&gt;</span> tolokaIDS</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">116</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">file =</span> MR_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>(),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">id =</span> stringi<span class="sc">::</span><span class="fu">stri_rand_strings</span>(MR_data<span class="sc">$</span>file <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">length</span>(),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">length =</span> <span class="dv">10</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pool =</span> <span class="fu">str_extract_all</span>(file, <span class="st">"pool</span><span class="sc">\\</span><span class="st">d+"</span>) <span class="sc">|&gt;</span> <span class="fu">unlist</span>()) <span class="ot">-&gt;</span> tolokaIDS</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(MR_data<span class="sc">$</span>file) <span class="sc">|&gt;</span> <span class="fu">length</span>()</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(ST_data<span class="sc">$</span>file) <span class="sc">|&gt;</span> <span class="fu">length</span>()</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(MS_data<span class="sc">$</span>file) <span class="sc">|&gt;</span> <span class="fu">length</span>()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(NASATLX_data<span class="sc">$</span>file) <span class="sc">|&gt;</span> <span class="fu">length</span>()</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(SEQUENCE_data<span class="sc">$</span>file) <span class="sc">|&gt;</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>base_pic,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>rotated_pic) <span class="ot">-&gt;</span> MR_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
 </div>
-</section>
-</section>
-<section id="plotting" class="level2">
-<h2 class="anchored" data-anchor-id="plotting">Plotting</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS, <span class="at">by =</span> <span class="st">"file"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pool <span class="sc">==</span> <span class="st">"pool5"</span>)<span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, rt)) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">data =</span> MR_data <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>file), <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> file, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>MS_data <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> MS_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MS_data <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS, <span class="at">by =</span> <span class="st">"file"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pool <span class="sc">==</span> <span class="st">"pool5"</span>)<span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, rt)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">data =</span> MS_data <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>file), <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> file, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">250</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ST_data <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> ST_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ST_data <span class="sc">%&gt;%</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS, <span class="at">by =</span> <span class="st">"file"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(pool <span class="sc">==</span> <span class="st">"pool5"</span>)<span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, rt)) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">data =</span> ST_data <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>file), <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> file, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="sc">|&gt;</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="sc">|&gt;</span> </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> scale, <span class="at">values_from =</span> score) <span class="sc">|&gt;</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PE =</span> <span class="dv">20</span> <span class="sc">-</span> PE)  <span class="sc">|&gt;</span>  <span class="co"># reverse PE scale</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"id"</span>, <span class="st">"pool"</span>),</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">score =</span> (score <span class="sc">*</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">round</span>()) <span class="ot">-&gt;</span> NASATLX_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> MR_data</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>MS_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> MS_data</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>ST_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> ST_data</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> scale, <span class="at">values_from =</span> score) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PE =</span> <span class="dv">20</span> <span class="sc">-</span> PE) <span class="sc">%&gt;%</span> <span class="co"># reverse PE scale</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="st">"task"</span>, <span class="st">"level"</span>, <span class="st">"id"</span>),</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">score =</span> (score <span class="sc">*</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">round</span>()) <span class="ot">-&gt;</span> NASATLX_data</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> SEQUENCE_data</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="sc">|&gt;</span> </span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> WEIGHTS_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> SEQUENCE_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="sc">|&gt;</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(tolokaIDS) <span class="sc">|&gt;</span> </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>file) <span class="ot">-&gt;</span> WEIGHTS_data_prep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(file)`</code></pre>
+</div>
 </div>
 </section>
-<section id="clear-aggregate" class="level2">
-<h2 class="anchored" data-anchor-id="clear-aggregate">Clear &amp; Aggregate</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>MR_data <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, level, task) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(rt),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">q1 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.25</span>),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">q3 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.75</span>),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">iqr =</span> q3 <span class="sc">-</span> q1) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(MR_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"level"</span>, <span class="st">"task"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">not_outlier =</span> <span class="fu">ifelse</span>(rt <span class="sc">&gt;</span> q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr <span class="sc">&amp;</span> rt <span class="sc">&lt;</span> q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(not_outlier) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task, level, id) <span class="sc">|&gt;</span> </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">rt =</span> <span class="fu">mean</span>(rt),</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">acc =</span> <span class="fu">mean</span>(is_correct)) <span class="ot">-&gt;</span> MR_data_toloka_agg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ST_data <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, level, task) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(rt),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">q1 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.25</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">q3 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.75</span>),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">iqr =</span> q3 <span class="sc">-</span> q1) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(ST_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"level"</span>, <span class="st">"task"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">not_outlier =</span> <span class="fu">ifelse</span>(rt <span class="sc">&gt;</span> q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr <span class="sc">&amp;</span> rt <span class="sc">&lt;</span> q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(not_outlier) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task, level, id) <span class="sc">|&gt;</span> </span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">rt =</span> <span class="fu">mean</span>(rt),</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">acc =</span> <span class="fu">mean</span>(is_correct)) <span class="ot">-&gt;</span> ST_data_toloka_agg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MS_data <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, level, task) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(rt),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">q1 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.25</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">q3 =</span> <span class="fu">quantile</span>(rt, <span class="fl">0.75</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">iqr =</span> q3 <span class="sc">-</span> q1) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(MS_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"level"</span>, <span class="st">"task"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">not_outlier =</span> <span class="fu">ifelse</span>(rt <span class="sc">&gt;</span> q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr <span class="sc">&amp;</span> rt <span class="sc">&lt;</span> q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> iqr, </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                              <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(not_outlier) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task, level, id) <span class="sc">|&gt;</span> </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">rt =</span> <span class="fu">mean</span>(rt),</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">acc =</span> <span class="fu">mean</span>(acc)) <span class="ot">-&gt;</span> MS_data_toloka_agg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
-<section id="export-preprocessed-data" class="level2">
-<h2 class="anchored" data-anchor-id="export-preprocessed-data">Export preprocessed data</h2>
+<section id="save-data" class="level2">
+<h2 class="anchored" data-anchor-id="save-data">Save data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>MR_data_toloka_agg <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/mental_rotation_data_toloka.csv"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ST_data_toloka_agg <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/sternberg_data_toloka.csv"</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>MS_data_toloka_agg <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/mental_span_data_toloka.csv"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>NASATLX_data <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/nasa_tlx_data_toloka.csv"</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/sequence_data_toloka.csv"</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data <span class="sc">|&gt;</span> <span class="fu">write_csv</span>(<span class="st">"../preproc-data/weights_data_toloka.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>MR_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/MR_tol_data.csv"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>MS_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/MS_tol_data.csv"</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>ST_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/ST_tol_data.csv"</span>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>NASATLX_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/NASATLX_tol_data.csv"</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>SEQUENCE_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/SEQ_tol_data.csv"</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>WEIGHTS_data_prep <span class="sc">|&gt;</span> </span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"../preproc-data/WEIGHTS_tol_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

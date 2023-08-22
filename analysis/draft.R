@@ -1,3 +1,83 @@
+## Clear & Aggregate
+
+```{r}
+MR_data_prep %>% 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(MR_data_prep, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> MR_data_toloka_agg
+```
+
+
+```{r}
+ST_data_prep |> 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(ST_data_prep, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(is_correct)) -> ST_data_toloka_agg
+```
+
+
+```{r}
+MS_data_prep |> 
+  group_by(id, level, task) %>% 
+  summarise(median = median(rt),
+            q1 = quantile(rt, 0.25),
+            q3 = quantile(rt, 0.75),
+            iqr = q3 - q1) %>% 
+  full_join(MS_data_prep, by = c("id", "level", "task")) %>% 
+  mutate(not_outlier = ifelse(rt > q1 - 1.5 * iqr & rt < q3 + 1.5 * iqr, 
+                              TRUE, FALSE)) %>% 
+  filter(not_outlier) %>% 
+  group_by(task, level, id) |> 
+  summarise(rt = mean(rt),
+            acc = mean(acc)) -> MS_data_toloka_agg
+```
+
+
+
+
+
+## Export preprocessed data
+
+```{r}
+MR_data_toloka_agg |> write_csv("../preproc-data/mental_rotation_data_toloka.csv")
+ST_data_toloka_agg |> write_csv("../preproc-data/sternberg_data_toloka.csv")
+MS_data_toloka_agg |> write_csv("../preproc-data/mental_span_data_toloka.csv")
+NASATLX_data |> write_csv("../preproc-data/nasa_tlx_data_toloka.csv")
+SEQUENCE_data |> write_csv("../preproc-data/sequence_data_toloka.csv")
+WEIGHTS_data |> write_csv("../preproc-data/weights_data_toloka.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Load Pavlovia & Toloka aggregated data
 
 ```{r}

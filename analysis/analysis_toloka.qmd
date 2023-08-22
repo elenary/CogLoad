@@ -24,12 +24,12 @@ rm(list = ls())
 ## Reading data
 
 ```{r reading-data}
-MR_data <- read_csv("../preproc-data/MR-tol-data.csv")
-ST_data <- read_csv("../preproc-data/ST-tol-data.csv")
-MS_data <- read_csv("../preproc-data/MS-tol-data.csv")
-NASATLX_data <- read_csv("../preproc-data/NASATLX-tol-data.csv")
-SEQUENCE_data <- read_csv("../preproc-data/SEQ-tol-data.csv")
-WEIGHTS_data <- read_csv("../preproc-data/WEIGHTS-tol-data.csv")
+MR_data <- read_csv("../preproc-data/MR_tol_data.csv")
+ST_data <- read_csv("../preproc-data/ST_tol_data.csv")
+MS_data <- read_csv("../preproc-data/MS_tol_data.csv")
+NASATLX_data <- read_csv("../preproc-data/NASATLX_tol_data.csv")
+SEQUENCE_data <- read_csv("../preproc-data/SEQ_tol_data.csv")
+WEIGHTS_data <- read_csv("../preproc-data/WEIGHTS_tol_data.csv")
 ```
 
 
@@ -342,6 +342,8 @@ nasa_tlx_weighted_wide |>
 ```
 
 
+#### Plot Score Distribution
+
 ```{r}
 NASATLX_weighted |>
   filter(scale_w != "OW_w") |> 
@@ -354,11 +356,32 @@ NASATLX_weighted |>
                ST = "Sternberg Task"
              ))) +
   theme(legend.position = "bottom") +
+  scale_fill_manual(values = level_colors) +
   labs(x = "NASA-TLX Scale",
        y = "NASA-TLX Score (raw)",
-       fill = "Difficulty Level") +
-  scale_fill_manual(values = level_colors)
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions by Scale")
 ```
+
+```{r}
+NASATLX_weighted |>
+  filter(scale_w == "OW_w") |> 
+  ggplot(aes(scale_w, score_w, fill = level)) +
+  geom_boxplot() +
+  facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_fill_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Overall Score Distributions by Scale")
+```
+
 
 ```{r}
 pd <- position_dodge(0.3)
@@ -376,11 +399,36 @@ NASATLX_weighted |>
                ST = "Sternberg Task"
              ))) +
   theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
   labs(x = "NASA-TLX Scale",
        y = "NASA-TLX Score (raw)",
-       fill = "Difficulty Level") +
-  scale_color_manual(values = level_colors)
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions by Scale")
 ```
+
+```{r}
+pd <- position_dodge(0.3)
+NASATLX_weighted |>
+  filter(scale_w == "OW_w") |> 
+  ggplot(aes(scale_w, score_w, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Overall Score Distributions by Scale")
+```
+
 
 ```{r}
 NASATLX |>
@@ -398,6 +446,13 @@ NASATLX |>
   ) -> nasatlx
 ```
 
+```{r, eval=FALSE}
+nasatlx |> write_csv("../preproc-data/nasatlx_weighted&raw_score_tol_data.csv")
+```
+
+
+#### Correlations between Weighted and Raw Score
+
 ```{r}
 nasatlx |> 
   filter(scale != "OW") |> 
@@ -409,11 +464,22 @@ nasatlx |>
   theme(legend.position = "bottom")
 ```
 
+```{r}
+nasatlx |> 
+  filter(scale == "OW") |> 
+  ggplot(aes(score, score_w, color = level)) +
+  geom_point(alpha = .3) +
+  geom_smooth(method = "lm") +
+  facet_grid(task ~ scale) +
+  scale_color_manual(values = level_colors) +
+  theme(legend.position = "bottom")
+```
 
 ```{r}
 nasatlx |> 
   group_by(task, level, scale) |> 
   summarise(cor = cor(score, score_w)) |> 
+  arrange(desc(cor)) |> 
   knitr::kable(caption = "Correlations between raw and weighted scores",
                digits = 2)
 ```
@@ -458,8 +524,82 @@ NASATLX_data |>
 ggsave("anova_errorbars.png", dpi = 300)
 ```
 
+
+#### Comparison of Weighted and Raw Score
+
+```{r}
+pd <- position_dodge(0.3)
+nasatlx |>
+  pivot_longer(cols = c("score", "score_w"),
+               names_to = "type", values_to = "score") |> 
+  mutate(type = recode(type,
+                       "score" = "raw",
+                       "score_w" = "weighted")) |> 
+  filter(scale != "OW") |> 
+  ggplot(aes(scale, score, color = level, shape = type)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  facet_grid(type ~ task,
+             scales = "free_y",
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  guides(type = "none") +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted & Raw Score Distributions by Scale")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasatlx |>
+  pivot_longer(cols = c("score", "score_w"),
+               names_to = "type", values_to = "score") |> 
+  mutate(type = recode(type,
+                       "score" = "raw",
+                       "score_w" = "weighted")) |> 
+  filter(scale == "OW") |> 
+  ggplot(aes(scale, score, color = level, shape = "type")) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(type ~ task,
+              scales = "free_y",
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  guides(shape = "none") +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted & Raw Overall Score Distributions by Scale")
+```
+
 ### GLMM weighted scales
 
+```{r}
+NASATLX_data |> 
+  pivot_wider(values_from = score, names_from = scale) |> 
+  mutate(OW = ME + PH + TI + PE + EF + FR) -> nasa_tlx_wide
+
+```
+
+```{r, eval=FALSE}
+nasa_tlx_weighted_wide |> write_csv("../preproc-data/nasatlx_weighted_score_tol_data.csv")
+nasa_tlx_wide |> write_csv("../preproc-data/nasatlx_raw_score_tol_data.csv")
+```
 
 ```{r r2-to-f2, include=FALSE}
 r2tof2 <- function(r2) r2 / (1 - r2)
@@ -467,7 +607,8 @@ r2tof2 <- function(r2) r2 / (1 - r2)
 
 #### ME
 
-```{r mix-me}
+##### Weigted
+```{r mix-me-w}
 mix_ME_w <- lmer(ME_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -476,8 +617,20 @@ anova(mix_ME_w)
 r.squaredGLMM(mix_ME_w)[1]
 ```
 
+##### Raw
+```{r mix-me}
+mix_ME <- lmer(ME ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_ME)
+anova(mix_ME)
+r.squaredGLMM(mix_ME)[1]
+```
+
 #### PH
-```{r mix-ph}
+
+##### Weighted
+```{r mix-ph-w}
 mix_PH_w <- lmer(PH_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -486,8 +639,21 @@ anova(mix_PH_w)
 r.squaredGLMM(mix_PH_w)[1]
 ```
 
+##### Raw
+```{r mix-ph}
+mix_PH <- lmer(PH ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PH)
+anova(mix_PH)
+r.squaredGLMM(mix_PH)[1]
+```
+
+
 #### TI
-```{r mix-ti}
+
+##### Weighted
+```{r mix-ti-w}
 mix_TI_w <- lmer(TI_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -496,8 +662,21 @@ anova(mix_TI_w)
 r.squaredGLMM(mix_TI_w)[1]
 ```
 
+##### Raw
+```{r mix-ti}
+mix_TI <- lmer(TI ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_TI)
+anova(mix_TI)
+r.squaredGLMM(mix_TI)[1]
+```
+
+
 #### PE
-```{r mix-pe}
+
+##### Weighted
+```{r mix-pe-w}
 mix_PE_w <- lmer(PE_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -506,8 +685,21 @@ anova(mix_PE_w)
 r.squaredGLMM(mix_PE_w)[1]
 ```
 
+##### Raw
+```{r mix-pe}
+mix_PE <- lmer(PE ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_PE)
+anova(mix_PE)
+r.squaredGLMM(mix_PE)[1]
+```
+
+
 #### EF
-```{r mix-ef}
+
+##### Weighted
+```{r mix-ef-w}
 mix_EF_w <- lmer(EF_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -516,8 +708,21 @@ anova(mix_EF_w)
 r.squaredGLMM(mix_EF_w)[1]
 ```
 
+##### Raw
+```{r mix-ef}
+mix_EF <- lmer(EF ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_EF)
+anova(mix_EF)
+r.squaredGLMM(mix_EF)[1]
+```
+
+
 #### FR
-```{r mix-fr}
+
+##### Weighted
+```{r mix-fr-w}
 mix_FR_w <- lmer(FR_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -526,10 +731,20 @@ anova(mix_FR_w)
 r.squaredGLMM(mix_FR_w)[1]
 ```
 
+##### Raw
+```{r mix-fr}
+mix_FR <- lmer(FR ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_FR)
+anova(mix_FR)
+r.squaredGLMM(mix_FR)[1]
+```
 
 #### Overall Workload
 
-```{r mix-ow}
+##### Weighted
+```{r mix-ow-w}
 mix_OW_w <- lmer(OW_w ~ task * level + (1|id), 
                nasa_tlx_weighted_wide,
                contrasts = list(level="contr.treatment"))
@@ -537,3 +752,17 @@ summary(mix_OW_w)
 anova(mix_OW_w)
 r.squaredGLMM(mix_OW_w)[1]
 ```
+
+##### Raw
+```{r mix-ow}
+mix_OW <- lmer(OW ~ task * level + (1|id), 
+               nasa_tlx_wide,
+               contrasts = list(level="contr.treatment"))
+summary(mix_OW)
+anova(mix_OW)
+r.squaredGLMM(mix_OW)[1]
+```
+
+
+
+

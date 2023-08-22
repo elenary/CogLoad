@@ -1,0 +1,517 @@
+# Correlations
+
+```{r cor-opts}
+# knitr::opts_chunk$set(eval = FALSE)
+```
+
+## Packages
+
+```{r pkgs-correlations}
+library(tidyverse)
+theme_set(theme_bw()) # set black and white theme
+library(ggcorrplot)
+```
+
+```{r}
+rm(list = ls())
+```
+
+## Reading data
+
+```{r}
+nasatlx_pav <- read_csv("../preproc-data/nasatlx_raw_score_pav_data.csv")
+nasatlx_tol_raw <- read_csv("../preproc-data/nasatlx_raw_score_tol_data.csv")
+nasatlx_tol_weighted <- read_csv("../preproc-data/nasatlx_weighted_score_tol_data.csv") |> 
+  rename_all(.funs = str_remove_all, pattern = "_w")
+```
+
+## Correlations First Banch
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Mental Rotation Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Mental Rotation Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Mental Rotation Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Memory Span Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Memory Span Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Memory Span Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Sternberg Task Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Sternberg Task Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_pav |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "First Banch. Sternberg Task Hard",
+             show.legend = FALSE)
+```
+
+
+
+## Correlations Second Banch
+
+### Raw
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Mental Rotation Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Mental Rotation Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Mental Rotation Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Memory Span Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Memory Span Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Memory Span Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Sternberg Task Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw|> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Sternberg Task Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_raw |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Raw. Sternberg Task Hard",
+             show.legend = FALSE)
+```
+
+
+### Weighted
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Mental Rotation Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Mental Rotation Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Mental Rotation Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Memory Span Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Memory Span Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Memory Span Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Sternberg Task Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Sternberg Task Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_tol_weighted |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Second Banch. Weighted. Sternberg Task Hard",
+             show.legend = FALSE)
+```
+
+
+## Merger Fist and Second Banch Raw Score
+
+```{r}
+nasatlx_pav |> 
+  bind_rows(nasatlx_tol_raw) -> nasatlx_all
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Mental Rotation Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Mental Rotation Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Mental Rotation Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Memory Span Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Memory Span Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Memory Span Hard",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Sternberg Task Easy",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Sternberg Task Medium",
+             show.legend = FALSE)
+```
+
+```{r}
+nasatlx_all |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "All Data. Raw. Sternberg Task Hard",
+             show.legend = FALSE)
+```
+
+
+
+
