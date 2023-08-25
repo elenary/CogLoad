@@ -30,7 +30,7 @@ nasatlx_tol_weighted <- read_csv("../preproc-data/nasatlx_weighted_score_tol_dat
 ```{r}
 nasatlx_pav |> 
   filter(task == "MR" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -43,7 +43,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "MR" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -56,7 +56,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "MR" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -69,7 +69,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "MS" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -82,7 +82,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "MS" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -95,7 +95,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "MS" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -108,7 +108,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "ST" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -121,7 +121,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "ST" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -134,7 +134,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_pav |> 
   filter(task == "ST" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -153,7 +153,7 @@ nasatlx_pav |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MR" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -166,7 +166,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MR" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -179,7 +179,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MR" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -192,7 +192,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MS" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -205,7 +205,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MS" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -218,7 +218,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "MS" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -231,7 +231,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "ST" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -244,7 +244,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_raw|> 
   filter(task == "ST" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -257,7 +257,7 @@ nasatlx_tol_raw|>
 ```{r}
 nasatlx_tol_raw |> 
   filter(task == "ST" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -273,7 +273,7 @@ nasatlx_tol_raw |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MR" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -286,7 +286,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MR" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -299,7 +299,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MR" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -312,7 +312,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MS" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -325,7 +325,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MS" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -338,7 +338,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "MS" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -351,7 +351,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "ST" & level == "easy") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -364,7 +364,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "ST" & level == "medium") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -377,7 +377,7 @@ nasatlx_tol_weighted |>
 ```{r}
 nasatlx_tol_weighted |> 
   filter(task == "ST" & level == "hard") |> 
-  select(ME, PH, TI, PE, EF, FR) |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
   cor(use = "complete.obs") |> 
   ggcorrplot(type = "lower", 
              lab = TRUE,
@@ -392,7 +392,8 @@ nasatlx_tol_weighted |>
 
 ```{r}
 nasatlx_pav |> 
-  bind_rows(nasatlx_tol_raw) -> nasatlx_all
+  bind_rows(nasatlx_tol_raw) |> 
+  mutate(pool = ifelse(is.na(pool), "pool0", pool)) -> nasatlx_all
 ```
 
 ```{r}
@@ -513,5 +514,77 @@ nasatlx_all |>
 ```
 
 
+### Pooled Correlation Matrix
+
+```{r}
+
+nasatlx_all |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MR_easy_r_
+
+nasatlx_all |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MR_medium_r_
+
+nasatlx_all |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MR_hard_r_
+
+nasatlx_all |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MS_easy_r_
+
+nasatlx_all |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MS_medium_r_
+
+nasatlx_all |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> MS_hard_r_
+
+nasatlx_all |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> ST_easy_r_
+
+nasatlx_all |> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> ST_medium_r_
+
+nasatlx_all |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR, OW) |> 
+  cor(use = "complete.obs") |> 
+  atanh() -> ST_hard_r_
+```
+
+```{r}
+((MR_easy_r_ + MR_medium_r_ + MR_hard_r_ + MS_easy_r_ + MS_medium_r_ + MS_hard_r_ + ST_easy_r_ + ST_medium_r_ + ST_hard_r_) / 9) |> tanh() -> pooled_matrix
+```
+
+```{r}
+pooled_matrix |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 3,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "Polled Matrix. Raw.",
+             show.legend = FALSE)
+```
 
 

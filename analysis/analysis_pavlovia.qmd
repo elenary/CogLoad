@@ -6,14 +6,14 @@ knitr::opts_chunk$set(error = TRUE)
 
 ## Packages
 
-```{r pkgs-analysis}
+```{r pkgs-analysis, message=FALSE}
 library(tidyverse)
 theme_set(theme_bw()) # set black and white theme
 library(lme4)
 library(lmerTest)
+library(lsmeans)
 library(MuMIn)
 library(pwr)
-library(ez)
 ```
 
 ```{r}
@@ -54,8 +54,12 @@ MR_data |>
             acc = mean(is_correct)) -> MR_data_agg
 ```
 
-```{r}
+```{r, eval=FALSE}
 MR_data_agg |> write_csv("../preproc-data/MR_pav_data_agg.csv")
+```
+
+```{r, echo=FALSE, message=FALSE}
+MR_data_agg <- read_csv("../preproc-data/MR_pav_data_agg.csv")
 ```
 
 #### Memory Span
@@ -70,8 +74,12 @@ MS_data |>
             acc = mean(acc)) -> MS_data_agg
 ```
 
-```{r}
+```{r, eval=FALSE}
 MS_data_agg |> write_csv("../preproc-data/MS_pav_data_agg.csv")
+```
+
+```{r, echo=FALSE, message=FALSE}
+MS_data_agg <- read_csv("../preproc-data/MS_pav_data_agg.csv")
 ```
 
 #### Sternberg Task
@@ -85,8 +93,12 @@ ST_data |>
             acc = mean(is_correct)) -> ST_data_agg
 ```
 
-```{r}
+```{r, eval=FALSE}
 ST_data_agg |> write_csv("../preproc-data/ST_pav_data_agg.csv")
+```
+
+```{r, echo=FALSE, message=FALSE}
+ST_data_agg <- read_csv("../preproc-data/ST_pav_data_agg.csv")
 ```
 
 
@@ -225,50 +237,57 @@ MR_data_agg |>
 
 #### Reaction Time
 
-```{r rt-anova}
-lmer(rt ~ task * level + (1|id), all_pav_data_agg) |> anova()
+```{r rt-mix}
+mix_rt <- lmer(rt ~ task * level + (1|id), all_pav_data_agg)
+summary(mix_rt)
+anova(mix_rt)
 ```
 
 ```{r pairwise-rt}
-pairwise.t.test(
-  x = all_pav_data_agg$rt,
-  g = interaction(all_pav_data_agg$task,
-                  all_pav_data_agg$level),
-  # paired = TRUE
-  )
+lsmeans(mix_rt, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r rt_plot_, warning=FALSE}
+MR_data_agg |> 
+  bind_rows(MS_data_agg, ST_data_agg) |>
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, rt)) +
+  facet_wrap(~ task, scales = "free_y", 
+             labeller = labeller(task = c(MR = "Mental Rotation",
+                                          MS = "Memory Span", 
+                                          ST = "Sternberg Task"))) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s")
 ```
 
 #### Accuracy
 
 ```{r acc-anova}
-ezANOVA(data = all_pav_data_agg,
-        dv = acc,
-        wid = id,
-        within = .(task, level),
-        detailed = TRUE) |> 
-  psychReport::aovEffectSize() -> acc_anova
-
-acc_anova$ANOVA |> 
-  knitr::kable(caption = "Accuracy ANOVA Results", digits = 3)
-
-acc_anova$`Mauchly's Test for Sphericity` |> 
-  knitr::kable(caption = "Mauchly's Test for Sphericity Results", digits = 3)
-
-acc_anova$`Sphericity Corrections` |> 
-  knitr::kable(caption = "Sphericity Corrections", digits = 3)
+mix_acc <- lmer(acc ~ task * level + (1|id), all_pav_data_agg)
+summary(mix_acc)
+anova(mix_acc)
 ```
 
 ```{r pairwise-acc}
-pairwise.t.test(
-  x = all_pav_data_agg$acc,
-  g = interaction(all_pav_data_agg$task,
-                  all_pav_data_agg$level),
-  # paired = TRUE
-  )
+lsmeans(mix_acc, pairwise ~ task:level, adjust = "tukey")
 ```
 
-
-
+```{r acc_plot_, warning=FALSE}
+MR_data_agg |> 
+  bind_rows(MS_data_agg, ST_data_agg) |>
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, acc)) +
+  facet_wrap(~ task, scales = "free_y", 
+             labeller = labeller(task = c(MR = "Mental Rotation",
+                                          MS = "Memory Span", 
+                                          ST = "Sternberg Task"))) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Accuracy")
+```
 
 
 ## Questionnaire Data
@@ -380,10 +399,6 @@ NASATLX_data |>
 nasa_tlx_wide |> write_csv("../preproc-data/nasatlx_raw_score_pav_data.csv")
 ```
 
-```{r}
-nasa_tlx_wide |> write_csv("")
-```
-
 ```{r r2-to-f2}
 r2tof2 <- function(r2) r2 / (1 - r2)
 ```
@@ -399,10 +414,40 @@ anova(mix_ME)
 r.squaredGLMM(mix_ME)[1]
 r2tof2(r.squaredGLMM(mix_ME)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_ME)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
 ```
+
+```{r pairwise-me}
+lsmeans(mix_ME, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Mental Demand")
+```
+
 
 #### PH
 ```{r mix-ph}
@@ -414,9 +459,38 @@ anova(mix_PH)
 r.squaredGLMM(mix_PH)[1]
 r2tof2(r.squaredGLMM(mix_PH)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_PH)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
+```
+
+```{r pairwise-ph}
+lsmeans(mix_PH, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Physical Demand")
 ```
 
 #### TI
@@ -429,10 +503,40 @@ anova(mix_TI)
 r.squaredGLMM(mix_TI)[1]
 r2tof2(r.squaredGLMM(mix_TI)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_TI)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
 ```
+
+```{r pairwise-ti}
+lsmeans(mix_TI, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Time Pressure")
+```
+
 
 #### PE
 ```{r mix-pe}
@@ -444,9 +548,38 @@ anova(mix_PE)
 r.squaredGLMM(mix_PE)[1]
 r2tof2(r.squaredGLMM(mix_PE)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_PE)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
+```
+
+```{r pairwise-pe}
+lsmeans(mix_PE, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Performance")
 ```
 
 #### EF
@@ -459,9 +592,39 @@ anova(mix_EF)
 r.squaredGLMM(mix_EF)[1]
 r2tof2(r.squaredGLMM(mix_EF)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_EF)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
+```
+
+
+```{r pairwise-ef}
+lsmeans(mix_EF, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Effort")
 ```
 
 #### FR
@@ -474,11 +637,39 @@ anova(mix_FR)
 r.squaredGLMM(mix_FR)[1]
 r2tof2(r.squaredGLMM(mix_FR)[1])
 pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_FR)[1]),
-            u = 8,
+            u = 4,
             sig.level = .05,
             power = .8)
 ```
 
+```{r pairwise-fr}
+lsmeans(mix_FR, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Frustration")
+```
 
 #### Overall Workload
 
@@ -494,4 +685,33 @@ pwr.f2.test(f2 = r2tof2(r.squaredGLMM(mix_OW)[1]),
             u = 7,
             sig.level = .05,
             power = .8)
+```
+
+```{r pairwise-ow}
+lsmeans(mix_OW, pairwise ~ task:level, adjust = "tukey")
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(. ~ task,
+             labeller = labeller(task = c(
+               MR = "Mental Rotation",
+               MS = "Memory Span",
+               ST = "Sternberg Task"
+             ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Weighted Score Distributions. Overall Workload")
 ```
