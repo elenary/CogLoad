@@ -1363,7 +1363,7 @@ eta_squared(anova(mix_st_rt))
 ```
 
 ```{r pairwise-st-rt}
-pairwise_st_rt <- lsmeans(mix_st_acc, pairwise ~ level, adjust = "tukey")
+pairwise_st_rt <- lsmeans(mix_st_rt, pairwise ~ level, adjust = "tukey")
 pairwise_st_rt$lsmeans |> as_tibble() |> kable()
 pairwise_st_rt$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
 ```

@@ -5690,28 +5690,103 @@ level     |           0.18 | [0.09, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb375"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb375-1"><a href="#cb375-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_acc, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in eval(expr, envir, enclos): object 'mix_st_acc' not found</code></pre>
+<div class="sourceCode cell-code" id="cb375"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb375-1"><a href="#cb375-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_rt, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb375-2"><a href="#cb375-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">level</th>
+<th style="text-align: right;">lsmean</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">lower.CL</th>
+<th style="text-align: right;">upper.CL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">easy</td>
+<td style="text-align: right;">1.044806</td>
+<td style="text-align: right;">0.0395578</td>
+<td style="text-align: right;">168.3899</td>
+<td style="text-align: right;">0.9667126</td>
+<td style="text-align: right;">1.122899</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hard</td>
+<td style="text-align: right;">1.265234</td>
+<td style="text-align: right;">0.0395578</td>
+<td style="text-align: right;">168.3899</td>
+<td style="text-align: right;">1.1871407</td>
+<td style="text-align: right;">1.343327</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">medium</td>
+<td style="text-align: right;">1.239020</td>
+<td style="text-align: right;">0.0395578</td>
+<td style="text-align: right;">168.3899</td>
+<td style="text-align: right;">1.1609271</td>
+<td style="text-align: right;">1.317113</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="sourceCode cell-code" id="cb377"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb377-1"><a href="#cb377-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in eval(expr, envir, enclos): object 'pairwise_st_rt' not found</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb379"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb379-1"><a href="#cb379-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in eval(expr, envir, enclos): object 'pairwise_st_rt' not found</code></pre>
+<div class="sourceCode cell-code" id="cb376"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb376-1"><a href="#cb376-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_rt<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">contrast</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">t.ratio</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: left;">sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">easy - hard</td>
+<td style="text-align: right;">-0.2204281</td>
+<td style="text-align: right;">0.0407012</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">-5.4157694</td>
+<td style="text-align: right;">0.0000006</td>
+<td style="text-align: left;">*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">easy - medium</td>
+<td style="text-align: right;">-0.1942145</td>
+<td style="text-align: right;">0.0407012</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">-4.7717187</td>
+<td style="text-align: right;">0.0000121</td>
+<td style="text-align: left;">*</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard - medium</td>
+<td style="text-align: right;">0.0262136</td>
+<td style="text-align: right;">0.0407012</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">0.6440506</td>
+<td style="text-align: right;">0.7959898</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb381"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb381-1"><a href="#cb381-1" aria-hidden="true" tabindex="-1"></a>ST_data_agg <span class="sc">|&gt;</span> </span>
-<span id="cb381-2"><a href="#cb381-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">factor</span>(level, </span>
-<span id="cb381-3"><a href="#cb381-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb381-4"><a href="#cb381-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"easy"</span>, <span class="st">"medium"</span>, <span class="st">"hard"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb381-5"><a href="#cb381-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, rt)) <span class="sc">+</span></span>
-<span id="cb381-6"><a href="#cb381-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"pointrange"</span>) <span class="sc">+</span></span>
-<span id="cb381-7"><a href="#cb381-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Difficulty Level"</span>, <span class="at">y =</span> <span class="st">"Reaction time, s"</span>,</span>
-<span id="cb381-8"><a href="#cb381-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Reaction time. Sternberg Task."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb377"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb377-1"><a href="#cb377-1" aria-hidden="true" tabindex="-1"></a>ST_data_agg <span class="sc">|&gt;</span> </span>
+<span id="cb377-2"><a href="#cb377-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">factor</span>(level, </span>
+<span id="cb377-3"><a href="#cb377-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb377-4"><a href="#cb377-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"easy"</span>, <span class="st">"medium"</span>, <span class="st">"hard"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb377-5"><a href="#cb377-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, rt)) <span class="sc">+</span></span>
+<span id="cb377-6"><a href="#cb377-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"pointrange"</span>) <span class="sc">+</span></span>
+<span id="cb377-7"><a href="#cb377-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Difficulty Level"</span>, <span class="at">y =</span> <span class="st">"Reaction time, s"</span>,</span>
+<span id="cb377-8"><a href="#cb377-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Reaction time. Sternberg Task."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="analysis_pavlovia_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -5720,8 +5795,8 @@ level     |           0.18 | [0.09, 1.00]
 <section id="accuracy-3" class="level4">
 <h4 class="anchored" data-anchor-id="accuracy-3">Accuracy</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb382"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb382-1"><a href="#cb382-1" aria-hidden="true" tabindex="-1"></a>mix_st_acc <span class="ot">&lt;-</span> <span class="fu">lmer</span>(acc <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), ST_data_agg)</span>
-<span id="cb382-2"><a href="#cb382-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb378"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb378-1"><a href="#cb378-1" aria-hidden="true" tabindex="-1"></a>mix_st_acc <span class="ot">&lt;-</span> <span class="fu">lmer</span>(acc <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), ST_data_agg)</span>
+<span id="cb378-2"><a href="#cb378-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -5753,12 +5828,12 @@ Correlation of Fixed Effects:
 levelhard   -0.648       
 levelmedium -0.648  0.500</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb384"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb384-1"><a href="#cb384-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb380"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb380-1"><a href="#cb380-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.5542952 0.6256894</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb386"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb386-1"><a href="#cb386-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb382"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb382-1"><a href="#cb382-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -5766,7 +5841,7 @@ level 3.3913  1.6956     2   162   181.4 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb388"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb388-1"><a href="#cb388-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_acc))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb384"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb384-1"><a href="#cb384-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_acc))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -5778,8 +5853,8 @@ level     |           0.69 | [0.63, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb390"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb390-1"><a href="#cb390-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_acc, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb390-2"><a href="#cb390-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb386"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb386-1"><a href="#cb386-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_acc, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb386-2"><a href="#cb386-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -5820,7 +5895,7 @@ level     |           0.69 | [0.63, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb391"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb391-1"><a href="#cb391-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb387"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb387-1"><a href="#cb387-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_acc<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -5867,14 +5942,14 @@ level     |           0.69 | [0.63, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb392"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb392-1"><a href="#cb392-1" aria-hidden="true" tabindex="-1"></a>ST_data_agg <span class="sc">|&gt;</span> </span>
-<span id="cb392-2"><a href="#cb392-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">factor</span>(level, </span>
-<span id="cb392-3"><a href="#cb392-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb392-4"><a href="#cb392-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"easy"</span>, <span class="st">"medium"</span>, <span class="st">"hard"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb392-5"><a href="#cb392-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, acc)) <span class="sc">+</span></span>
-<span id="cb392-6"><a href="#cb392-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"pointrange"</span>) <span class="sc">+</span></span>
-<span id="cb392-7"><a href="#cb392-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Difficulty Level"</span>, <span class="at">y =</span> <span class="st">"Reaction time, s"</span>,</span>
-<span id="cb392-8"><a href="#cb392-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Accuracy. Sternberg Task."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb388"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb388-1"><a href="#cb388-1" aria-hidden="true" tabindex="-1"></a>ST_data_agg <span class="sc">|&gt;</span> </span>
+<span id="cb388-2"><a href="#cb388-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">factor</span>(level, </span>
+<span id="cb388-3"><a href="#cb388-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ordered =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb388-4"><a href="#cb388-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"easy"</span>, <span class="st">"medium"</span>, <span class="st">"hard"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb388-5"><a href="#cb388-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(level, acc)) <span class="sc">+</span></span>
+<span id="cb388-6"><a href="#cb388-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"pointrange"</span>) <span class="sc">+</span></span>
+<span id="cb388-7"><a href="#cb388-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Difficulty Level"</span>, <span class="at">y =</span> <span class="st">"Reaction time, s"</span>,</span>
+<span id="cb388-8"><a href="#cb388-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Accuracy. Sternberg Task."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="analysis_pavlovia_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -5883,8 +5958,8 @@ level     |           0.69 | [0.63, 1.00]
 <section id="me-3" class="level4">
 <h4 class="anchored" data-anchor-id="me-3">ME</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb393"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb393-1"><a href="#cb393-1" aria-hidden="true" tabindex="-1"></a>mix_st_me <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ME <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb393-2"><a href="#cb393-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb389"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb389-1"><a href="#cb389-1" aria-hidden="true" tabindex="-1"></a>mix_st_me <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ME <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb389-2"><a href="#cb389-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -5916,12 +5991,12 @@ Correlation of Fixed Effects:
 level.L 0.004        
 level.Q 0.002  0.005 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb395"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb395-1"><a href="#cb395-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb391"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb391-1"><a href="#cb391-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.3712913 0.6167335</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb397"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb397-1"><a href="#cb397-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb393"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb393-1"><a href="#cb393-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_me)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -5929,7 +6004,7 @@ level  66137   33068     2 161.52  118.03 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb399"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb399-1"><a href="#cb399-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_me))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb395"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb395-1"><a href="#cb395-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_me))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -5941,8 +6016,8 @@ level     |           0.59 | [0.52, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb401"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb401-1"><a href="#cb401-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_me <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_me, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb401-2"><a href="#cb401-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_me<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb397"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb397-1"><a href="#cb397-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_me <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_me, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb397-2"><a href="#cb397-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_me<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -5983,7 +6058,7 @@ level     |           0.59 | [0.52, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb402"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb402-1"><a href="#cb402-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_me<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb398"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb398-1"><a href="#cb398-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_me<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -6039,22 +6114,22 @@ level     |           0.59 | [0.52, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb403"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb403-1"><a href="#cb403-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb403-2"><a href="#cb403-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb403-3"><a href="#cb403-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb403-4"><a href="#cb403-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb403-5"><a href="#cb403-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"ME"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb403-6"><a href="#cb403-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb403-7"><a href="#cb403-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb403-8"><a href="#cb403-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb403-9"><a href="#cb403-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb403-10"><a href="#cb403-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb403-11"><a href="#cb403-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb403-12"><a href="#cb403-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb403-13"><a href="#cb403-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb403-14"><a href="#cb403-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb403-15"><a href="#cb403-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb403-16"><a href="#cb403-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Mental Demand"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb399"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb399-1"><a href="#cb399-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb399-2"><a href="#cb399-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb399-3"><a href="#cb399-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb399-4"><a href="#cb399-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb399-5"><a href="#cb399-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"ME"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb399-6"><a href="#cb399-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb399-7"><a href="#cb399-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb399-8"><a href="#cb399-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb399-9"><a href="#cb399-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb399-10"><a href="#cb399-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb399-11"><a href="#cb399-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb399-12"><a href="#cb399-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb399-13"><a href="#cb399-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb399-14"><a href="#cb399-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb399-15"><a href="#cb399-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb399-16"><a href="#cb399-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Mental Demand"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6067,8 +6142,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="ph-3" class="level4">
 <h4 class="anchored" data-anchor-id="ph-3">PH</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb405"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb405-1"><a href="#cb405-1" aria-hidden="true" tabindex="-1"></a>mix_st_ph <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PH <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb405-2"><a href="#cb405-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb401"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb401-1"><a href="#cb401-1" aria-hidden="true" tabindex="-1"></a>mix_st_ph <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PH <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb401-2"><a href="#cb401-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -6100,12 +6175,12 @@ Correlation of Fixed Effects:
 level.L  0.000       
 level.Q -0.003  0.000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb407"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb407-1"><a href="#cb407-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb403"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb403-1"><a href="#cb403-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            R2m       R2c
 [1,] 0.05003192 0.6655189</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb409"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb409-1"><a href="#cb409-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb405"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb405-1"><a href="#cb405-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -6113,7 +6188,7 @@ level 7001.9  3500.9     2 160.78  18.245 7.228e-08 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb411"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb411-1"><a href="#cb411-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ph))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb407"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb407-1"><a href="#cb407-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ph))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -6125,8 +6200,8 @@ level     |           0.18 | [0.10, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb413"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb413-1"><a href="#cb413-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ph, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb413-2"><a href="#cb413-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb409"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb409-1"><a href="#cb409-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ph, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb409-2"><a href="#cb409-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6167,7 +6242,7 @@ level     |           0.18 | [0.10, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb414"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb414-1"><a href="#cb414-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb410"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb410-1"><a href="#cb410-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ph<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -6223,22 +6298,22 @@ level     |           0.18 | [0.10, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb415"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb415-1"><a href="#cb415-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb415-2"><a href="#cb415-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb415-3"><a href="#cb415-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb415-4"><a href="#cb415-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb415-5"><a href="#cb415-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"PH"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb415-6"><a href="#cb415-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb415-7"><a href="#cb415-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb415-8"><a href="#cb415-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb415-9"><a href="#cb415-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb415-10"><a href="#cb415-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb415-11"><a href="#cb415-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb415-12"><a href="#cb415-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb415-13"><a href="#cb415-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb415-14"><a href="#cb415-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb415-15"><a href="#cb415-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb415-16"><a href="#cb415-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Physical Demand"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb411"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb411-1"><a href="#cb411-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb411-2"><a href="#cb411-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb411-3"><a href="#cb411-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb411-4"><a href="#cb411-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb411-5"><a href="#cb411-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"PH"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb411-6"><a href="#cb411-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb411-7"><a href="#cb411-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb411-8"><a href="#cb411-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb411-9"><a href="#cb411-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb411-10"><a href="#cb411-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb411-11"><a href="#cb411-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb411-12"><a href="#cb411-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb411-13"><a href="#cb411-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb411-14"><a href="#cb411-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb411-15"><a href="#cb411-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb411-16"><a href="#cb411-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Physical Demand"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6251,8 +6326,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="ti-3" class="level4">
 <h4 class="anchored" data-anchor-id="ti-3">TI</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb417"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb417-1"><a href="#cb417-1" aria-hidden="true" tabindex="-1"></a>mix_st_ti <span class="ot">&lt;-</span> <span class="fu">lmer</span>(TI <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb417-2"><a href="#cb417-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb413"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb413-1"><a href="#cb413-1" aria-hidden="true" tabindex="-1"></a>mix_st_ti <span class="ot">&lt;-</span> <span class="fu">lmer</span>(TI <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb413-2"><a href="#cb413-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -6284,12 +6359,12 @@ Correlation of Fixed Effects:
 level.L  0.000       
 level.Q -0.004  0.000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb419"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb419-1"><a href="#cb419-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb415"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb415-1"><a href="#cb415-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.4574931 0.6736409</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb421"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb421-1"><a href="#cb421-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb417"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb417-1"><a href="#cb417-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ti)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -6297,7 +6372,7 @@ level 130937   65468     2 161.47  171.01 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb423"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb423-1"><a href="#cb423-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ti))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb419"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb419-1"><a href="#cb419-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ti))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -6309,8 +6384,8 @@ level     |           0.68 | [0.62, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb425"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb425-1"><a href="#cb425-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ti, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb425-2"><a href="#cb425-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb421"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb421-1"><a href="#cb421-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ti, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb421-2"><a href="#cb421-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6351,7 +6426,7 @@ level     |           0.68 | [0.62, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb426"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb426-1"><a href="#cb426-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb422"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb422-1"><a href="#cb422-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ti<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -6407,22 +6482,22 @@ level     |           0.68 | [0.62, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb427"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb427-1"><a href="#cb427-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb427-2"><a href="#cb427-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb427-3"><a href="#cb427-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb427-4"><a href="#cb427-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb427-5"><a href="#cb427-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"TI"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb427-6"><a href="#cb427-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb427-7"><a href="#cb427-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb427-8"><a href="#cb427-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb427-9"><a href="#cb427-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb427-10"><a href="#cb427-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb427-11"><a href="#cb427-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb427-12"><a href="#cb427-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb427-13"><a href="#cb427-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb427-14"><a href="#cb427-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb427-15"><a href="#cb427-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb427-16"><a href="#cb427-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Time Pressure"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb423"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb423-1"><a href="#cb423-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb423-2"><a href="#cb423-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb423-3"><a href="#cb423-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb423-4"><a href="#cb423-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb423-5"><a href="#cb423-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"TI"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb423-6"><a href="#cb423-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb423-7"><a href="#cb423-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb423-8"><a href="#cb423-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb423-9"><a href="#cb423-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb423-10"><a href="#cb423-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb423-11"><a href="#cb423-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb423-12"><a href="#cb423-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb423-13"><a href="#cb423-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb423-14"><a href="#cb423-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb423-15"><a href="#cb423-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb423-16"><a href="#cb423-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Time Pressure"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6435,8 +6510,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="pe-3" class="level4">
 <h4 class="anchored" data-anchor-id="pe-3">PE</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb429"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb429-1"><a href="#cb429-1" aria-hidden="true" tabindex="-1"></a>mix_st_pe <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PE <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb429-2"><a href="#cb429-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb425"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb425-1"><a href="#cb425-1" aria-hidden="true" tabindex="-1"></a>mix_st_pe <span class="ot">&lt;-</span> <span class="fu">lmer</span>(PE <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb425-2"><a href="#cb425-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -6468,12 +6543,12 @@ Correlation of Fixed Effects:
 level.L 0.004        
 level.Q 0.002  0.004 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb431"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb431-1"><a href="#cb431-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb427"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb427-1"><a href="#cb427-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.6485436 0.7635642</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb433"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb433-1"><a href="#cb433-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb429"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb429-1"><a href="#cb429-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_pe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -6481,7 +6556,7 @@ level 156095   78047     2 161.56  334.23 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb435"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb435-1"><a href="#cb435-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_pe))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb431"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb431-1"><a href="#cb431-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_pe))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -6493,8 +6568,8 @@ level     |           0.81 | [0.76, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb437"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb437-1"><a href="#cb437-1" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_mr_pe, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb437-2"><a href="#cb437-2" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb433"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb433-1"><a href="#cb433-1" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_mr_pe, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb433-2"><a href="#cb433-2" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6535,7 +6610,7 @@ level     |           0.81 | [0.76, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb438"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb438-1"><a href="#cb438-1" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb434"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb434-1"><a href="#cb434-1" aria-hidden="true" tabindex="-1"></a>pairwise_mr_pe<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6582,22 +6657,22 @@ level     |           0.81 | [0.76, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb439"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb439-1"><a href="#cb439-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb439-2"><a href="#cb439-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb439-3"><a href="#cb439-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb439-4"><a href="#cb439-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb439-5"><a href="#cb439-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"PE"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb439-6"><a href="#cb439-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb439-7"><a href="#cb439-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb439-8"><a href="#cb439-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb439-9"><a href="#cb439-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb439-10"><a href="#cb439-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb439-11"><a href="#cb439-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb439-12"><a href="#cb439-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb439-13"><a href="#cb439-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb439-14"><a href="#cb439-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb439-15"><a href="#cb439-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb439-16"><a href="#cb439-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Performance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb435"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb435-1"><a href="#cb435-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb435-2"><a href="#cb435-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb435-3"><a href="#cb435-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb435-4"><a href="#cb435-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb435-5"><a href="#cb435-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"PE"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb435-6"><a href="#cb435-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb435-7"><a href="#cb435-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb435-8"><a href="#cb435-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb435-9"><a href="#cb435-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb435-10"><a href="#cb435-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb435-11"><a href="#cb435-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb435-12"><a href="#cb435-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb435-13"><a href="#cb435-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb435-14"><a href="#cb435-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb435-15"><a href="#cb435-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb435-16"><a href="#cb435-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Performance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6610,8 +6685,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="ef-3" class="level4">
 <h4 class="anchored" data-anchor-id="ef-3">EF</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb441"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb441-1"><a href="#cb441-1" aria-hidden="true" tabindex="-1"></a>mix_st_ef <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb441-2"><a href="#cb441-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb437"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb437-1"><a href="#cb437-1" aria-hidden="true" tabindex="-1"></a>mix_st_ef <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb437-2"><a href="#cb437-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -6643,12 +6718,12 @@ Correlation of Fixed Effects:
 level.L  0.000       
 level.Q -0.004  0.000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb443"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb443-1"><a href="#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb439"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb439-1"><a href="#cb439-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.2503825 0.6527931</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb445"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb445-1"><a href="#cb445-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb441"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb441-1"><a href="#cb441-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -6656,7 +6731,7 @@ level  43791   21895     2 161.36  87.962 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb447"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb447-1"><a href="#cb447-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ef))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb443"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb443-1"><a href="#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ef))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -6668,8 +6743,8 @@ level     |           0.52 | [0.44, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb449"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb449-1"><a href="#cb449-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ef, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb449-2"><a href="#cb449-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb445"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb445-1"><a href="#cb445-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ef, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb445-2"><a href="#cb445-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6710,7 +6785,7 @@ level     |           0.52 | [0.44, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb450"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb450-1"><a href="#cb450-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb446"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb446-1"><a href="#cb446-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ef<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -6766,22 +6841,22 @@ level     |           0.52 | [0.44, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb451"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb451-1"><a href="#cb451-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb451-2"><a href="#cb451-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb451-3"><a href="#cb451-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb451-4"><a href="#cb451-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb451-5"><a href="#cb451-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"EF"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb451-6"><a href="#cb451-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb451-7"><a href="#cb451-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb451-8"><a href="#cb451-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb451-9"><a href="#cb451-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb451-10"><a href="#cb451-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb451-11"><a href="#cb451-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb451-12"><a href="#cb451-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb451-13"><a href="#cb451-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb451-14"><a href="#cb451-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb451-15"><a href="#cb451-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb451-16"><a href="#cb451-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Effort"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb447"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb447-1"><a href="#cb447-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb447-2"><a href="#cb447-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb447-3"><a href="#cb447-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb447-4"><a href="#cb447-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb447-5"><a href="#cb447-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"EF"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb447-6"><a href="#cb447-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb447-7"><a href="#cb447-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb447-8"><a href="#cb447-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb447-9"><a href="#cb447-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb447-10"><a href="#cb447-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb447-11"><a href="#cb447-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb447-12"><a href="#cb447-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb447-13"><a href="#cb447-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb447-14"><a href="#cb447-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb447-15"><a href="#cb447-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb447-16"><a href="#cb447-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Effort"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6794,8 +6869,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="fr-3" class="level4">
 <h4 class="anchored" data-anchor-id="fr-3">FR</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb453"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb453-1"><a href="#cb453-1" aria-hidden="true" tabindex="-1"></a>mix_st_fr <span class="ot">&lt;-</span> <span class="fu">lmer</span>(FR <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb453-2"><a href="#cb453-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb449"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb449-1"><a href="#cb449-1" aria-hidden="true" tabindex="-1"></a>mix_st_fr <span class="ot">&lt;-</span> <span class="fu">lmer</span>(FR <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb449-2"><a href="#cb449-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -6827,12 +6902,12 @@ Correlation of Fixed Effects:
 level.L 0.003        
 level.Q 0.002  0.005 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb455"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb455-1"><a href="#cb455-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb451"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb451-1"><a href="#cb451-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.3110523 0.7020632</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb457"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb457-1"><a href="#cb457-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb453"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb453-1"><a href="#cb453-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_fr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
       Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
@@ -6840,7 +6915,7 @@ level  77592   38796     2 160.91  127.14 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb459"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb459-1"><a href="#cb459-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_fr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb455"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb455-1"><a href="#cb455-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_fr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -6852,8 +6927,8 @@ level     |           0.61 | [0.54, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb461"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb461-1"><a href="#cb461-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_fr, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb461-2"><a href="#cb461-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb457"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb457-1"><a href="#cb457-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_fr, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb457-2"><a href="#cb457-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -6894,7 +6969,7 @@ level     |           0.61 | [0.54, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb462"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb462-1"><a href="#cb462-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb458"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb458-1"><a href="#cb458-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_fr<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -6950,22 +7025,22 @@ level     |           0.61 | [0.54, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb463"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb463-1"><a href="#cb463-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb463-2"><a href="#cb463-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb463-3"><a href="#cb463-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb463-4"><a href="#cb463-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb463-5"><a href="#cb463-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"FR"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb463-6"><a href="#cb463-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb463-7"><a href="#cb463-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb463-8"><a href="#cb463-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb463-9"><a href="#cb463-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb463-10"><a href="#cb463-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb463-11"><a href="#cb463-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb463-12"><a href="#cb463-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb463-13"><a href="#cb463-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb463-14"><a href="#cb463-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb463-15"><a href="#cb463-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb463-16"><a href="#cb463-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Frustration"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb459"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb459-1"><a href="#cb459-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb459-2"><a href="#cb459-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb459-3"><a href="#cb459-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb459-4"><a href="#cb459-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb459-5"><a href="#cb459-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"FR"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb459-6"><a href="#cb459-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb459-7"><a href="#cb459-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb459-8"><a href="#cb459-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb459-9"><a href="#cb459-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb459-10"><a href="#cb459-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb459-11"><a href="#cb459-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb459-12"><a href="#cb459-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb459-13"><a href="#cb459-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb459-14"><a href="#cb459-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb459-15"><a href="#cb459-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb459-16"><a href="#cb459-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Frustration"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_summary()`).
 Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
@@ -6978,8 +7053,8 @@ Removed 1 rows containing non-finite values (`stat_summary()`).</code></pre>
 <section id="ow-3" class="level4">
 <h4 class="anchored" data-anchor-id="ow-3">OW</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb465"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb465-1"><a href="#cb465-1" aria-hidden="true" tabindex="-1"></a>mix_st_ow <span class="ot">&lt;-</span> <span class="fu">lmer</span>(OW <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
-<span id="cb465-2"><a href="#cb465-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb461"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb461-1"><a href="#cb461-1" aria-hidden="true" tabindex="-1"></a>mix_st_ow <span class="ot">&lt;-</span> <span class="fu">lmer</span>(OW <span class="sc">~</span> level <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), nasa_tlx_wide <span class="sc">|&gt;</span> <span class="fu">filter</span>(task <span class="sc">==</span> <span class="st">"ST"</span>))</span>
+<span id="cb461-2"><a href="#cb461-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -7011,12 +7086,12 @@ Correlation of Fixed Effects:
 level.L  0.009       
 level.Q -0.005  0.015</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb467"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb467-1"><a href="#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb463"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb463-1"><a href="#cb463-1" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squaredGLMM</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           R2m       R2c
 [1,] 0.5392897 0.7996546</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb469"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb469-1"><a href="#cb469-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb465"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb465-1"><a href="#cb465-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mix_st_ow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Satterthwaite's method
        Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
@@ -7024,7 +7099,7 @@ level 2439519 1219759     2 156.6  319.95 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb471"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb471-1"><a href="#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ow))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb467"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb467-1"><a href="#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(<span class="fu">anova</span>(mix_st_ow))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Effect Size for ANOVA (Type III)
 
@@ -7036,8 +7111,8 @@ level     |           0.80 | [0.76, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb473"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb473-1"><a href="#cb473-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ow, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
-<span id="cb473-2"><a href="#cb473-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb469"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb469-1"><a href="#cb469-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow <span class="ot">&lt;-</span> <span class="fu">lsmeans</span>(mix_st_ow, pairwise <span class="sc">~</span> level, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb469-2"><a href="#cb469-2" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow<span class="sc">$</span>lsmeans <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -7078,7 +7153,7 @@ level     |           0.80 | [0.76, 1.00]
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb474"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb474-1"><a href="#cb474-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb470"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb470-1"><a href="#cb470-1" aria-hidden="true" tabindex="-1"></a>pairwise_st_ow<span class="sc">$</span>contrasts <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> .<span class="dv">05</span>, <span class="st">"*"</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -7134,22 +7209,22 @@ level     |           0.80 | [0.76, 1.00]
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb475"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb475-1"><a href="#cb475-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
-<span id="cb475-2"><a href="#cb475-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
-<span id="cb475-3"><a href="#cb475-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
-<span id="cb475-4"><a href="#cb475-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb475-5"><a href="#cb475-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"OW"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb475-6"><a href="#cb475-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
-<span id="cb475-7"><a href="#cb475-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
-<span id="cb475-8"><a href="#cb475-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb475-9"><a href="#cb475-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
-<span id="cb475-10"><a href="#cb475-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
-<span id="cb475-11"><a href="#cb475-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb475-12"><a href="#cb475-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
-<span id="cb475-13"><a href="#cb475-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
-<span id="cb475-14"><a href="#cb475-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
-<span id="cb475-15"><a href="#cb475-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
-<span id="cb475-16"><a href="#cb475-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Overall Workload"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb471"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb471-1"><a href="#cb471-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>)</span>
+<span id="cb471-2"><a href="#cb471-2" aria-hidden="true" tabindex="-1"></a>nasa_tlx_wide <span class="sc">|&gt;</span></span>
+<span id="cb471-3"><a href="#cb471-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"ME"</span>, <span class="st">"PH"</span>, <span class="st">"PE"</span>, <span class="st">"TI"</span>, <span class="st">"EF"</span>, <span class="st">"FR"</span>, <span class="st">"OW"</span>),</span>
+<span id="cb471-4"><a href="#cb471-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"scale"</span>, <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb471-5"><a href="#cb471-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scale <span class="sc">==</span> <span class="st">"OW"</span> <span class="sc">&amp;</span> task <span class="sc">==</span> <span class="st">"ST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb471-6"><a href="#cb471-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(scale, score, <span class="at">color =</span> level)) <span class="sc">+</span></span>
+<span id="cb471-7"><a href="#cb471-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_cl_boot, <span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb471-8"><a href="#cb471-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd, <span class="at">width =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb471-9"><a href="#cb471-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb471-10"><a href="#cb471-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb471-11"><a href="#cb471-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb471-12"><a href="#cb471-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> level_colors) <span class="sc">+</span></span>
+<span id="cb471-13"><a href="#cb471-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NASA-TLX Scale"</span>,</span>
+<span id="cb471-14"><a href="#cb471-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"NASA-TLX Score (raw)"</span>,</span>
+<span id="cb471-15"><a href="#cb471-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Difficulty Level"</span>,</span>
+<span id="cb471-16"><a href="#cb471-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Raw Score. Sternberg Task. Overall Workload"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 6 rows containing non-finite values (`stat_summary()`).
 Removed 6 rows containing non-finite values (`stat_summary()`).</code></pre>
