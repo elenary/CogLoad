@@ -1,4 +1,3 @@
-# Correlations
 
 ```{r cor-opts}
 # knitr::opts_chunk$set(eval = FALSE)
@@ -15,6 +14,47 @@ library(ggcorrplot)
 ```{r}
 rm(list = ls())
 ```
+
+## Sample Size
+
+```{r}
+r_ci <- function(r, se) {
+  r_ = atanh(r)
+  lower_ = r_ - 1.96 * se
+  upper_ = r_ + 1.96 * se
+  lower = tanh(lower_)
+  upper = tanh(upper_)
+  cover_zero = ifelse(sign(lower) == sign(upper), FALSE, TRUE)
+  return(tibble(r = r,
+              se = se,
+              lower = lower,
+              upper = upper,
+              cover_zero = cover_zero))
+}
+```
+
+```{r}
+seq(.01, .2, by = .01) |> 
+  map(r_ci, r = .27)
+```
+
+```{r}
+r_n_se <- function(se) {
+  return(tibble(se = se,
+         n = (1 / se)^2 + 3))
+}
+```
+
+se = 1/sqrt(n-3)
+sqrt(n-3) = 1 / se
+n - 3 = (1 / se)^2
+n = (1 / se)^2 + 3
+
+```{r}
+seq(.05, 0.14, by = .01) |> 
+  map(r_n_se)
+```
+
 
 ## Reading data
 
