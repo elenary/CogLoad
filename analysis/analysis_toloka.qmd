@@ -14,6 +14,8 @@ library(lmerTest)
 library(lsmeans)
 library(MuMIn)
 library(pwr)
+library(knitr)
+library(effectsize)
 ```
 
 ```{r}
@@ -1160,4 +1162,1736 @@ nasa_tlx_wide |>
        y = "NASA-TLX Score (raw)",
        fill = "Difficulty Level",
        title = "Weighted Score Distributions. Overall Workload")
+```
+
+
+
+
+
+## By Tasks
+
+### Mental Rotation
+
+#### Reaction time
+
+```{r mix-mr-rt}
+mix_mr_rt <- lmer(rt ~ level + (1|id), MR_data_agg)
+summary(mix_mr_rt)
+r.squaredGLMM(mix_mr_rt)
+anova(mix_mr_rt)
+eta_squared(anova(mix_mr_rt))
+```
+
+```{r pairwise-mr-rt}
+pairwise_mr_rt <- lsmeans(mix_mr_rt, pairwise ~ level, adjust = "tukey")
+pairwise_mr_rt$lsmeans |> as_tibble() |> kable()
+pairwise_mr_rt$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+MR_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Reaction time. Mental Rotation.")
+```
+
+
+#### Accuracy
+
+```{r mix-mr-acc}
+mix_mr_acc <- lmer(acc ~ level + (1|id), MR_data_agg)
+summary(mix_mr_acc)
+r.squaredGLMM(mix_mr_acc)
+anova(mix_mr_acc)
+eta_squared(anova(mix_mr_acc))
+```
+
+```{r pairwise-mr-acc}
+pairwise_mr_acc <- lsmeans(mix_mr_acc, pairwise ~ level, adjust = "tukey")
+pairwise_mr_acc$lsmeans |> as_tibble() |> kable()
+pairwise_mr_acc$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+MR_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Accuracy. Mental Rotation.")
+```
+
+
+
+#### ME
+
+##### Raw
+
+```{r mix-mr-me}
+mix_mr_me <- lmer(ME ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_me)
+r.squaredGLMM(mix_mr_me)
+anova(mix_mr_me)
+eta_squared(anova(mix_mr_me))
+```
+
+```{r pairwise-mr-me}
+pairwise_mr_me <- lsmeans(mix_mr_me, pairwise ~ level, adjust = "tukey")
+pairwise_mr_me$lsmeans |> as_tibble() |> kable()
+pairwise_mr_me$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Mental Demand")
+```
+
+##### Weighted
+
+```{r mix-mr-me-w}
+mix_mr_me_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_me_w)
+r.squaredGLMM(mix_mr_me_w)
+anova(mix_mr_me_w)
+eta_squared(anova(mix_mr_me_w))
+```
+
+```{r pairwise-mr-me-w}
+pairwise_mr_me_w <- lsmeans(mix_mr_me_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_me_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_me_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Mental Demand")
+```
+
+
+
+#### PH
+
+##### Raw
+
+```{r mix-mr-ph}
+mix_mr_ph <- lmer(PH ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_ph)
+r.squaredGLMM(mix_mr_ph)
+anova(mix_mr_ph)
+eta_squared(anova(mix_mr_ph))
+```
+
+```{r pairwise-mr-ph}
+pairwise_mr_ph <- lsmeans(mix_mr_ph, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ph$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ph$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Physical Demand")
+```
+
+##### Weighted
+
+```{r mix-mr-ph-w}
+mix_mr_ph_w <- lmer(PH_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_ph_w)
+r.squaredGLMM(mix_mr_ph_w)
+anova(mix_mr_ph_w)
+eta_squared(anova(mix_mr_ph_w))
+```
+
+```{r pairwise-mr-ph-w}
+pairwise_mr_ph_w <- lsmeans(mix_mr_ph_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ph_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ph_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Physical Demand")
+```
+
+
+
+#### TI
+
+##### Raw
+
+```{r mix-mr-ti}
+mix_mr_ti <- lmer(TI ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_ti)
+r.squaredGLMM(mix_mr_ti)
+anova(mix_mr_ti)
+eta_squared(anova(mix_mr_ti))
+```
+
+```{r pairwise-mr-ti}
+pairwise_mr_ti <- lsmeans(mix_mr_ti, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ti$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ti$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Time Pressure")
+```
+
+##### Weighted
+
+```{r mix-mr-ti-w}
+mix_mr_ti_w <- lmer(TI_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_ti_w)
+r.squaredGLMM(mix_mr_ti_w)
+anova(mix_mr_ti_w)
+eta_squared(anova(mix_mr_ti_w))
+```
+
+```{r pairwise-mr-ti-w}
+pairwise_mr_ti_w <- lsmeans(mix_mr_ti_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ti_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ti_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Time Pressure")
+```
+
+
+
+
+#### PE
+
+##### Raw
+
+```{r mix-mr-pe}
+mix_mr_pe <- lmer(PE ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_pe)
+r.squaredGLMM(mix_mr_pe)
+anova(mix_mr_pe)
+eta_squared(anova(mix_mr_pe))
+```
+
+```{r pairwise-mr-pe}
+pairwise_mr_pe <- lsmeans(mix_mr_pe, pairwise ~ level, adjust = "tukey")
+pairwise_mr_pe$lsmeans |> as_tibble() |> kable()
+pairwise_mr_pe$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Performance")
+```
+
+##### Weighted
+
+```{r mix-mr-pe-w}
+mix_mr_pe_w <- lmer(PE_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_pe_w)
+r.squaredGLMM(mix_mr_pe_w)
+anova(mix_mr_pe_w)
+eta_squared(anova(mix_mr_pe_w))
+```
+
+```{r pairwise-mr-pe-w}
+pairwise_mr_pe_w <- lsmeans(mix_mr_pe_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_pe_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_pe_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Performance")
+```
+
+
+
+#### EF
+
+##### Raw
+
+```{r mix-mr-ef}
+mix_mr_ef <- lmer(EF ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_ef)
+r.squaredGLMM(mix_mr_ef)
+anova(mix_mr_ef)
+eta_squared(anova(mix_mr_ef))
+```
+
+```{r pairwise-mr-ef}
+pairwise_mr_ef <- lsmeans(mix_mr_ef, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ef$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ef$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Effort")
+```
+
+##### Weighted
+
+```{r mix-mr-ef-w}
+mix_mr_ef_w <- lmer(EF_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_ef_w)
+r.squaredGLMM(mix_mr_ef_w)
+anova(mix_mr_ef_w)
+eta_squared(anova(mix_mr_ef_w))
+```
+
+```{r pairwise-mr-ef-w}
+pairwise_mr_ef_w <- lsmeans(mix_mr_ef_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ef_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ef_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Effort")
+```
+
+
+#### FR
+
+##### Raw
+
+```{r mix-mr-fr}
+mix_mr_fr <- lmer(FR ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_fr)
+r.squaredGLMM(mix_mr_fr)
+anova(mix_mr_fr)
+eta_squared(anova(mix_mr_fr))
+```
+
+```{r pairwise-mr-fr}
+pairwise_mr_fr <- lsmeans(mix_mr_fr, pairwise ~ level, adjust = "tukey")
+pairwise_mr_fr$lsmeans |> as_tibble() |> kable()
+pairwise_mr_fr$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Frustration")
+```
+
+##### Weighted
+
+```{r mix-mr-fr-w}
+mix_mr_fr_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_fr_w)
+r.squaredGLMM(mix_mr_fr_w)
+anova(mix_mr_fr_w)
+eta_squared(anova(mix_mr_fr_w))
+```
+
+```{r pairwise-mr-fr-w}
+pairwise_mr_fr_w <- lsmeans(mix_mr_fr_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_fr_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_fr_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Frustration")
+```
+
+
+#### OW
+
+##### Raw
+
+```{r mix-mr-ow}
+mix_mr_ow <- lmer(OW ~ level + (1|id), nasa_tlx_wide |> filter(task == "MR"))
+summary(mix_mr_ow)
+r.squaredGLMM(mix_mr_ow)
+anova(mix_mr_ow)
+eta_squared(anova(mix_mr_ow))
+```
+
+```{r pairwise-mr-ow}
+pairwise_mr_ow <- lsmeans(mix_mr_ow, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ow$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ow$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Mental Rotation. Overall Workload")
+```
+
+##### Weighted
+
+```{r mix-mr-ow-w}
+mix_mr_ow_w <- lmer(OW_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MR"))
+summary(mix_mr_ow_w)
+r.squaredGLMM(mix_mr_ow_w)
+anova(mix_mr_ow_w)
+eta_squared(anova(mix_mr_ow_w))
+```
+
+```{r pairwise-mr-ow-w}
+pairwise_mr_ow_w <- lsmeans(mix_mr_ow_w, pairwise ~ level, adjust = "tukey")
+pairwise_mr_ow_w$lsmeans |> as_tibble() |> kable()
+pairwise_mr_ow_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW_w" & task == "MR") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Mental Rotation. Overall Workload")
+```
+
+
+
+### Memory Span
+
+#### Reaction time
+
+```{r mix-ms-rt}
+mix_ms_rt <- lmer(rt ~ level + (1|id), MS_data_agg)
+summary(mix_ms_rt)
+r.squaredGLMM(mix_ms_rt)
+anova(mix_ms_rt)
+eta_squared(anova(mix_ms_rt))
+```
+
+```{r pairwise-ms-rt}
+pairwise_ms_rt <- lsmeans(mix_ms_rt, pairwise ~ level, adjust = "tukey")
+pairwise_ms_rt$lsmeans |> as_tibble() |> kable()
+pairwise_ms_rt$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+MS_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Reaction time. Memory Span.")
+```
+
+
+#### Accuracy
+
+```{r mix-ms-acc}
+mix_ms_acc <- lmer(acc ~ level + (1|id), MS_data_agg)
+summary(mix_ms_acc)
+r.squaredGLMM(mix_ms_acc)
+anova(mix_ms_acc)
+eta_squared(anova(mix_ms_acc))
+```
+
+```{r pairwise-ms-acc}
+pairwise_ms_acc <- lsmeans(mix_ms_acc, pairwise ~ level, adjust = "tukey")
+pairwise_ms_acc$lsmeans |> as_tibble() |> kable()
+pairwise_ms_acc$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+MS_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Accuracy. Memory Span.")
+```
+
+
+
+#### ME
+
+##### Raw
+
+```{r mix-ms-me}
+mix_ms_me <- lmer(ME ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_me)
+r.squaredGLMM(mix_ms_me)
+anova(mix_ms_me)
+eta_squared(anova(mix_ms_me))
+```
+
+```{r pairwise-ms-me}
+pairwise_ms_me <- lsmeans(mix_ms_me, pairwise ~ level, adjust = "tukey")
+pairwise_ms_me$lsmeans |> as_tibble() |> kable()
+pairwise_ms_me$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Mental Demand")
+```
+
+##### Weighted
+
+```{r mix-ms-me-w}
+mix_ms_me_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_me_w)
+r.squaredGLMM(mix_ms_me_w)
+anova(mix_ms_me_w)
+eta_squared(anova(mix_ms_me_w))
+```
+
+```{r pairwise-ms-me-w}
+pairwise_ms_me_w <- lsmeans(mix_ms_me_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_me_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_me_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Mental Demand")
+```
+
+
+
+#### PH
+
+##### Raw
+
+```{r mix-ms-ph}
+mix_ms_ph <- lmer(PH ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_ph)
+r.squaredGLMM(mix_ms_ph)
+anova(mix_ms_ph)
+eta_squared(anova(mix_ms_ph))
+```
+
+```{r pairwise-ms-ph}
+pairwise_ms_ph <- lsmeans(mix_ms_ph, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ph$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ph$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Physical Demand")
+```
+
+##### Weighted
+
+```{r mix-ms-ph-w}
+mix_ms_ph_w <- lmer(PH_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_ph_w)
+r.squaredGLMM(mix_ms_ph_w)
+anova(mix_ms_ph_w)
+eta_squared(anova(mix_ms_ph_w))
+```
+
+```{r pairwise-ms-ph-w}
+pairwise_ms_ph_w <- lsmeans(mix_ms_ph_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ph_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ph_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Physical Demand")
+```
+
+
+
+#### TI
+
+##### Raw
+
+```{r mix-ms-ti}
+mix_ms_ti <- lmer(TI ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_ti)
+r.squaredGLMM(mix_ms_ti)
+anova(mix_ms_ti)
+eta_squared(anova(mix_ms_ti))
+```
+
+```{r pairwise-ms-ti}
+pairwise_ms_ti <- lsmeans(mix_ms_ti, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ti$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ti$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Time Pressure")
+```
+
+##### Weighted
+
+```{r mix-ms-ti-w}
+mix_ms_ti_w <- lmer(TI_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_ti_w)
+r.squaredGLMM(mix_ms_ti_w)
+anova(mix_ms_ti_w)
+eta_squared(anova(mix_ms_ti_w))
+```
+
+```{r pairwise-ms-ti-w}
+pairwise_ms_ti_w <- lsmeans(mix_ms_ti_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ti_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ti_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Time Pressure")
+```
+
+
+
+
+#### PE
+
+##### Raw
+
+```{r mix-ms-pe}
+mix_ms_pe <- lmer(PE ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_pe)
+r.squaredGLMM(mix_ms_pe)
+anova(mix_ms_pe)
+eta_squared(anova(mix_ms_pe))
+```
+
+```{r pairwise-ms-pe}
+pairwise_ms_pe <- lsmeans(mix_ms_pe, pairwise ~ level, adjust = "tukey")
+pairwise_ms_pe$lsmeans |> as_tibble() |> kable()
+pairwise_ms_pe$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Performance")
+```
+
+##### Weighted
+
+```{r mix-ms-pe-w}
+mix_ms_pe_w <- lmer(PE_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_pe_w)
+r.squaredGLMM(mix_ms_pe_w)
+anova(mix_ms_pe_w)
+eta_squared(anova(mix_ms_pe_w))
+```
+
+```{r pairwise-ms-pe-w}
+pairwise_ms_pe_w <- lsmeans(mix_ms_pe_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_pe_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_pe_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Performance")
+```
+
+
+
+#### EF
+
+##### Raw
+
+```{r mix-ms-ef}
+mix_ms_ef <- lmer(EF ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_ef)
+r.squaredGLMM(mix_ms_ef)
+anova(mix_ms_ef)
+eta_squared(anova(mix_ms_ef))
+```
+
+```{r pairwise-ms-ef}
+pairwise_ms_ef <- lsmeans(mix_ms_ef, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ef$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ef$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Effort")
+```
+
+##### Weighted
+
+```{r mix-ms-ef-w}
+mix_ms_ef_w <- lmer(EF_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_ef_w)
+r.squaredGLMM(mix_ms_ef_w)
+anova(mix_ms_ef_w)
+eta_squared(anova(mix_ms_ef_w))
+```
+
+```{r pairwise-ms-ef-w}
+pairwise_ms_ef_w <- lsmeans(mix_ms_ef_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ef_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ef_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Effort")
+```
+
+
+#### FR
+
+##### Raw
+
+```{r mix-ms-fr}
+mix_ms_fr <- lmer(FR ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_fr)
+r.squaredGLMM(mix_ms_fr)
+anova(mix_ms_fr)
+eta_squared(anova(mix_ms_fr))
+```
+
+```{r pairwise-ms-fr}
+pairwise_ms_fr <- lsmeans(mix_ms_fr, pairwise ~ level, adjust = "tukey")
+pairwise_ms_fr$lsmeans |> as_tibble() |> kable()
+pairwise_ms_fr$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Frustration")
+```
+
+##### Weighted
+
+```{r mix-ms-fr-w}
+mix_ms_fr_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_fr_w)
+r.squaredGLMM(mix_ms_fr_w)
+anova(mix_ms_fr_w)
+eta_squared(anova(mix_ms_fr_w))
+```
+
+```{r pairwise-ms-fr-w}
+pairwise_ms_fr_w <- lsmeans(mix_ms_fr_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_fr_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_fr_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Frustration")
+```
+
+
+#### OW
+
+##### Raw
+
+```{r mix-ms-ow}
+mix_ms_ow <- lmer(OW ~ level + (1|id), nasa_tlx_wide |> filter(task == "MS"))
+summary(mix_ms_ow)
+r.squaredGLMM(mix_ms_ow)
+anova(mix_ms_ow)
+eta_squared(anova(mix_ms_ow))
+```
+
+```{r pairwise-ms-ow}
+pairwise_ms_ow <- lsmeans(mix_ms_ow, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ow$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ow$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Memory Span. Overall Workload")
+```
+
+##### Weighted
+
+```{r mix-ms-ow-w}
+mix_ms_ow_w <- lmer(OW_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "MS"))
+summary(mix_ms_ow_w)
+r.squaredGLMM(mix_ms_ow_w)
+anova(mix_ms_ow_w)
+eta_squared(anova(mix_ms_ow_w))
+```
+
+```{r pairwise-ms-ow-w}
+pairwise_ms_ow_w <- lsmeans(mix_ms_ow_w, pairwise ~ level, adjust = "tukey")
+pairwise_ms_ow_w$lsmeans |> as_tibble() |> kable()
+pairwise_ms_ow_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW_w" & task == "MS") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Memory Span. Overall Workload")
+```
+
+
+
+### Sternberg Task
+
+#### Reaction time
+
+```{r mix-st-rt}
+mix_st_rt <- lmer(rt ~ level + (1|id), ST_data_agg)
+summary(mix_st_rt)
+r.squaredGLMM(mix_st_rt)
+anova(mix_st_rt)
+eta_squared(anova(mix_st_rt))
+```
+
+```{r pairwise-st-rt}
+pairwise_st_rt <- lsmeans(mix_st_rt, pairwise ~ level, adjust = "tukey")
+pairwise_st_rt$lsmeans |> as_tibble() |> kable()
+pairwise_st_rt$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+ST_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, rt)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Reaction time. Sternberg Task.")
+```
+
+
+#### Accuracy
+
+```{r mix-st-acc}
+mix_st_acc <- lmer(acc ~ level + (1|id), ST_data_agg)
+summary(mix_st_acc)
+r.squaredGLMM(mix_st_acc)
+anova(mix_st_acc)
+eta_squared(anova(mix_st_acc))
+```
+
+```{r pairwise-st-acc}
+pairwise_st_acc <- lsmeans(mix_st_acc, pairwise ~ level, adjust = "tukey")
+pairwise_st_acc$lsmeans |> as_tibble() |> kable()
+pairwise_st_acc$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+ST_data_agg |> 
+  mutate(level = factor(level, 
+                        ordered = TRUE, 
+                        levels = c("easy", "medium", "hard"))) |> 
+  ggplot(aes(level, acc)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "pointrange") +
+  labs(x = "Difficulty Level", y = "Reaction time, s",
+       title = "Accuracy. Sternberg Task.")
+```
+
+
+
+#### ME
+
+##### Raw
+
+```{r mix-st-me}
+mix_st_me <- lmer(ME ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_me)
+r.squaredGLMM(mix_st_me)
+anova(mix_st_me)
+eta_squared(anova(mix_st_me))
+```
+
+```{r pairwise-st-me}
+pairwise_st_me <- lsmeans(mix_st_me, pairwise ~ level, adjust = "tukey")
+pairwise_st_me$lsmeans |> as_tibble() |> kable()
+pairwise_st_me$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Mental Demand")
+```
+
+##### Weighted
+
+```{r mix-st-me-w}
+mix_st_me_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_me_w)
+r.squaredGLMM(mix_st_me_w)
+anova(mix_st_me_w)
+eta_squared(anova(mix_st_me_w))
+```
+
+```{r pairwise-st-me-w}
+pairwise_st_me_w <- lsmeans(mix_st_me_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_me_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_me_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "ME_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Mental Demand")
+```
+
+
+
+#### PH
+
+##### Raw
+
+```{r mix-st-ph}
+mix_st_ph <- lmer(PH ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_ph)
+r.squaredGLMM(mix_st_ph)
+anova(mix_st_ph)
+eta_squared(anova(mix_st_ph))
+```
+
+```{r pairwise-st-ph}
+pairwise_st_ph <- lsmeans(mix_st_ph, pairwise ~ level, adjust = "tukey")
+pairwise_st_ph$lsmeans |> as_tibble() |> kable()
+pairwise_st_ph$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Physical Demand")
+```
+
+##### Weighted
+
+```{r mix-st-ph-w}
+mix_st_ph_w <- lmer(PH_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_ph_w)
+r.squaredGLMM(mix_st_ph_w)
+anova(mix_st_ph_w)
+eta_squared(anova(mix_st_ph_w))
+```
+
+```{r pairwise-st-ph-w}
+pairwise_st_ph_w <- lsmeans(mix_st_ph_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_ph_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_ph_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PH_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Physical Demand")
+```
+
+
+
+#### TI
+
+##### Raw
+
+```{r mix-st-ti}
+mix_st_ti <- lmer(TI ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_ti)
+r.squaredGLMM(mix_st_ti)
+anova(mix_st_ti)
+eta_squared(anova(mix_st_ti))
+```
+
+```{r pairwise-st-ti}
+pairwise_st_ti <- lsmeans(mix_st_ti, pairwise ~ level, adjust = "tukey")
+pairwise_st_ti$lsmeans |> as_tibble() |> kable()
+pairwise_st_ti$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Time Pressure")
+```
+
+##### Weighted
+
+```{r mix-st-ti-w}
+mix_st_ti_w <- lmer(TI_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_ti_w)
+r.squaredGLMM(mix_st_ti_w)
+anova(mix_st_ti_w)
+eta_squared(anova(mix_st_ti_w))
+```
+
+```{r pairwise-st-ti-w}
+pairwise_st_ti_w <- lsmeans(mix_st_ti_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_ti_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_ti_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "TI_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Time Pressure")
+```
+
+
+
+
+#### PE
+
+##### Raw
+
+```{r mix-st-pe}
+mix_st_pe <- lmer(PE ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_pe)
+r.squaredGLMM(mix_st_pe)
+anova(mix_st_pe)
+eta_squared(anova(mix_st_pe))
+```
+
+```{r pairwise-st-pe}
+pairwise_st_pe <- lsmeans(mix_st_pe, pairwise ~ level, adjust = "tukey")
+pairwise_st_pe$lsmeans |> as_tibble() |> kable()
+pairwise_st_pe$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Performance")
+```
+
+##### Weighted
+
+```{r mix-st-pe-w}
+mix_st_pe_w <- lmer(PE_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_pe_w)
+r.squaredGLMM(mix_st_pe_w)
+anova(mix_st_pe_w)
+eta_squared(anova(mix_st_pe_w))
+```
+
+```{r pairwise-st-pe-w}
+pairwise_st_pe_w <- lsmeans(mix_st_pe_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_pe_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_pe_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "PE_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Performance")
+```
+
+
+
+#### EF
+
+##### Raw
+
+```{r mix-st-ef}
+mix_st_ef <- lmer(EF ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_ef)
+r.squaredGLMM(mix_st_ef)
+anova(mix_st_ef)
+eta_squared(anova(mix_st_ef))
+```
+
+```{r pairwise-st-ef}
+pairwise_st_ef <- lsmeans(mix_st_ef, pairwise ~ level, adjust = "tukey")
+pairwise_st_ef$lsmeans |> as_tibble() |> kable()
+pairwise_st_ef$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Effort")
+```
+
+##### Weighted
+
+```{r mix-st-ef-w}
+mix_st_ef_w <- lmer(EF_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_ef_w)
+r.squaredGLMM(mix_st_ef_w)
+anova(mix_st_ef_w)
+eta_squared(anova(mix_st_ef_w))
+```
+
+```{r pairwise-st-ef-w}
+pairwise_st_ef_w <- lsmeans(mix_st_ef_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_ef_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_ef_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "EF_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Effort")
+```
+
+
+#### FR
+
+##### Raw
+
+```{r mix-st-fr}
+mix_st_fr <- lmer(FR ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_fr)
+r.squaredGLMM(mix_st_fr)
+anova(mix_st_fr)
+eta_squared(anova(mix_st_fr))
+```
+
+```{r pairwise-st-fr}
+pairwise_st_fr <- lsmeans(mix_st_fr, pairwise ~ level, adjust = "tukey")
+pairwise_st_fr$lsmeans |> as_tibble() |> kable()
+pairwise_st_fr$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Frustration")
+```
+
+##### Weighted
+
+```{r mix-st-fr-w}
+mix_st_fr_w <- lmer(ME_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_fr_w)
+r.squaredGLMM(mix_st_fr_w)
+anova(mix_st_fr_w)
+eta_squared(anova(mix_st_fr_w))
+```
+
+```{r pairwise-st-fr-w}
+pairwise_st_fr_w <- lsmeans(mix_st_fr_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_fr_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_fr_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "FR_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Frustration")
+```
+
+
+#### OW
+
+##### Raw
+
+```{r mix-st-ow}
+mix_st_ow <- lmer(OW ~ level + (1|id), nasa_tlx_wide |> filter(task == "ST"))
+summary(mix_st_ow)
+r.squaredGLMM(mix_st_ow)
+anova(mix_st_ow)
+eta_squared(anova(mix_st_ow))
+```
+
+```{r pairwise-st-ow}
+pairwise_st_ow <- lsmeans(mix_st_ow, pairwise ~ level, adjust = "tukey")
+pairwise_st_ow$lsmeans |> as_tibble() |> kable()
+pairwise_st_ow$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_wide |>
+  pivot_longer(cols = c("ME", "PH", "PE", "TI", "EF", "FR", "OW"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (raw)",
+       fill = "Difficulty Level",
+       title = "Raw Score. Sternberg Task. Overall Workload")
+```
+
+##### Weighted
+
+```{r mix-st-ow-w}
+mix_st_ow_w <- lmer(OW_w ~ level + (1|id), nasa_tlx_weighted_wide |> filter(task == "ST"))
+summary(mix_st_ow_w)
+r.squaredGLMM(mix_st_ow_w)
+anova(mix_st_ow_w)
+eta_squared(anova(mix_st_ow_w))
+```
+
+```{r pairwise-st-ow-w}
+pairwise_st_ow_w <- lsmeans(mix_st_ow_w, pairwise ~ level, adjust = "tukey")
+pairwise_st_ow_w$lsmeans |> as_tibble() |> kable()
+pairwise_st_ow_w$contrasts |> as_tibble() |> mutate(sig = ifelse(p.value < .05, "*", "")) |> kable()
+```
+
+```{r}
+pd <- position_dodge(0.3)
+nasa_tlx_weighted_wide |>
+  pivot_longer(cols = c("ME_w", "PH_w", "PE_w", "TI_w", "EF_w", "FR_w", "OW_w"),
+               names_to = "scale", values_to = "score") |> 
+  filter(scale == "OW_w" & task == "ST") |> 
+  ggplot(aes(scale, score, color = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  labs(x = "NASA-TLX Scale",
+       y = "NASA-TLX Score (weighted)",
+       fill = "Difficulty Level",
+       title = "Weighted Score. Sternberg Task. Overall Workload")
 ```
