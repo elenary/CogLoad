@@ -436,6 +436,7 @@ nasatlx_pav |>
   mutate(pool = ifelse(is.na(pool), "pool0", pool)) -> nasatlx_all
 ```
 
+### MR Easy
 ```{r}
 nasatlx_all |> 
   filter(task == "MR" & level == "easy") |> 
@@ -449,6 +450,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### MR Medium
 ```{r}
 nasatlx_all |> 
   filter(task == "MR" & level == "medium") |> 
@@ -462,6 +464,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### MR Hard
 ```{r}
 nasatlx_all |> 
   filter(task == "MR" & level == "hard") |> 
@@ -475,6 +478,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### MS Easy
 ```{r}
 nasatlx_all |> 
   filter(task == "MS" & level == "easy") |> 
@@ -488,6 +492,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### MS Medium
 ```{r}
 nasatlx_all |> 
   filter(task == "MS" & level == "medium") |> 
@@ -501,6 +506,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### MS Hard
 ```{r}
 nasatlx_all |> 
   filter(task == "MS" & level == "hard") |> 
@@ -514,6 +520,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### ST Easy
 ```{r}
 nasatlx_all |> 
   filter(task == "ST" & level == "easy") |> 
@@ -527,6 +534,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### ST Medium
 ```{r}
 nasatlx_all |> 
   filter(task == "ST" & level == "medium") |> 
@@ -540,6 +548,7 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### ST Hard
 ```{r}
 nasatlx_all |> 
   filter(task == "ST" & level == "hard") |> 
@@ -553,6 +562,101 @@ nasatlx_all |>
              show.legend = FALSE)
 ```
 
+### All tasks. All levels
+```{r}
+gridExtra::grid.arrange(
+  nasatlx_all |> 
+  filter(task == "MR" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MR Easy",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "MR" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MR Medium",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "MR" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MR Hard",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "MS" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MS Easy",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "MS" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MS Medium",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "MS" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "MS Hard",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "ST" & level == "easy") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "ST Easy",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "ST" & level == "medium") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "ST Medium",
+             show.legend = FALSE),
+  nasatlx_all |> 
+  filter(task == "ST" & level == "hard") |> 
+  select(ME, PH, TI, PE, EF, FR) |> 
+  cor(use = "complete.obs") |> 
+  ggcorrplot(type = "lower", 
+             lab = TRUE,
+             lab_size = 2,
+             colors = c("indianred1", "white", "royalblue1"),
+             title = "ST Hard",
+             show.legend = FALSE)
+)
+```
 
 ### Pooled Correlation Matrix
 
