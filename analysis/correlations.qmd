@@ -43,18 +43,23 @@ r_n_se <- function(se) {
   return(tibble(se = se,
          n = (1 / se)^2 + 3))
 }
-```
 
-se = 1/sqrt(n-3)
-sqrt(n-3) = 1 / se
-n - 3 = (1 / se)^2
-n = (1 / se)^2 + 3
+r_n_se_lazy <- function(r, se) {
+  return(tibble(r = r,
+                se = se,
+                n = ((1-r^2) / se^2) + 2))
+}
+```
 
 ```{r}
 seq(.05, 0.14, by = .01) |> 
   map(r_n_se)
 ```
 
+```{r}
+seq(.05, 0.14, by = .01) |> 
+  map(r_n_se_lazy, r = .27)
+```
 
 ## Reading data
 
