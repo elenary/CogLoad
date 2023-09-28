@@ -451,7 +451,9 @@ NASATLX |>
                    names_to = "scale", values_to = "score") |> 
       filter(!str_detect(scale, "_w")),
     by = join_by("id", "task", "level", "scale", "pool")
-  ) -> nasatlx
+  ) |> 
+  mutate(level = factor(level, ordered = TRUE,
+                        levels = c("easy", "medium", "hard"))) -> nasatlx
 ```
 
 ```{r, eval=FALSE}
@@ -574,13 +576,13 @@ nasatlx |>
                        "score" = "raw",
                        "score_w" = "weighted")) |> 
   filter(scale == "OW") |> 
-  ggplot(aes(scale, score, color = level, shape = "type")) +
+  ggplot(aes(scale, score, color = level)) +
   stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
                position = pd, width = .3) +
   stat_summary(fun = mean, geom = "point",
                position = pd) +
-   facet_grid(type ~ task,
-              scales = "free_y",
+  facet_grid(type ~ task,
+             scales = "free_y",
              labeller = labeller(task = c(
                MR = "Mental Rotation",
                MS = "Memory Span",
@@ -593,6 +595,38 @@ nasatlx |>
        y = "NASA-TLX Score (raw)",
        fill = "Difficulty Level",
        title = "Weighted & Raw Overall Score Distributions by Scale")
+
+nasatlx |>
+  pivot_longer(cols = c("score", "score_w"),
+               names_to = "type", values_to = "score") |> 
+  mutate(type = recode(type,
+                       "score" = "raw",
+                       "score_w" = "weighted")) |> 
+  filter(scale == "OW") |> 
+  ggplot(aes(scale, score, color = level, shape = level)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               position = pd, width = .3) +
+  stat_summary(fun = mean, geom = "point",
+               position = pd) +
+   facet_grid(type ~ task,
+              scales = "free_y",
+             labeller = labeller(
+               task = c(
+                 MR = "Mental Rotation",
+                 MS = "Memory Span",
+                 ST = "Sternberg Task"
+                 ),
+               type = c(
+                 raw = "Raw",
+                 weighted = "Weighted"
+               ))) +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = level_colors) +
+  scale_x_discrete(labels = NULL) +
+  labs(x = "Overall Workload (OW)",
+       y = "NASA-TLX Score",
+       color = "Difficulty Level",
+       shape = "Difficulty Level")
 ```
 
 ### GLMM weighted scales

@@ -732,7 +732,6 @@ pooled_matrix |>
              lab = TRUE,
              lab_size = 3,
              colors = c("indianred1", "white", "royalblue1"),
-             title = "Polled Matrix. Raw.",
              show.legend = FALSE)
 ```
 
