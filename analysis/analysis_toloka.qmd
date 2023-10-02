@@ -103,6 +103,11 @@ ST_data_agg |> write_csv("../preproc-data/ST_tol_data_agg.csv")
 ST_data_agg <- read_csv("../preproc-data/ST_tol_data_agg.csv")
 ```
 
+```{r}
+MR_data_agg |> summarise(range = range(rt))
+MS_data_agg |> summarise(range = range(rt, na.rm = TRUE))
+ST_data_agg |> summarise(range = range(rt))
+```
 
 ### Plot all paradigms
 
