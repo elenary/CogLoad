@@ -413,10 +413,23 @@ NASATLX_weighted |>
              ))) +
   theme(legend.position = "bottom") +
   scale_color_manual(values = level_colors) +
+  scale_x_discrete(labels = c(
+    EF_w = "EF",
+    FR_w = "FR",
+    ME_w = "ME",
+    PE_w = "PE",
+    PH_w = "PH",
+    TI_w = "TI"
+  )) +
   labs(x = "NASA-TLX Scale",
-       y = "NASA-TLX Score (raw)",
-       fill = "Difficulty Level",
-       title = "Weighted Score Distributions by Scale")
+       y = "NASA-TLX Score (weighted)",
+       color = "Difficulty Level",
+       #title = "Weighted Score Distributions by Scale"
+       )
+ggsave("weighted_scales.png",
+                   width = 20,
+                   height = 15,
+                   units = "cm")
 ```
 
 ```{r}
