@@ -1719,3 +1719,28 @@ nasa_tlx_wide |>
 ```
 
 
+## Cor with RT and acc
+
+```{r}
+MR_data_agg %>% 
+  bind_rows(MS_data_agg, ST_data_agg) %>% 
+  full_join(nasa_tlx_wide) %>% 
+  select(OW, rt, acc) %>% 
+  cor(use = "complete.obs")
+```
+
+```{r}
+
+```
+
+```{r}
+ST_data_agg %>% full_join(nasa_tlx_wide) %>% drop_na() -> d
+cor.test(d$rt, d$OW)
+
+MR_data_agg %>%
+  bind_rows(MS_data_agg, ST_data_agg) %>% 
+  full_join(nasa_tlx_wide) %>% 
+  select(OW, rt, acc) %>% 
+  rstatix::cor_test()
+```
+

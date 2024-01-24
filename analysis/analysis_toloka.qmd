@@ -2947,3 +2947,16 @@ nasa_tlx_weighted_wide |>
        fill = "Difficulty Level",
        title = "Weighted Score. Sternberg Task. Overall Workload")
 ```
+
+
+
+## Cor with RT and acc
+
+```{r}
+all_tol_data_agg %>% 
+  full_join(nasa_tlx_wide) %>% 
+  select(OW, rt, acc) %>% 
+  rstatix::cor_test()
+
+cor.test(all_tol_data_agg$rt, nasa_tlx_wide$OW)
+```
